@@ -1,0 +1,5 @@
+chatgpt
+copilot
+openai
+bard
+codeium
