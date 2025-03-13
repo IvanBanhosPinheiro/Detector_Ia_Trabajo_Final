@@ -3,7 +3,6 @@ from flask_login import LoginManager, login_user, login_required, current_user, 
 from models import db, Usuario, Equipo, Datos  # Importamos los modelos
 import os, configparser, io
 from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash
 from PIL import Image
 
 # Inicialización de Flask
