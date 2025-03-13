@@ -17,15 +17,15 @@
           <ul class="navbar-nav">
               {% if current_user.is_authenticated %}
                   <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('dashboard') }}">Panel de Control</a>
+                      <a class="nav-link" href="{{ url_for('capturas.panel_control') }}">Panel de Control</a>
                   </li>
                   {% if current_user.administrador %}
                       <li class="nav-item">
-                          <a class="nav-link" href="{{ url_for('lista_usuarios') }}">Usuarios</a>
+                          <a class="nav-link" href="{{ url_for('auth.lista_usuarios') }}">Usuarios</a>
                       </li>
                     
                       <li class="nav-item">
-                          <a class="nav-link" href="{{ url_for('editar_keywords') }}">Editar Keywords</a>
+                          <a class="nav-link" href="{{ url_for('keywords.editar_keywords') }}">Editar Keywords</a>
                       </li>
                   {% endif %}
                   <li class="nav-item">
@@ -34,13 +34,13 @@
                       </span>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('logout') }}">
+                      <a class="nav-link" href="{{ url_for('auth.logout') }}">
                           <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                       </a>
                   </li>
               {% else %}
                   <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('login') }}">
+                      <a class="nav-link" href="{{ url_for('auth.login') }}">
                           <i class="fas fa-sign-in-alt"></i> Login
                       </a>
                   </li>

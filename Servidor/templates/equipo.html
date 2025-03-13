@@ -74,7 +74,7 @@
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Panel de Control</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('capturas.panel_control') }}">Panel de Control</a></li>
             <li class="breadcrumb-item active">{{ equipo_id }}</li>
         </ol>
     </nav>
@@ -88,7 +88,7 @@
                 <div class="date-grid">
                     {% for fecha, capturas in fechas.items() %}
                     <div class="date-item" data-fecha="{{ fecha }}">
-                        <a href="{{ url_for('ver_fecha', equipo_id=equipo_id, fecha=fecha) }}">
+                        <a href="{{ url_for('capturas.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}">
                             <div class="date-card">
                                 <img src="{{ url_for('static', filename='img/ordenador.jpg') }}" alt="Carpeta" class="date-image">
                                 <div class="date-name">{{ fecha }}</div>
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const fecha = this.getAttribute('data-fecha');
             
             if (confirm(`¿Estás seguro de que deseas eliminar todas las capturas del ${fecha}?\nEsta acción no se puede deshacer.`)) {
-                fetch(`/eliminar_fecha/{{ equipo_id }}/${fecha}`, {
+                fetch(`{{ url_for('capturas.eliminar_fecha', equipo_id=equipo_id, fecha='') }}${fecha}`, {
                     method: 'DELETE'
                 })
                 .then(response => {

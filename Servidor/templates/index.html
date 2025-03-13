@@ -10,10 +10,10 @@
         <hr class="my-4">
         {% if current_user.is_authenticated %}
             <p>Accede a tu panel de control para gestionar las capturas.</p>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}" role="button">Panel de Control</a>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('capturas.panel_control') }}" role="button">Panel de Control</a>
         {% else %}
             <p>Inicia sesión para acceder al sistema.</p>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Iniciar Sesión</a>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">Iniciar Sesión</a>
         {% endif %}
     </div>
 </div>

@@ -74,7 +74,7 @@
             {% if equipos %}
             <div class="folder-grid">
                 {% for equipo_id, fechas in equipos.items() %}
-                <a href="{{ url_for('ver_equipo', equipo_id=equipo_id) }}" class="folder-item">
+                <a href="{{ url_for('capturas.ver_equipo', equipo_id=equipo_id) }}" class="folder-item">
                     <div class="folder-card">
                         <img src="{{ url_for('static', filename='img/carpeta.jpg') }}" alt="Carpeta" class="folder-image">
                         <div class="folder-name">{{ equipo_id }}</div>
@@ -91,10 +91,11 @@
 </div>
 {% endblock %}
 
+
 {% block customjs %}
 <script>
 document.getElementById('toggleCapture').addEventListener('click', function() {
-    fetch('/toggle_capture', {
+    fetch("{{ url_for('capturas.toggle_capture') }}", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

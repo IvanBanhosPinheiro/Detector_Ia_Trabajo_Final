@@ -72,8 +72,8 @@
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Panel de Control</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('ver_equipo', equipo_id=equipo_id) }}">{{ equipo_id }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('capturas.panel_control') }}">Panel de Control</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('capturas.ver_equipo', equipo_id=equipo_id) }}">{{ equipo_id }}</a></li>
             <li class="breadcrumb-item active">{{ fecha }}</li>
         </ol>
     </nav>
@@ -91,8 +91,8 @@
                             {{ captura.fecha.strftime('%H:%M:%S') }}
                         </div>
                         {% if captura.imagen %}
-                            <a href="{{ url_for('ver_imagen', dato_id=captura.id) }}" target="_blank">
-                                <img src="{{ url_for('miniatura', dato_id=captura.id) }}" 
+                            <a href="{{ url_for('capturas.ver_imagen', dato_id=captura.id) }}" target="_blank">
+                                <img src="{{ url_for('capturas.miniatura', dato_id=captura.id) }}" 
                                      class="miniatura img-fluid" 
                                      alt="Captura {{ captura.fecha.strftime('%H:%M:%S') }}">
                             </a>
@@ -106,12 +106,12 @@
                         </div>
                         <div class="capture-actions">
                             {% if captura.imagen %}
-                            <a href="{{ url_for('descargar_imagen', dato_id=captura.id) }}" 
+                            <a href="{{ url_for('capturas.descargar_imagen', dato_id=captura.id) }}" 
                                class="btn btn-primary btn-sm">
                                 <i class="fas fa-download">Imagen</i> 
                             </a>
                             {% endif %}
-                            <a href="{{ url_for('descargar_texto', dato_id=captura.id) }}" 
+                            <a href="{{ url_for('capturas.descargar_texto', dato_id=captura.id) }}" 
                                class="btn btn-info btn-sm">
                                 <i class="fas fa-file-alt">Texto</i> 
                             </a>
@@ -132,7 +132,6 @@
 
 {% block customjs %}
 <script>
-
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
@@ -144,7 +143,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function confirmarBorrado(id) {
     if (confirm('¿Estás seguro de que deseas eliminar esta captura? Esta acción no se puede deshacer.')) {
-        fetch(`/eliminar_captura/${id}`, {
+        // Construir la URL correctamente
+        const url = `/eliminar_captura/${id}`;
+        
+        fetch(url, {
             method: 'DELETE'
         })
         .then(response => {
@@ -152,13 +154,12 @@ function confirmarBorrado(id) {
                 const card = document.querySelector(`[data-captura-id="${id}"]`);
                 if (card) {
                     card.remove();
-                    // Si no quedan más capturas, mostrar mensaje
+                    // Si no quedan más capturas, redirigir a la vista del equipo
                     const grid = document.querySelector('.capture-grid');
                     if (!grid.children.length) {
-                        grid.innerHTML = '<p class="text-muted">No hay capturas disponibles para esta fecha.</p>';
+                        window.location.href = '{{ url_for("capturas.ver_equipo", equipo_id=equipo_id) }}';
                     }
                 }
-                alert('Captura eliminada correctamente');
             } else {
                 alert('Error al eliminar la captura');
             }

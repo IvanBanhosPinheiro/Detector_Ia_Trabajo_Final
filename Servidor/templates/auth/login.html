@@ -8,7 +8,7 @@
 
 {% block body %} 
 <div class="main-content">
-  <form class="form-signin" method="post">
+  <form class="form-signin" method="post" action="{{ url_for('auth.login') }}">
     <img class="mb-4" src="{{url_for('static', filename='img/flask.png')}}" alt="" width="72" height="72">
     <h1 class="h3 mb-3 fw-normal">Inicio de sesión</h1>
 
