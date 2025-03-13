@@ -1,0 +1,27 @@
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+#status {
+    font-size: 1.1em;
+    color: #666;
+}
+
+#toggleCapture {
+    min-width: 150px;
+}
+
+.table img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.table td {
+    vertical-align: middle;
+}

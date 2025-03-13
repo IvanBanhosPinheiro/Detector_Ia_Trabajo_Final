@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+      <!-- Logo y nombre -->
+      <a class="navbar-brand" href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='img/flask.png') }}" width="30" height="30" class="d-inline-block align-top" alt="Logo">
+          IA Detector
+      </a>
+
+      <!-- Botón hamburguesa para móviles -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Menú colapsable -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+              {% if current_user.is_authenticated %}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('dashboard') }}">Panel de Control</a>
+                  </li>
+                  {% if current_user.administrador %}
+                      <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('lista_usuarios') }}">Usuarios</a>
+                      </li>
+                    
+                      <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('editar_keywords') }}">Editar Keywords</a>
+                      </li>
+                  {% endif %}
+                  <li class="nav-item">
+                      <span class="nav-link text-light">
+                          <i class="fas fa-user"></i> {{ current_user.nombre }}
+                      </span>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('logout') }}">
+                          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                      </a>
+                  </li>
+              {% else %}
+                  <li class="nav-item">
+                      <a class="nav-link" href="{{ url_for('login') }}">
+                          <i class="fas fa-sign-in-alt"></i> Login
+                      </a>
+                  </li>
+              {% endif %}
+          </ul>
+      </div>
+  </div>
+</nav>

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Control{% endblock %}
+
+{% block customcss %}
+<style>
+.folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.folder-item {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.folder-item:hover {
+    transform: translateY(-5px);
+    text-decoration: none;
+    color: inherit;
+}
+
+.folder-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.folder-image {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.folder-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.folder-count {
+    color: #666;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2>Panel de Control</h2>
+    
+    <!-- Control de Capturas -->
+    <div class="card mb-4">
+        <div class="card-header">Control de Capturas</div>
+        <div class="card-body">
+            <button id="toggleCapture" class="btn {% if capture_enabled %}btn-danger{% else %}btn-primary{% endif %}">
+                {% if capture_enabled %}Detener Capturas{% else %}Iniciar Capturas{% endif %}
+            </button>
+            <span id="status" class="ml-3">
+                Estado: {% if capture_enabled %}Activado{% else %}Desactivado{% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- Mosaico de Carpetas -->
+    <div class="card">
+        <div class="card-header">Capturas por Equipo</div>
+        <div class="card-body">
+            {% if equipos %}
+            <div class="folder-grid">
+                {% for equipo_id, fechas in equipos.items() %}
+                <a href="{{ url_for('ver_equipo', equipo_id=equipo_id) }}" class="folder-item">
+                    <div class="folder-card">
+                        <img src="{{ url_for('static', filename='img/carpeta.jpg') }}" alt="Carpeta" class="folder-image">
+                        <div class="folder-name">{{ equipo_id }}</div>
+                        <div class="folder-count">{{ fechas|length }} días</div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No hay capturas disponibles.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customjs %}
+<script>
+document.getElementById('toggleCapture').addEventListener('click', function() {
+    fetch('/toggle_capture', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al cambiar estado de capturas');
+    });
+});
+</script>
+{% endblock %}

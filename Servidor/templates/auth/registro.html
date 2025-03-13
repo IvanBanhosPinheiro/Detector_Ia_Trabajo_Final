@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block customcss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="main-content">
+    <form class="form-signin" method="POST">
+        <img class="mb-4" src="{{ url_for('static', filename='img/flask.png') }}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 fw-normal">Registro de Usuario</h1>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-floating mb-3">
+            <label for="usuario">Nombre de usuario</label>
+            <input type="text" 
+                   class="form-control" 
+                   name="usuario" 
+                   id="usuario" 
+                   placeholder="Usuario"
+                   minlength="5"
+                   maxlength="20"
+                   required>
+        </div>
+
+        <div class="form-floating mb-3">
+            <label for="password">Contraseña</label>
+            <input type="password" 
+                   class="form-control" 
+                   name="password" 
+                   id="password" 
+                   placeholder="Contraseña"
+                   minlength="6"
+                   required>
+        </div>
+
+        <div class="form-floating mb-3">
+            <label for="password_confirm">Confirmar contraseña</label>
+            <input type="password" 
+                   class="form-control" 
+                   name="password_confirm" 
+                   id="password_confirm" 
+                   placeholder="Confirmar contraseña"
+                   minlength="6"
+                   required>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Registrarse</button>
+        
+
+        <p class="mt-5 mb-3 text-muted text-center">&copy; 2025</p>
+    </form>
+</div>
+{% endblock %}

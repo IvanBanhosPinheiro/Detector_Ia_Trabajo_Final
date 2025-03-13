@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Capturas - {{ equipo_id }} - {{ fecha }}{% endblock %}
+
+{% block customcss %}
+<style>
+.miniatura {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.miniatura:hover {
+    transform: scale(1.05);
+}
+
+.capture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.capture-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.capture-time {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.capture-text {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 10px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.capture-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    background-color: #f8f9fa;
+    color: #666;
+    font-size: 0.9em;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Panel de Control</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('ver_equipo', equipo_id=equipo_id) }}">{{ equipo_id }}</a></li>
+            <li class="breadcrumb-item active">{{ fecha }}</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            Capturas del {{ fecha }}
+        </div>
+        <div class="card-body">
+            {% if capturas %}
+                <div class="capture-grid">
+                    {% for captura in capturas %}
+                    <div class="capture-card" data-captura-id="{{ captura.id }}">
+                        <div class="capture-time">
+                            {{ captura.fecha.strftime('%H:%M:%S') }}
+                        </div>
+                        {% if captura.imagen %}
+                            <a href="{{ url_for('ver_imagen', dato_id=captura.id) }}" target="_blank">
+                                <img src="{{ url_for('miniatura', dato_id=captura.id) }}" 
+                                     class="miniatura img-fluid" 
+                                     alt="Captura {{ captura.fecha.strftime('%H:%M:%S') }}">
+                            </a>
+                        {% else %}
+                            <div class="no-image">
+                                No hay imagen disponible
+                            </div>
+                        {% endif %}
+                        <div class="capture-text">
+                            {{ captura.texto[:100] }}...
+                        </div>
+                        <div class="capture-actions">
+                            {% if captura.imagen %}
+                            <a href="{{ url_for('descargar_imagen', dato_id=captura.id) }}" 
+                               class="btn btn-primary btn-sm">
+                                <i class="fas fa-download">Imagen</i> 
+                            </a>
+                            {% endif %}
+                            <a href="{{ url_for('descargar_texto', dato_id=captura.id) }}" 
+                               class="btn btn-info btn-sm">
+                                <i class="fas fa-file-alt">Texto</i> 
+                            </a>
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="{{ captura.id }}">
+                                <i class="fas fa-trash">Eliminar</i> 
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No hay capturas disponibles para esta fecha.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customjs %}
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            confirmarBorrado(id);
+        });
+    });
+});
+
+function confirmarBorrado(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta captura? Esta acción no se puede deshacer.')) {
+        fetch(`/eliminar_captura/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                const card = document.querySelector(`[data-captura-id="${id}"]`);
+                if (card) {
+                    card.remove();
+                    // Si no quedan más capturas, mostrar mensaje
+                    const grid = document.querySelector('.capture-grid');
+                    if (!grid.children.length) {
+                        grid.innerHTML = '<p class="text-muted">No hay capturas disponibles para esta fecha.</p>';
+                    }
+                }
+                alert('Captura eliminada correctamente');
+            } else {
+                alert('Error al eliminar la captura');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar la captura');
+        });
+    }
+}
+</script>
+{% endblock %}
