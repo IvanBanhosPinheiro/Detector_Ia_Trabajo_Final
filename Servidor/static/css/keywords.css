@@ -1,0 +1,19 @@
+#editor {
+    width: 100%;
+    min-height: 400px;
+    font-family: monospace;
+    padding: 10px;
+    white-space: pre;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.btn-container {
+    margin-top: 1rem;
+}
+
+.alert {
+    margin-bottom: 1rem;
+}

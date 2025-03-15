@@ -1,8 +1,19 @@
 from flask import Flask, request, render_template
 from flask_login import LoginManager
 import os, configparser
+
 # Importamos los modelos
 from models.models import db, Usuario 
+
+# Importar y registrar blueprints después de la configuración
+from routes.auth import auth
+from routes.error import paginaNoEncontrada
+from routes.keywords import keywords
+from routes.capturas.capturas_control import capturas_control
+from routes.capturas.capturas_view import capturas_view
+from routes.capturas.capturas_files import capturas_files
+from routes.error import error
+
 
 # Inicialización de Flask
 app = Flask(__name__)
@@ -34,16 +45,13 @@ def load_user(user_id):
 def index():
     return render_template("index.html")
 
-# Importar y registrar blueprints después de la configuración
-from routes.auth import auth
-from routes.capturas import capturas
-from routes.error import paginaNoEncontrada
-from routes.keywords import keywords
-from routes.dashboard import dashboard
 
 app.register_blueprint(auth)
-app.register_blueprint(capturas)
 app.register_blueprint(keywords)
+app.register_blueprint(capturas_control)
+app.register_blueprint(capturas_files)
+app.register_blueprint(capturas_view)
+app.register_blueprint(error)
 
 # Punto de entrada principal
 if __name__ == '__main__':

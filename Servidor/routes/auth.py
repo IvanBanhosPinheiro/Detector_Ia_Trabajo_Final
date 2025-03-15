@@ -22,7 +22,7 @@ def login():
         if usuario and usuario.check_password(password):
             login_user(usuario)
             flash('Has iniciado sesión correctamente', 'success')
-            return redirect(url_for('dashboard.panel_control'))
+            return redirect(url_for('capturas_control.panel_control'))
         else:
             flash('Usuario o contraseña incorrectos', 'danger')
     
@@ -36,7 +36,7 @@ def registro():
     # Verificar permisos de administrador
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
-        return redirect(url_for('dashboard.panel_control'))
+        return redirect(url_for('capturas_control.panel_control'))
 
     # Si es POST, procesar el formulario
     if request.method == 'POST':
@@ -89,7 +89,7 @@ def lista_usuarios():
     # Verificar permisos de administrador
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
-        return redirect(url_for('dashboard.panel_control'))
+        return redirect(url_for('capturas_control.panel_control'))
         
     # Obtener todos los usuarios
     usuarios = Usuario.query.all()

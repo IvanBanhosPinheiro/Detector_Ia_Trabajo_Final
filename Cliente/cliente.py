@@ -1,15 +1,22 @@
-import os, configparser, time, pyautogui, requests, pytesseract, pickle
+import os, configparser, time, pyautogui, requests, pytesseract, pickle, sys
 from datetime import datetime
 import pygetwindow as gw
 from io import BytesIO
 
 
+
+# Función para obtener la ruta base
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
+
 # Configuración
 config = configparser.ConfigParser()
-
-# config_path = os.path.join(os.getcwd(), 'config.ini')
-config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config.ini'))
+config_path = os.path.join(get_base_path(), 'config.ini')
 config.read(config_path)
+keywords_path = os.path.join(get_base_path(), 'keywords.pkl')
 
 # Configuración de Tesseract
 pytesseract.pytesseract.tesseract_cmd = config['Cliente']['ruta']
@@ -33,7 +40,7 @@ def descargar_keywords():
         response = requests.get(url_keywords)
         if response.status_code == 200:
             keywords = response.text.splitlines()  # Convertir el texto en lista de palabras clave
-            with open('keywords.pkl', 'wb') as file:
+            with open(keywords_path, 'wb') as file:
                 pickle.dump(keywords, file)
             print(f"[{datetime.now()}] Archivo de palabras clave descargado exitosamente.")
         else:
@@ -92,7 +99,7 @@ def cargar_keywords():
             print(f"[{datetime.now()}] Archivo de palabras clave no encontrado.")
             return []
         
-        with open('keywords.pkl', 'rb') as file:
+        with open(keywords_path, 'rb') as file:
             return pickle.load(file)
     except Exception as e:
         print(f"[{datetime.now()}] Error al cargar las palabras clave: {str(e)}")

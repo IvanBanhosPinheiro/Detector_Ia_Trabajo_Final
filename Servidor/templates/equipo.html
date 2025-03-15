@@ -3,78 +3,14 @@
 {% block title %}Capturas - {{ equipo_id }}{% endblock %}
 
 {% block customcss %}
-<style>
-.date-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-.date-item {
-    text-decoration: none;
-    color: inherit;
-    position: relative;
-}
-
-.date-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-}
-
-.date-card:hover {
-    transform: translateY(-5px);
-}
-
-.date-image {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 10px;
-}
-
-.date-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.date-count {
-    color: #666;
-    font-size: 0.9em;
-}
-
-.delete-btn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    width: 100%;
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.delete-btn:hover {
-    background: #c82333;
-}
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/equipo.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('capturas.panel_control') }}">Panel de Control</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('capturas_control.panel_control') }}">Panel de Control</a></li>
             <li class="breadcrumb-item active">{{ equipo_id }}</li>
         </ol>
     </nav>
@@ -88,7 +24,7 @@
                 <div class="date-grid">
                     {% for fecha, capturas in fechas.items() %}
                     <div class="date-item" data-fecha="{{ fecha }}">
-                        <a href="{{ url_for('capturas.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}">
+                        <a href="{{ url_for('capturas_view.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}">
                             <div class="date-card">
                                 <img src="{{ url_for('static', filename='img/ordenador.jpg') }}" alt="Carpeta" class="date-image">
                                 <div class="date-name">{{ fecha }}</div>
@@ -110,41 +46,5 @@
 {% endblock %}
 
 {% block customjs %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const fecha = this.getAttribute('data-fecha');
-            
-            if (confirm(`¿Estás seguro de que deseas eliminar todas las capturas del ${fecha}?\nEsta acción no se puede deshacer.`)) {
-                fetch(`{{ url_for('capturas.eliminar_fecha', equipo_id=equipo_id, fecha='') }}${fecha}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        const item = this.closest('.date-item');
-                        item.remove();
-                        
-                        // Verificar si quedan carpetas
-                        const grid = document.querySelector('.date-grid');
-                        if (!grid.children.length) {
-                            const cardBody = document.querySelector('.card-body');
-                            cardBody.innerHTML = '<p class="text-muted">No hay capturas disponibles para este equipo.</p>';
-                        }
-                        
-                        alert('Carpeta eliminada correctamente');
-                    } else {
-                        throw new Error('Error al eliminar la carpeta');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al eliminar la carpeta');
-                });
-            }
-        });
-    });
-});
-</script>
+<script src="{{ url_for('static', filename='js/equipo.js') }}"></script>
 {% endblock %}

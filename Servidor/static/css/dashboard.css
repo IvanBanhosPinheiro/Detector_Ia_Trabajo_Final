@@ -1,27 +1,43 @@
-.card {
-    margin-bottom: 20px;
+.folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.folder-item {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.folder-item:hover {
+    transform: translateY(-5px);
+    text-decoration: none;
+    color: inherit;
+}
+
+.folder-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    background-color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.card-header {
-    background-color: #f8f9fa;
+.folder-image {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.folder-name {
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
-#status {
-    font-size: 1.1em;
+.folder-count {
     color: #666;
-}
-
-#toggleCapture {
-    min-width: 150px;
-}
-
-.table img {
-    max-width: 100px;
-    max-height: 100px;
-}
-
-.table td {
-    vertical-align: middle;
+    font-size: 0.9em;
 }

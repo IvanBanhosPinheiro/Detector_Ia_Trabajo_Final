@@ -17,7 +17,7 @@
           <ul class="navbar-nav">
               {% if current_user.is_authenticated %}
                   <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('capturas.panel_control') }}">Panel de Control</a>
+                      <a class="nav-link" href="{{ url_for('capturas_control.panel_control') }}">Panel de Control</a>
                   </li>
                   {% if current_user.administrador %}
                       <li class="nav-item">

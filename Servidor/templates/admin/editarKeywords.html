@@ -3,15 +3,7 @@
 {% block title %}Editar Keywords{% endblock %}
 
 {% block customcss %}
-<style>
-    #editor {
-        width: 100%;
-        min-height: 400px;
-        font-family: monospace;
-        padding: 10px;
-        white-space: pre;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/keywords.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -22,14 +14,6 @@
             <i class="fas fa-download"></i> Descargar Archivo
         </a>
     </div>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
 
     <div class="card">
         <div class="card-body">

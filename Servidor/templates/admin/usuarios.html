@@ -6,14 +6,6 @@
 <div class="container mt-4">
     <h2>Lista de Usuarios</h2>
     
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
     <div class="mb-3">
         <a href="{{ url_for('auth.registro') }}" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Nuevo Usuario
@@ -59,33 +51,7 @@
 
 {% block customjs %}
 <script>
-    function eliminarUsuario(id, nombre) {
-        if (confirm(`¿Estás seguro de que deseas eliminar al usuario "${nombre}"?`)) {
-            fetch(`/usuario/${id}`, {
-                method: 'DELETE'
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Buscar y eliminar la fila por ID
-                    const filas = document.querySelectorAll('tr');
-                    filas.forEach(fila => {
-                        const celdaId = fila.querySelector('td');
-                        if (celdaId && celdaId.textContent === id.toString()) {
-                            fila.remove();
-                        }
-                    });
-                    alert('Usuario eliminado correctamente');
-                } else {
-                    response.text().then(text => {
-                        alert('Error al eliminar el usuario: ' + text);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al eliminar el usuario');
-            });
-        }
-    }
-    </script>
+    const deleteUrl = "{{ url_for('auth.eliminar_usuario', id=0) }}";
+</script>
+<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
 {% endblock %}
