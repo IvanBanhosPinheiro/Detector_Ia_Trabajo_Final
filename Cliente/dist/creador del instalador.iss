@@ -5,7 +5,7 @@
 #define MyAppVersion "1.0"
 #define MyAppPublisher "IvánB"
 #define MyAppURL "https://github.com/IvanBanhosPinheiro/Detector_Ia_Trabajo_Final"
-#define MyAppExeName "cliente_debug.exe"
+#define MyAppExeName "cliente_hidden.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -47,7 +47,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "G:\Otros ordenadores\Mi PC\2do\GitHub\Detector_Ia_Trabajo_Final\Cliente\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "G:\Otros ordenadores\Mi PC\2do\GitHub\Detector_Ia_Trabajo_Final\tesseract-ocr-w64-setup-5.4.0.20240606.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
-Source: "G:\Otros ordenadores\Mi PC\2do\GitHub\Detector_Ia_Trabajo_Final\Cliente\dist\cliente_hidden.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "G:\Otros ordenadores\Mi PC\2do\GitHub\Detector_Ia_Trabajo_Final\Cliente\dist\cliente_debug.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "G:\Otros ordenadores\Mi PC\2do\GitHub\Detector_Ia_Trabajo_Final\Cliente\dist\config.ini"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
