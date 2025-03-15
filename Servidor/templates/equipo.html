@@ -24,16 +24,21 @@
                 <div class="date-grid">
                     {% for fecha, capturas in fechas.items() %}
                     <div class="date-item" data-fecha="{{ fecha }}">
-                        <a href="{{ url_for('capturas_view.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}">
-                            <div class="date-card">
-                                <img src="{{ url_for('static', filename='img/ordenador.jpg') }}" alt="Carpeta" class="date-image">
-                                <div class="date-name">{{ fecha }}</div>
-                                <div class="date-count">{{ capturas|length }} capturas</div>
-                            </div>
-                        </a>
-                        <button class="delete-btn" data-fecha="{{ fecha }}">
-                            <i class="fas fa-trash">Eliminar carpeta</i> 
-                        </button>
+                        <div class="date-card">
+                            <a href="{{ url_for('capturas_view.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}" class="text-decoration-none text-dark">
+                                <img src="{{ url_for('static', filename='img/ordenador.jpg') }}" 
+                                     alt="Carpeta" 
+                                     class="img-fluid mb-3" 
+                                     style="width: 100px; height: 100px;">
+                                <div class="fw-bold mb-2">{{ fecha }}</div>
+                                <div class="text-muted small">{{ capturas|length }} capturas</div>
+                            </a>
+                            <button class="btn btn-danger w-100 mt-3 d-flex align-items-center justify-content-center gap-2" 
+                                    data-fecha="{{ fecha }}"
+                                    onclick="eliminarFecha(this)">
+                                <i class="fas fa-trash"></i> Eliminar carpeta
+                            </button>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>

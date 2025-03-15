@@ -1,8 +1,8 @@
 .miniatura {
     max-width: 200px;
     max-height: 150px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: var(--bs-border-radius);
+    box-shadow: var(--bs-box-shadow-sm);
     transition: transform 0.2s;
 }
 
@@ -18,44 +18,9 @@
 }
 
 .capture-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.capture-time {
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.capture-text {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 10px;
-    max-height: 100px;
-    overflow-y: auto;
-}
-
-.capture-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    justify-content: center;
-}
-
-.btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-}
-
-.no-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 150px;
-    background-color: #f8f9fa;
-    color: #666;
-    font-size: 0.9em;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    padding: 1rem;
+    background-color: var(--bs-white);
+    box-shadow: var(--bs-box-shadow-sm);
 }

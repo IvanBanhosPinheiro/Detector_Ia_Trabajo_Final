@@ -8,16 +8,16 @@
 
 {% block body %}
 <div class="container mt-4">
-    <h2>Panel de Control</h2>
+    <h2 class="mb-4">Panel de Control</h2>
     
     <!-- Control de Capturas -->
     <div class="card mb-4">
         <div class="card-header">Control de Capturas</div>
-        <div class="card-body">
+        <div class="card-body d-flex align-items-center">
             <button id="toggleCapture" class="btn {% if capture_enabled %}btn-danger{% else %}btn-primary{% endif %}">
                 {% if capture_enabled %}Detener Capturas{% else %}Iniciar Capturas{% endif %}
             </button>
-            <span id="status" class="ml-3">
+            <span id="status" class="ms-3">
                 Estado: {% if capture_enabled %}Activado{% else %}Desactivado{% endif %}
             </span>
         </div>
@@ -30,11 +30,15 @@
             {% if equipos %}
             <div class="folder-grid">
                 {% for equipo_id, fechas in equipos.items() %}
-                <a href="{{ url_for('capturas_view.ver_equipo', equipo_id=equipo_id) }}" class="folder-item">
+                <a href="{{ url_for('capturas_view.ver_equipo', equipo_id=equipo_id) }}" 
+                   class="folder-item text-decoration-none text-dark">
                     <div class="folder-card">
-                        <img src="{{ url_for('static', filename='img/carpeta.jpg') }}" alt="Carpeta" class="folder-image">
-                        <div class="folder-name">{{ equipo_id }}</div>
-                        <div class="folder-count">{{ fechas|length }} días</div>
+                        <img src="{{ url_for('static', filename='img/carpeta.jpg') }}" 
+                             alt="Carpeta" 
+                             class="img-fluid mb-3" 
+                             style="width: 100px; height: 100px;">
+                        <div class="fw-bold mb-2">{{ equipo_id }}</div>
+                        <div class="text-muted small">{{ fechas|length }} días</div>
                     </div>
                 </a>
                 {% endfor %}

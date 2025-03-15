@@ -14,7 +14,7 @@ def get_keywords_path():
 def editar_keywords():
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('capturas_control.panel_control'))
         
     ruta_keywords = get_keywords_path()
     

@@ -25,36 +25,39 @@
                 <div class="capture-grid">
                     {% for captura in capturas %}
                     <div class="capture-card" data-captura-id="{{ captura.id }}">
-                        <div class="capture-time">
+                        <div class="fw-bold mb-2">
                             {{ captura.fecha.strftime('%H:%M:%S') }}
                         </div>
                         {% if captura.imagen %}
-                            <a href="{{ url_for('capturas_view.ver_imagen', dato_id=captura.id) }}" target="_blank">
+                            <a href="{{ url_for('capturas_view.ver_imagen', dato_id=captura.id) }}" 
+                               target="_blank"
+                               class="d-block text-center">
                                 <img src="{{ url_for('capturas_view.miniatura', dato_id=captura.id) }}" 
                                      class="miniatura img-fluid" 
                                      alt="Captura {{ captura.fecha.strftime('%H:%M:%S') }}">
                             </a>
                         {% else %}
-                            <div class="no-image">
-                                No hay imagen disponible
+                            <div class="d-flex align-items-center justify-content-center bg-light text-muted p-3" 
+                                 style="height: 150px;">
+                                <small>No hay imagen disponible</small>
                             </div>
                         {% endif %}
-                        <div class="capture-text">
+                        <div class="small text-muted mt-2">
                             {{ captura.texto[:100] }}...
                         </div>
-                        <div class="capture-actions">
+                        <div class="d-flex gap-2 mt-3 justify-content-center">
                             {% if captura.imagen %}
                             <a href="{{ url_for('capturas_files.descargar_imagen', dato_id=captura.id) }}" 
                                class="btn btn-primary btn-sm">
-                                <i class="fas fa-download">Imagen</i> 
+                                <i class="fas fa-download me-1"></i>Imagen
                             </a>
                             {% endif %}
                             <a href="{{ url_for('capturas_files.descargar_texto', dato_id=captura.id) }}" 
-                               class="btn btn-info btn-sm">
-                                <i class="fas fa-file-alt">Texto</i> 
+                               class="btn btn-info btn-sm text-white">
+                                <i class="fas fa-file-alt me-1"></i>Texto
                             </a>
                             <button class="btn btn-danger btn-sm delete-btn" data-id="{{ captura.id }}">
-                                <i class="fas fa-trash">Eliminar</i> 
+                                <i class="fas fa-trash me-1"></i>Eliminar
                             </button>
                         </div>
                     </div>
