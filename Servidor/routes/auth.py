@@ -4,8 +4,6 @@ from flask_login import login_user, login_required, current_user, logout_user
 # Imports de modelos
 from models.models import Usuario, db, Datos
 
-# Importamos toggle_capture de capturas_control
-from routes.capturas.capturas_control import toggle_capture, capture_enabled
 
 # Creación del blueprint de autenticación
 auth = Blueprint('auth', __name__)
