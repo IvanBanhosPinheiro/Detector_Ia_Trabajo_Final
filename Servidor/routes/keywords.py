@@ -1,13 +1,11 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash, send_file, current_app
+from flask import Blueprint, request, render_template, redirect, url_for, flash, send_file
 from flask_login import login_required, current_user
 import os
 from datetime import datetime
+from routes.ruta_abs import get_data_path
 
 keywords = Blueprint('keywords', __name__)
 
-def get_keywords_path():
-    """Obtiene la ruta del archivo keywords"""
-    return os.path.abspath(os.path.join(current_app.root_path, "data/keywords.txt"))
 
 @keywords.route('/editar_keywords', methods=['GET', 'POST'])
 @login_required
@@ -16,7 +14,7 @@ def editar_keywords():
         flash('No tienes permisos de administrador', 'danger')
         return redirect(url_for('capturas_control.panel_control'))
         
-    ruta_keywords = get_keywords_path()
+    ruta_keywords = get_data_path('keywords.txt')
     
     if request.method == 'POST':
         try:
@@ -47,7 +45,7 @@ def editar_keywords():
 
 @keywords.route('/keywords', methods=['GET'])
 def descargar_keywords():
-    ruta_keywords = get_keywords_path()
+    ruta_keywords = get_data_path('keywords.txt')
     try:
         if not os.path.exists(ruta_keywords):
             print(f"[{datetime.now()}] Error: No se encuentra el archivo keywords en: {ruta_keywords}")

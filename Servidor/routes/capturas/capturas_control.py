@@ -3,7 +3,7 @@ from flask import Blueprint, request, render_template
 from flask_login import login_required, current_user
 
 # Imports de modelos
-from models.models import Equipo, Datos, db
+from models.models import Equipo, Datos, db, Usuario
 
 # Imports de sistema y utilidades
 from datetime import datetime
@@ -17,7 +17,7 @@ profesor_activo = None
 # Ruta del panel de control
 @capturas_control.route('/dashboard')
 @login_required
-def panel_control():    # Cambiado de dashboard a panel_control
+def panel_control():    
     # Obtener datos del usuario actual
     datos = Datos.query.filter_by(id_usuario=current_user.id).order_by(Datos.fecha.desc()).all()
     
@@ -34,9 +34,16 @@ def panel_control():    # Cambiado de dashboard a panel_control
             equipos[equipo_id][fecha_str] = []
             
         equipos[equipo_id][fecha_str].append(dato)
+   # Obtener nombre del usuario activo si existe
+    nombre_usuario = None
+    if profesor_activo:
+        usuario = Usuario.query.get(profesor_activo)
+        if usuario:
+            nombre_usuario = usuario.nombre
     
     return render_template('dashboard.html', 
                          capture_enabled=capture_enabled,
+                         user = nombre_usuario,
                          equipos=equipos)
     
     
@@ -132,3 +139,14 @@ def upload():
         print(f"[{datetime.now()}] Error inesperado: {str(e)}")
         db.session.rollback()
         return 'Error interno del servidor', 500
+
+# Ruta para obtener el estado de las capturas
+@capturas_control.route('/capture_status')
+@login_required
+def get_capture_status():
+    """Obtiene el estado actual de las capturas"""
+    return {
+        'enabled': capture_enabled,
+        'user_id': profesor_activo,
+        'current_user_id': current_user.id
+    }

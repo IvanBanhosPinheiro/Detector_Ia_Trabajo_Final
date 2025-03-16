@@ -25,8 +25,8 @@ def eliminar_fecha(equipo_id, fecha):
         capturas = Datos.query.join(Equipo).filter(
             Datos.id_usuario == current_user.id,
             Equipo.nombre == equipo_id,
-            Datos.fecha >= fecha_dt,
-            Datos.fecha < fecha_siguiente
+            Datos.fecha >= fecha_dt, # Desde 2024-03-16 00:00:00
+            Datos.fecha < fecha_siguiente # Hasta  2024-03-17 00:00:00
         ).all()
         
         # Eliminar todas las capturas

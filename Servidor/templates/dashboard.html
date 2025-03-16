@@ -17,9 +17,18 @@
             <button id="toggleCapture" class="btn {% if capture_enabled %}btn-danger{% else %}btn-primary{% endif %}">
                 {% if capture_enabled %}Detener Capturas{% else %}Iniciar Capturas{% endif %}
             </button>
-            <span id="status" class="ms-3">
-                Estado: {% if capture_enabled %}Activado{% else %}Desactivado{% endif %}
-            </span>
+            <div class="ms-3">
+                <div class="fw-bold">
+                    Estado: <span class="{% if capture_enabled %}text-success{% else %}text-danger{% endif %}">
+                        {% if capture_enabled %}Activado{% else %}Desactivado{% endif %}
+                    </span>
+                </div>
+                {% if capture_enabled %}
+                <div class="small text-muted">
+                    Guardando para: {{ user }}
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -53,8 +62,5 @@
 
 
 {% block customjs %}
-<script>
-    const toggleCaptureUrl = "{{ url_for('capturas_control.toggle_capture') }}";
-</script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

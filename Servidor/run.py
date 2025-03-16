@@ -1,6 +1,9 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template
 from flask_login import LoginManager
-import os, configparser
+import configparser
+
+#Importamos la rutas absolutas
+from routes.ruta_abs import get_data_path
 
 # Importamos los modelos
 from models.models import db, Usuario 
@@ -24,7 +27,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Cargar configuración desde config.ini
-config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/config.ini'))
+config_path = get_data_path('config.ini')
 config = configparser.ConfigParser()
 config.read(config_path)
 port = int(config['Servidor']['puerto'])

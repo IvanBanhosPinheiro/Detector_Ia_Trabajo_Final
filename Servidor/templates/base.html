@@ -24,9 +24,18 @@
 
     <!-- Contenedor de notificaciones -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
-
-    <script src="{{ url_for('static', filename='lib/bootstrap-5.0.2-dist/js/jquery-3.5.1.min.js') }}"></script>
+    <!-- JavaScript principal -->
     <script src="{{ url_for('static', filename='lib/bootstrap-5.0.2-dist/js/bootstrap.min.js') }}"></script>
+    
+    <!-- URLs globales para JavaScript -->
+    <script>
+        const toggleCaptureUrl = "{{ url_for('capturas_control.toggle_capture') }}";
+        const captureStatusUrl = "{{ url_for('capturas_control.get_capture_status') }}";
+        const logoutUrl = "{{ url_for('auth.logout') }}";
+    </script>
+
+    <!-- Scripts globales de la aplicación -->
+    <script src="{{ url_for('static', filename='js/logout.js') }}"></script>
     <script src="{{ url_for('static', filename='js/notificaciones.js') }}"></script>
    
     {% with messages = get_flashed_messages(with_categories=true) %}
