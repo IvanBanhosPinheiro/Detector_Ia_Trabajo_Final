@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, current_app
 # Imports de Flask-Login
 from flask_login import login_required, current_user
 
@@ -10,9 +10,12 @@ from datetime import datetime
 
 
 capturas_control = Blueprint('capturas_control', __name__)
+
 # Variables globales para control de capturas
-capture_enabled = False
-profesor_activo = None
+capture_enabled = False  # Estado de captura
+profesor_activo = None  # ID del profesor actualmente capturando
+modo_automatico = True  # Control por horario (True) o manual (False)
+
 
 # Ruta del panel de control
 @capturas_control.route('/dashboard')
@@ -43,6 +46,7 @@ def panel_control():
     
     return render_template('dashboard.html', 
                          capture_enabled=capture_enabled,
+                         modo_automatico=modo_automatico,
                          user = nombre_usuario,
                          equipos=equipos)
     
@@ -51,16 +55,39 @@ def panel_control():
 @capturas_control.route('/toggle_capture', methods=['POST'])
 @login_required
 def toggle_capture():
-    global capture_enabled, profesor_activo
-    print(f"DEBUG - Estado anterior: capture_enabled={capture_enabled}, profesor_activo={profesor_activo}")
+    """Alterna el estado de las capturas"""
+    estado = get_estado_sistema()
     
-    capture_enabled = not capture_enabled
-    profesor_activo = current_user.id if capture_enabled else None
+    if estado['modo_automatico']:
+        # Cambiar a modo manual
+        set_capture_status(True, current_user.id, modo=False)
+    else:
+        # Alternar estado en modo manual
+        nuevo_estado = not estado['enabled']
+        set_capture_status(
+            enabled=nuevo_estado,
+            user_id=current_user.id if nuevo_estado else None
+        )
     
-    print(f"DEBUG - Nuevo estado: capture_enabled={capture_enabled}, profesor_activo={profesor_activo}")
-    
-    return {'status': 'enabled' if capture_enabled else 'disabled'}
+    return get_capture_status()
 
+# Ruta para cambiar el modo de capturas
+@capturas_control.route('/toggle_modo', methods=['POST'])
+@login_required
+def toggle_modo():
+    """Alterna entre modo automático y manual"""
+    estado = get_estado_sistema()
+    nuevo_modo = not estado['modo_automatico']
+    
+    if nuevo_modo:  # Cambio a automático
+        set_capture_status(False, None, modo=True)
+        # Despertar al hilo para que compruebe horarios
+        if hasattr(current_app, 'horario_checker'):
+            current_app.horario_checker.despertar()
+    else:  # Cambio a manual
+        set_capture_status(True, current_user.id, modo=False)
+    
+    return get_capture_status()
 
 # Ruta para recibir capturas
 @capturas_control.route('/uploads', methods=['POST'])
@@ -147,6 +174,23 @@ def get_capture_status():
     """Obtiene el estado actual de las capturas"""
     return {
         'enabled': capture_enabled,
+        'modo_automatico': modo_automatico,
         'user_id': profesor_activo,
         'current_user_id': current_user.id
     }
+    
+def get_estado_sistema():
+    """Obtiene el estado del sistema sin necesitar contexto de request"""
+    return {
+        'enabled': capture_enabled,
+        'modo_automatico': modo_automatico,
+        'user_id': profesor_activo
+    }
+
+def set_capture_status(enabled, user_id, modo=None):
+    """Actualiza el estado de las capturas"""
+    global capture_enabled, profesor_activo, modo_automatico
+    capture_enabled = enabled
+    profesor_activo = user_id
+    if modo is not None:
+        modo_automatico = modo

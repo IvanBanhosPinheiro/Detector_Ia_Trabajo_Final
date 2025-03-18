@@ -1,5 +1,5 @@
 # Imports necesarios de Flask y sus extensiones
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for, flash, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
 # Imports de modelos
 from models.models import Usuario, db, Datos
@@ -11,6 +11,10 @@ auth = Blueprint('auth', __name__)
 # Ruta para el login de usuarios
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    # Si ya está autenticado, redirigir al panel
+    if current_user.is_authenticated:
+        return redirect(url_for('capturas_control.panel_control'))
+
     # Si es una petición POST, procesar el formulario
     if request.method == 'POST':
         nombre = request.form['usuario']
@@ -24,10 +28,12 @@ def login():
             login_user(usuario)
             flash('Has iniciado sesión correctamente', 'success')
             return redirect(url_for('capturas_control.panel_control'))
-        else:
-            flash('Usuario o contraseña incorrectos', 'danger')
+        
+        # Credenciales incorrectas
+        flash('Usuario o contraseña incorrectos', 'danger')
+        return render_template('auth/login.html'), 401
     
-    # Si es GET o falló el login, mostrar formulario        
+    # Si es GET, mostrar formulario
     return render_template('auth/login.html')
 
 # Ruta para registrar un nuevo usuario
@@ -126,3 +132,30 @@ def eliminar_usuario(id):
         db.session.rollback()
         print(f"Error al eliminar usuario: {str(e)}")
         return 'Error al eliminar usuario', 500
+
+# Ruta para cambiar la contraseña del usuario actual
+@auth.route('/cambiar_password_admin/<int:id>', methods=['POST'])
+@login_required
+def cambiar_password_admin(id):
+    """Cambia la contraseña de un usuario (solo admin)"""
+    if not current_user.administrador:
+        return jsonify({'error': 'Solo los administradores pueden cambiar contraseñas'}), 403
+
+    # No permitir cambiar contraseña de administradores
+    usuario = Usuario.query.get_or_404(id)
+    if usuario.administrador:
+        return jsonify({'error': 'No se puede cambiar la contraseña de un administrador'}), 400
+
+    data = request.get_json()
+    new_password = data.get('new_password')
+
+    if not new_password:
+        return jsonify({'error': 'La contraseña no puede estar vacía'}), 400
+
+    try:
+        usuario.set_password(new_password)
+        db.session.commit()
+        return jsonify({'message': f'Contraseña actualizada correctamente para {usuario.nombre}'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Error al actualizar la contraseña'}), 500

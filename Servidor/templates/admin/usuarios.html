@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             {% for usuario in usuarios %}
-            <tr>
+            <tr data-user-id="{{ usuario.id }}">
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.nombre }}</td>
                 <td>
@@ -35,11 +35,20 @@
                 </td>
                 <td>
                     {% if not usuario.administrador %}
-                        <button class="btn btn-sm btn-danger" 
-                                onclick="eliminarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}')"
-                                type="button">
-                            Eliminar
-                        </button>
+                        <div class="d-flex gap-2"> <!-- Cambiado de btn-group a d-flex con gap -->
+                            <button class="btn btn-sm btn-secondary" 
+                                    onclick="cambiarPassword('{{ usuario.id }}', '{{ usuario.nombre }}')"
+                                    type="button">
+                                <i class="fas fa-key"></i>
+                                <span class="ms-1">Cambiar Contraseña</span>
+                            </button>
+                            <button class="btn btn-sm btn-danger" 
+                                    onclick="eliminarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}')"
+                                    type="button">
+                                <i class="fas fa-trash"></i>
+                                <span class="ms-1">Eliminar</span>
+                            </button>
+                        </div>
                     {% endif %}
                 </td>
             </tr>
@@ -47,11 +56,46 @@
         </tbody>
     </table>
 </div>
+
+<!-- Modal Cambiar Contraseña -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Cambiar Contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Cambiar contraseña para: <strong id="userName"></strong></p>
+                <form id="passwordForm">
+                    <input type="hidden" id="userId">
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="savePassword">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block customjs %}
 <script>
     const deleteUrl = "{{ url_for('auth.eliminar_usuario', id=0) }}";
+    const changePasswordUrl = "{{ url_for('auth.cambiar_password_admin', id=0) }}";
 </script>
 <script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
 {% endblock %}

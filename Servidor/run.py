@@ -15,7 +15,11 @@ from routes.keywords import keywords
 from routes.capturas.capturas_control import capturas_control
 from routes.capturas.capturas_view import capturas_view
 from routes.capturas.capturas_files import capturas_files
+from routes.horarios import horarios
 from routes.error import error
+
+# Importamos el hilo de comprobación de horarios
+from background_process.horario_checker import HorarioChecker
 
 
 # Inicialización de Flask
@@ -54,6 +58,7 @@ app.register_blueprint(keywords)
 app.register_blueprint(capturas_control)
 app.register_blueprint(capturas_files)
 app.register_blueprint(capturas_view)
+app.register_blueprint(horarios)
 app.register_blueprint(error)
 
 # Punto de entrada principal
@@ -75,5 +80,10 @@ if __name__ == '__main__':
             print(f'Usuario: {usuario}')
             print('Contraseña: ********')
     
-    app.register_error_handler(404, paginaNoEncontrada)
+    app.register_error_handler(404, paginaNoEncontrada)   
+    # Iniciar proceso de comprobación de horarios
+    horario_checker = HorarioChecker(app)
+    app.horario_checker = horario_checker  # Guardar referencia al hilo en la aplicación
+    horario_checker.start()
+    
     app.run(host='0.0.0.0', port=port)

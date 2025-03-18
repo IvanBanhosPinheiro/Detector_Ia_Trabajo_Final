@@ -5,7 +5,7 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
-class Usuario(UserMixin, db.Model):  # Añadir UserMixin aquí
+class Usuario(UserMixin, db.Model): # UserMixin agrega métodos necesarios para Flask-Login
     __tablename__ = 'usuarios'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +13,7 @@ class Usuario(UserMixin, db.Model):  # Añadir UserMixin aquí
     password_hash = db.Column(db.String(128))
     administrador = db.Column(db.Boolean, default=False)
     datos = db.relationship('Datos', backref='usuario', lazy=True)
+    horarios = db.relationship('Horario', backref='usuario', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -36,3 +37,12 @@ class Datos(db.Model):
     fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     imagen = db.Column(db.LargeBinary)  # Para guardar la imagen directamente
     texto = db.Column(db.Text)
+    
+class Horario(db.Model):
+    __tablename__ = 'horarios'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    hora_inicio = db.Column(db.Time, nullable=False)
+    hora_fin = db.Column(db.Time, nullable=False)
+    dia = db.Column(db.Integer, nullable=False)  # 0=Lunes, 6=Domingo
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)

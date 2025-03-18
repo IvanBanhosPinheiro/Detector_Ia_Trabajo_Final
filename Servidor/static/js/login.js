@@ -1,34 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Mantener el estilo del body
-    const body = document.querySelector('body');
-    body.classList.add('text-center');
-
-    // Manejar el formulario de login
     const loginForm = document.querySelector('form');
+    const submitButton = loginForm?.querySelector('button[type="submit"]');
 
     if (loginForm) {
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            try {
-                const formData = new FormData(loginForm);
-                const response = await fetch(loginForm.action, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    // Pequeña pausa antes de redireccionar
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    window.location.href = '/dashboard';
-                } else {
-                    const data = await response.json();
-                    showNotification(data.error || 'Error al iniciar sesión', 'danger');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showNotification('Error al procesar la solicitud', 'danger');
+        loginForm.addEventListener('submit', function(e) {
+            // Deshabilitar botón y mostrar spinner durante el proceso
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Iniciando sesión...';
+                
+                // Restaurar el botón después de un tiempo máximo
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Iniciar sesión';
+                }, 3000);
             }
+
+            // Permitir que el formulario se envíe normalmente
+            return true;
         });
     }
 });

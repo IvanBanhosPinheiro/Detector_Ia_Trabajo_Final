@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
 
             try {
+                // Obtener estado actual
                 const response = await fetch(captureStatusUrl, {
                     method: 'GET',
                     headers: {
@@ -20,9 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const status = await response.json();
                 console.log('Estado capturas:', status);
 
-                if (status.enabled && status.current_user_id === status.user_id) {
-                    console.log('Desactivando capturas...');
-                    await fetch(toggleCaptureUrl, {
+                // Si el usuario actual tiene el control, activar modo automático
+                if (!status.modo_automatico && status.current_user_id === status.user_id) {
+                    console.log('Activando modo automático...');
+                    await fetch(toggleModoUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

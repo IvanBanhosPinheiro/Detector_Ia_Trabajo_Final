@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Crear directorio para la base de datos SQLite
-RUN mkdir -p instance
+# RUN mkdir -p instance
 
 # Puerto que expondrá el contenedor
 EXPOSE 5000

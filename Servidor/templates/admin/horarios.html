@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Horarios{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2>Gestión de Horarios</h2>
+
+    <!-- Formulario para añadir horario -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Añadir Nuevo Horario
+        </div>
+        <div class="card-body">
+            <form id="horarioForm" method="POST">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="usuario" class="form-label">Usuario</label>
+                            <select class="form-select" id="usuario" name="usuario" required>
+                                <option value="">Seleccionar usuario</option>
+                                {% for usuario in usuarios %}
+                                    {% if not usuario.administrador %}
+                                        <option value="{{ usuario.id }}">{{ usuario.nombre }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="dia" class="form-label">Día</label>
+                            <select class="form-select" id="dia" name="dia" required>
+                                <option value="0">Lunes</option>
+                                <option value="1">Martes</option>
+                                <option value="2">Miércoles</option>
+                                <option value="3">Jueves</option>
+                                <option value="4">Viernes</option>
+                                <option value="5">Sábado</option>
+                                <option value="6">Domingo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="hora_inicio" class="form-label">Hora inicio</label>
+                            <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="hora_fin" class="form-label">Hora fin</label>
+                            <input type="time" class="form-control" id="hora_fin" name="hora_fin" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary mb-3">Añadir Horario</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+ <!-- Tabs de días -->
+ <div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="diasTab" role="tablist">
+            {% set dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] %}
+            {% for dia in dias %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if loop.index0 == 0 %}active{% endif %}" 
+                            id="dia{{ loop.index0 }}-tab" 
+                            data-bs-toggle="tab" 
+                            data-bs-target="#dia{{ loop.index0 }}" 
+                            type="button" 
+                            role="tab">
+                        {{ dia }}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="diasTabContent">
+            {% for dia_idx in range(7) %}
+                <div class="tab-pane fade {% if dia_idx == 0 %}show active{% endif %}" 
+                     id="dia{{ dia_idx }}" 
+                     role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Hora inicio</th>
+                                    <th>Hora fin</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set horarios_dia = horarios | selectattr('dia', 'equalto', dia_idx) | sort(attribute='hora_inicio') %}
+                                {% for horario in horarios_dia %}
+                                <tr>
+                                    <td>{{ horario.usuario.nombre }}</td>
+                                    <td>{{ horario.hora_inicio.strftime('%H:%M') }}</td>
+                                    <td>{{ horario.hora_fin.strftime('%H:%M') }}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" 
+                                                data-horario-id="{{ horario.id }}" 
+                                                onclick="eliminarHorario('{{ horario.id }}')">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        No hay horarios para este día
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block customjs %}
+<script>
+    const eliminarHorarioUrl = "{{ url_for('horarios.eliminar_horario', id=0) }}";
+</script>
+<script src="{{ url_for('static', filename='js/horarios.js') }}"></script>
+{% endblock %}
