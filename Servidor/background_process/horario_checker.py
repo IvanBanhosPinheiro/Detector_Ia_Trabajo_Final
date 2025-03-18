@@ -26,7 +26,6 @@ class HorarioChecker(threading.Thread):
 
     def comprobar_horarios(self):
         """Comprueba qué profesor debe estar activo según el horario actual"""
-        # Obtener estado actual del sistema usando la función sin contexto
         estado = get_estado_sistema()
         
         if not estado['modo_automatico']:
@@ -58,6 +57,12 @@ class HorarioChecker(threading.Thread):
             else:
                 usuario = Usuario.query.get(estado['user_id'])
                 print(f"Profesor {usuario.nombre if usuario else 'desconocido'} ya activo")
+                
+            # Verificar si estamos cerca del final del horario
+            tiempo_restante = datetime.combine(ahora.date(), horario_activo.hora_fin) - ahora
+            if tiempo_restante.total_seconds() < 60:  # Si falta menos de 1 minuto
+                set_capture_status(False, None)
+                print(f"Desactivando capturas por fin de horario de {usuario.nombre}")
         else:
             print("No se encontró horario activo para el momento actual")
             if estado['enabled']:
@@ -67,10 +72,14 @@ class HorarioChecker(threading.Thread):
     def esperar_siguiente(self):
         """Calcula el tiempo hasta la próxima comprobación necesaria"""
         ahora = datetime.now()
-        
-        # Obtener próximo horario
         dia_actual = ahora.weekday()
         hora_actual = ahora.time()
+
+        # Verificar si hay un horario activo actual
+        horario_actual = Horario.query.filter_by(dia=dia_actual).filter(
+            Horario.hora_inicio <= hora_actual,
+            Horario.hora_fin >= hora_actual
+        ).first()
 
         # Buscar próximo horario (hoy o en días siguientes)
         proximo_horario = None
@@ -92,6 +101,15 @@ class HorarioChecker(threading.Thread):
             if proximo_horario:
                 break
 
+        # Calcular tiempos de espera
+        tiempo_espera = None
+
+        if horario_actual:
+            # Calcular tiempo hasta el final del horario actual
+            fin_actual = datetime.combine(ahora.date(), horario_actual.hora_fin)
+            tiempo_hasta_fin = (fin_actual - ahora).total_seconds()
+            tiempo_espera = tiempo_hasta_fin
+
         if proximo_horario:
             # Calcular tiempo hasta el próximo horario
             dias_espera = (proximo_horario.dia - dia_actual) % 7
@@ -99,14 +117,19 @@ class HorarioChecker(threading.Thread):
                 ahora.date() + timedelta(days=dias_espera),
                 proximo_horario.hora_inicio
             )
+            tiempo_hasta_siguiente = (proxima_fecha - ahora).total_seconds()
             
-            segundos_espera = (proxima_fecha - ahora).total_seconds()
-            print(f"Próxima comprobación en {segundos_espera/3600:.2f} horas")
+            # Usar el tiempo más corto entre fin actual y próximo inicio
+            if tiempo_espera is None or tiempo_hasta_siguiente < tiempo_espera:
+                tiempo_espera = tiempo_hasta_siguiente
+
+        if tiempo_espera is not None:
+            print(f"Próxima comprobación en {tiempo_espera/3600:.2f} horas")
             # Esperar hasta el tiempo calculado o hasta que nos despierten
-            self.wakeup_event.wait(timeout=max(1, segundos_espera))
+            self.wakeup_event.wait(timeout=max(1, tiempo_espera))
             self.wakeup_event.clear()  # Resetear el evento
         else:
-            # Si no hay horarios, esperar 1 hora o hasta que nos despierten
+            # Si no hay horarios, esperar 1 hora
             print("No hay horarios futuros, esperando 1 hora")
             self.wakeup_event.wait(timeout=3600)
             self.wakeup_event.clear()  # Resetear el evento
