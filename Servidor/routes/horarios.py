@@ -1,3 +1,16 @@
+"""
+Módulo de gestión de horarios.
+
+Este Blueprint maneja las operaciones relacionadas con los horarios de profesores,
+incluyendo la creación, visualización y eliminación de horarios para la detección
+automática de actividades en función del tiempo.
+
+Las operaciones principales incluyen:
+- Listado de horarios existentes
+- Creación de nuevos horarios
+- Eliminación de horarios
+- Validación de superposiciones y conflictos
+"""
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
 from models.models import db, Usuario, Horario
@@ -8,7 +21,20 @@ horarios = Blueprint('horarios', __name__)
 @horarios.route("/horarios")
 @login_required
 def lista_horarios():
-    """Vista para listar y gestionar horarios"""
+    """
+    Vista para listar y gestionar horarios.
+    
+    Muestra una página con todos los horarios configurados y un formulario
+    para añadir nuevos horarios. Solo accesible para administradores.
+    
+    Returns:
+        render_template: Página de gestión de horarios
+        redirect: Redirección a página principal si no es administrador
+        
+    Note:
+        Requiere autenticación
+        Solo usuarios administradores pueden acceder a esta función
+    """
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
         return redirect(url_for('index'))
@@ -20,7 +46,30 @@ def lista_horarios():
 @horarios.route("/horarios", methods=['POST'])
 @login_required
 def crear_horario():
-    """Añadir nuevo horario"""
+    """
+    Añade un nuevo horario al sistema.
+    
+    Procesa el formulario de creación de horario y valida que no haya
+    superposiciones con otros horarios existentes para el mismo día.
+    
+    Request Form:
+        usuario (str): ID del usuario asociado al horario
+        dia (int): Día de la semana (0=Lunes, 6=Domingo)
+        hora_inicio (str): Hora de inicio en formato HH:MM
+        hora_fin (str): Hora de fin en formato HH:MM
+    
+    Returns:
+        JSON: Mensaje de éxito o error
+        
+    Status Codes:
+        201: Horario creado correctamente
+        400: Error de validación (horario superpuesto o horas inválidas)
+        403: Usuario no autorizado
+        500: Error del servidor
+        
+    Note:
+        Solo usuarios administradores pueden crear horarios
+    """
     if not current_user.administrador:
         return jsonify({'error': 'No tienes permisos de administrador'}), 403
 
@@ -73,7 +122,27 @@ def crear_horario():
 @horarios.route("/horario/<int:id>", methods=['DELETE'])
 @login_required
 def eliminar_horario(id):
-    """Eliminar un horario"""
+    """
+    Elimina un horario existente.
+    
+    Busca el horario por su ID y lo elimina de la base de datos.
+    
+    Args:
+        id (int): ID del horario a eliminar
+        
+    Returns:
+        str: Respuesta vacía con código 204 si se eliminó correctamente
+        JSON: Mensaje de error en caso contrario
+        
+    Status Codes:
+        204: Horario eliminado correctamente
+        403: Usuario no autorizado
+        404: Horario no encontrado
+        500: Error del servidor
+        
+    Note:
+        Solo usuarios administradores pueden eliminar horarios
+    """
     if not current_user.administrador:
         return jsonify({'error': 'No tienes permisos de administrador'}), 403
 

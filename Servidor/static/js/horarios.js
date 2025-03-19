@@ -1,6 +1,26 @@
+/**
+ * Gestión de horarios de profesores.
+ * Maneja la creación y eliminación de horarios.
+ * 
+ * @module horarios
+ */
+
+/**
+ * Inicializa el formulario de horarios y sus manejadores de eventos.
+ * 
+ * @listens DOMContentLoaded
+ */
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('horarioForm');
     
+    /**
+     * Maneja el envío del formulario de horarios.
+     * Realiza una petición POST al servidor y muestra notificaciones.
+     * 
+     * @param {Event} e - Evento del formulario
+     * @fires showNotification
+     * @listens submit
+     */
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -27,6 +47,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+/**
+ * Elimina un horario específico.
+ * Muestra confirmación, realiza la eliminación y actualiza la interfaz.
+ * 
+ * @param {string} id - ID del horario a eliminar
+ * @fires showNotification
+ * @fires confirm
+ * @returns {Promise<void>}
+ * 
+ * @example
+ * eliminarHorario('123');
+ */
 async function eliminarHorario(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este horario?')) {
         try {

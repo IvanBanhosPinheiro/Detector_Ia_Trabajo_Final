@@ -1,44 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Metadatos básicos para compatibilidad y responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Título dinámico que será reemplazado por cada página -->
     <title>{% block title %}{% endblock %}</title>
 
-    <!--Importar logo-->
+    <!-- Favicon de la aplicación -->
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/flask.png')}}">
-    <!--Importamos boostrap para usar sus estilos-->
+    
+    <!-- Framework CSS Bootstrap 5 para estilos y componentes -->
     <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-5.0.2-dist/css/bootstrap.min.css') }}">
-
+    
+    <!-- Bloque para CSS personalizado que cada página puede sobrescribir -->
     {% block customcss %}
     {% endblock %}
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/fontawesome/css/all.min.css') }}">
 </head>
 <body>
-    
+    <!-- Barra de navegación - incluida desde un archivo separado -->
     {% block navbar %}
         {% include "./nav.html" %}
     {% endblock %}
 
+    <!-- Contenido principal - será reemplazado por cada página -->
     {% block body %}
     {% endblock %}
 
-    <!-- Contenedor de notificaciones -->
+    <!-- Contenedor para notificaciones toast - posicionado en la esquina inferior derecha -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
-    <!-- JavaScript principal -->
-    <script src="{{ url_for('static', filename='lib/bootstrap-5.0.2-dist/js/bootstrap.min.js') }}"></script>
     
-    <!-- URLs globales para JavaScript -->
+    <!-- JavaScript de Bootstrap para componentes interactivos -->
+    <script src="{{ url_for('static', filename='lib/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- URLs globales para JavaScript - accesibles en todas las páginas -->
     <script>
         const toggleCaptureUrl = "{{ url_for('capturas_control.toggle_capture') }}";
         const captureStatusUrl = "{{ url_for('capturas_control.get_capture_status') }}";
-        const logoutUrl = "{{ url_for('auth.logout') }}";
         const toggleModoUrl = "{{ url_for('capturas_control.toggle_modo') }}";
+        const logoutUrl = "{{ url_for('auth.logout') }}";
     </script>
 
-    <!-- Scripts globales de la aplicación -->
-    <script src="{{ url_for('static', filename='js/logout.js') }}"></script>
+    <!-- Sistema de notificaciones -->
     <script src="{{ url_for('static', filename='js/notificaciones.js') }}"></script>
-   
+    
+    <!-- JavaScript para la funcionalidad de logout -->
+    {% if current_user.is_authenticated %}
+    <script src="{{ url_for('static', filename='js/logout.js') }}"></script>
+    {% endif %}
+
+    <!-- Procesar mensajes flash de Flask y convertirlos en notificaciones -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -46,7 +61,8 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-
+    
+    <!-- Bloque para JavaScript personalizado que cada página puede incluir -->
     {% block customjs %}
     {% endblock %}
 </body>

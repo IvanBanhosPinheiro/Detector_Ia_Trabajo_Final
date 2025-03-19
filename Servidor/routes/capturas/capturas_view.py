@@ -1,3 +1,15 @@
+"""
+Módulo de visualización de capturas.
+
+Este Blueprint maneja las operaciones de visualización de capturas guardadas en el sistema,
+proporcionando diferentes vistas: equipos, fechas, miniaturas e imágenes completas.
+
+Las operaciones principales incluyen:
+- Visualización de equipos con capturas
+- Visualización de capturas por fecha
+- Generación de miniaturas de imágenes
+- Visualización de imágenes completas
+"""
 from flask import Blueprint, render_template, redirect, url_for, flash, send_file, abort
 # Imports de Flask-Login
 from flask_login import login_required, current_user
@@ -17,6 +29,22 @@ capturas_view = Blueprint('capturas_view', __name__)
 @capturas_view.route('/equipo/<equipo_id>')
 @login_required
 def ver_equipo(equipo_id):
+    """
+    Muestra las capturas agrupadas por fecha para un equipo específico.
+    
+    Recupera todas las capturas asociadas al usuario actual para el equipo
+    especificado y las organiza por fechas en formato YYYY-MM-DD.
+    
+    Args:
+        equipo_id (str): Identificador único del equipo
+        
+    Returns:
+        render_template: Página con las capturas agrupadas por fecha
+        
+    Note:
+        Requiere autenticación previa
+        Solo muestra capturas propiedad del usuario actual
+    """
     datos = Datos.query.join(Equipo).filter(
         Datos.id_usuario == current_user.id,
         Equipo.nombre == equipo_id
@@ -38,6 +66,26 @@ def ver_equipo(equipo_id):
 @capturas_view.route('/equipo/<equipo_id>/fecha/<fecha>')
 @login_required
 def ver_fecha(equipo_id, fecha):
+    """
+    Muestra las capturas de un equipo en una fecha específica.
+    
+    Filtra las capturas por equipo y rango de 24 horas para la fecha indicada.
+    
+    Args:
+        equipo_id (str): Identificador único del equipo
+        fecha (str): Fecha en formato YYYY-MM-DD
+        
+    Returns:
+        render_template: Página con las capturas de la fecha seleccionada
+        redirect: Redirección a la vista del equipo si la fecha es inválida
+        
+    Raises:
+        ValueError: Si el formato de fecha es inválido
+        
+    Note:
+        Requiere autenticación previa
+        Solo muestra capturas propiedad del usuario actual
+    """
     try:
         print(f"Fecha recibida: {fecha}")
         # Convertir la fecha de string a datetime
@@ -66,6 +114,29 @@ def ver_fecha(equipo_id, fecha):
 @capturas_view.route('/miniatura/<int:dato_id>')
 @login_required
 def miniatura(dato_id):
+    """
+    Genera y devuelve una miniatura de la imagen capturada.
+    
+    Crea una versión redimensionada (250x150) de la imagen original para 
+    mostrarla como vista previa en la interfaz de usuario.
+    
+    Args:
+        dato_id (int): ID de la captura en la base de datos
+        
+    Returns:
+        send_file: Imagen PNG redimensionada
+        abort: Código de error HTTP si hay problemas
+        
+    Status Codes:
+        200: Miniatura generada correctamente
+        403: Usuario no autorizado
+        404: Captura no encontrada
+        500: Error al generar la miniatura
+        
+    Note:
+        Requiere autenticación previa
+        Verifica que la captura pertenezca al usuario actual
+    """
     dato = Datos.query.get_or_404(dato_id)
     
     # Verificar que el usuario tiene acceso a esta captura
@@ -94,6 +165,27 @@ def miniatura(dato_id):
 @capturas_view.route('/ver_imagen/<int:dato_id>')
 @login_required
 def ver_imagen(dato_id):
+    """
+    Muestra la imagen capturada en tamaño completo.
+    
+    Recupera y envía la imagen original almacenada en la base de datos.
+    
+    Args:
+        dato_id (int): ID de la captura en la base de datos
+        
+    Returns:
+        send_file: Imagen PNG en tamaño original
+        str: Mensaje de error con código HTTP apropiado
+        
+    Status Codes:
+        200: Imagen enviada correctamente
+        403: Usuario no autorizado
+        404: Captura no encontrada
+        
+    Note:
+        Requiere autenticación previa
+        Verifica que la captura pertenezca al usuario actual
+    """
     dato = Datos.query.get_or_404(dato_id)
     # Verificar que el usuario actual sea el propietario
     if dato.id_usuario != current_user.id:

@@ -1,12 +1,21 @@
+<!-- Plantilla para la página de error 404 (Página no encontrada) -->
+<!-- Extiende la plantilla base manteniendo la estructura del sitio -->
 {% extends "base.html" %}
 
+<!-- Define el título específico para esta página de error -->
 {% block title %}Página no encontrada{% endblock %}
 
+<!-- Contenido principal de la página de error -->
 {% block body %}
+<!-- Contenedor centrado con margen superior -->
 <div class="container mt-5 text-center">
+    <!-- Código de error en formato grande -->
     <h1 class="display-1">404</h1>
+    <!-- Título descriptivo del error -->
     <h2>Página no encontrada</h2>
+    <!-- Mensaje explicativo para el usuario -->
     <p class="lead">Lo sentimos, la página que buscas no existe.</p>
+    <!-- Botón de retorno a la página principal -->
     <a href="{{ url_for('index') }}" class="btn btn-primary">Volver al inicio</a>
 </div>
 {% endblock %}

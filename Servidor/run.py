@@ -1,3 +1,12 @@
+"""
+Módulo principal de la aplicación Flask.
+Configura y arranca el servidor web con todas sus funcionalidades.
+
+Imports:
+    flask: Framework web utilizado para crear la aplicación
+    flask_login: Gestión de autenticación de usuarios
+    configparser: Lectura de archivos de configuración
+"""
 from flask import Flask, render_template
 from flask_login import LoginManager
 import configparser
@@ -25,6 +34,12 @@ from background_process.horario_checker import HorarioChecker
 # Inicialización de Flask
 app = Flask(__name__)
 
+"""
+Configuración principal de Flask:
+    SECRET_KEY: Clave secreta para sesiones
+    SQLALCHEMY_DATABASE_URI: Ubicación de la base de datos SQLite
+    SQLALCHEMY_TRACK_MODIFICATIONS: Desactivar tracking de modificaciones
+"""
 # Configuración de la aplicación
 app.config['SECRET_KEY'] = '3-H^fJTYrwi4hjs'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -52,7 +67,17 @@ def load_user(user_id):
 def index():
     return render_template("index.html")
 
-
+"""
+Registro de Blueprints:
+    auth: Gestión de autenticación y usuarios
+    error: Manejo de errores HTTP
+    keywords: Gestión de palabras clave
+    capturas_*: Módulos relacionados con la captura de pantalla
+        - control: Activación/desactivación de capturas
+        - view: Visualización de capturas
+        - files: Gestión de archivos de capturas
+    horarios: Gestión de horarios de profesores
+"""
 app.register_blueprint(auth)
 app.register_blueprint(keywords)
 app.register_blueprint(capturas_control)

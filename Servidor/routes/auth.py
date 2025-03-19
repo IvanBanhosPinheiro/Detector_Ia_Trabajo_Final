@@ -1,3 +1,21 @@
+"""
+Módulo de autenticación y gestión de usuarios.
+
+Este Blueprint maneja todas las operaciones relacionadas con la autenticación
+y administración de usuarios, incluyendo inicio de sesión, registro de nuevos
+usuarios, cierre de sesión, y gestión de credenciales.
+
+Las operaciones principales incluyen:
+- Login de usuarios
+- Registro de nuevos profesores (solo administradores)
+- Logout
+- Listado de usuarios (solo administradores)
+- Eliminación de usuarios (solo administradores)
+- Cambio de contraseñas (solo administradores)
+
+Todas las operaciones administrativas están restringidas a usuarios
+con privilegios de administrador.
+"""
 # Imports necesarios de Flask y sus extensiones
 from flask import Blueprint, request, render_template, redirect, url_for, flash, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
@@ -11,6 +29,32 @@ auth = Blueprint('auth', __name__)
 # Ruta para el login de usuarios
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Maneja la autenticación de usuarios.
+    
+    Procesa las credenciales enviadas por el usuario y establece la sesión
+    si son correctas. Redirige a usuarios ya autenticados.
+    
+    Methods:
+        GET: Muestra el formulario de inicio de sesión
+        POST: Procesa las credenciales enviadas
+    
+    Form Data:
+        usuario: Nombre de usuario
+        password: Contraseña del usuario
+        
+    Returns:
+        GET: Template del formulario de login
+        POST (éxito): Redirección al panel de control con mensaje de éxito
+        POST (error): Template de login con mensaje de error y código 401
+        
+    Example:
+        >>> login()
+        # GET: Muestra formulario
+        # POST correcto: Redirige al panel
+        # POST incorrecto: Mensaje de error
+    """
+    
     # Si ya está autenticado, redirigir al panel
     if current_user.is_authenticated:
         return redirect(url_for('capturas_control.panel_control'))
@@ -40,6 +84,33 @@ def login():
 @auth.route("/registro", methods=['GET', 'POST'])
 @login_required
 def registro():
+    """
+    Maneja el registro de nuevos usuarios (profesores).
+    
+    Crea nuevos usuarios con rol de profesor (no administrador).
+    Solo accesible para usuarios con privilegios de administrador.
+    
+    Methods:
+        GET: Muestra el formulario de registro
+        POST: Procesa el registro del nuevo usuario
+        
+    Form Data:
+        usuario: Nombre del nuevo usuario
+        password: Contraseña elegida
+        password_confirm: Confirmación de la contraseña
+        
+    Returns:
+        GET: Template del formulario de registro
+        POST (éxito): Redirección a la lista de usuarios
+        POST (error): Template de registro con mensaje de error
+        
+    Raises:
+        Exception: Error en la base de datos al registrar
+        
+    Note:
+        Solo usuarios administradores pueden registrar nuevos usuarios
+        Las contraseñas se almacenan de forma segura (hash)
+    """
     # Verificar permisos de administrador
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
@@ -85,6 +156,17 @@ def registro():
 @auth.route('/logout')
 @login_required
 def logout():
+    """
+    Cierra la sesión del usuario actual.
+    
+    Termina la sesión activa y redirige al formulario de login.
+    
+    Returns:
+        redirect: Redirección a la página de login con mensaje de confirmación
+        
+    Note:
+        Requiere autenticación previa
+    """
     logout_user()
     flash('Has cerrado sesión correctamente', 'success')
     return redirect(url_for('auth.login'))
@@ -93,6 +175,19 @@ def logout():
 @auth.route("/usuarios")
 @login_required
 def lista_usuarios():
+    """
+    Muestra la lista de todos los usuarios del sistema.
+    
+    Recupera todos los usuarios de la base de datos y los presenta
+    en una interfaz que permite su gestión (eliminar, cambiar contraseña).
+    
+    Returns:
+        render_template: Página con la lista de usuarios
+        redirect: Redirección al panel si no es administrador
+        
+    Note:
+        Solo usuarios administradores pueden acceder a esta función
+    """
     # Verificar permisos de administrador
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
@@ -106,6 +201,29 @@ def lista_usuarios():
 @auth.route("/usuario/<int:id>", methods=['DELETE'])
 @login_required
 def eliminar_usuario(id):
+    """
+    Elimina un usuario y todas sus capturas asociadas.
+    
+    Primero elimina todas las capturas relacionadas con el usuario
+    y luego elimina el usuario en sí dentro de una transacción.
+    
+    Args:
+        id (int): ID del usuario a eliminar
+        
+    Returns:
+        str: Mensaje de éxito o error con código HTTP apropiado
+        
+    Status Codes:
+        200: Usuario eliminado correctamente
+        400: Intento de eliminar un administrador
+        403: Usuario no autorizado
+        404: Usuario no encontrado
+        500: Error del servidor
+        
+    Note:
+        No se permite eliminar usuarios con rol de administrador
+        Solo usuarios administradores pueden eliminar otros usuarios
+    """
     # Verificar permisos de administrador
     if not current_user.administrador:
         flash('No tienes permisos de administrador', 'danger')
@@ -137,7 +255,32 @@ def eliminar_usuario(id):
 @auth.route('/cambiar_password_admin/<int:id>', methods=['POST'])
 @login_required
 def cambiar_password_admin(id):
-    """Cambia la contraseña de un usuario (solo admin)"""
+    """
+    Cambia la contraseña de un usuario específico.
+    
+    Permite a un administrador cambiar la contraseña de cualquier
+    usuario no administrador sin necesitar la contraseña anterior.
+    
+    Args:
+        id (int): ID del usuario cuya contraseña se cambiará
+        
+    Request JSON:
+        new_password (str): Nueva contraseña a establecer
+        
+    Returns:
+        JSON: Mensaje de éxito o error
+        
+    Status Codes:
+        200: Contraseña actualizada correctamente
+        400: Contraseña vacía o intento de cambiar contraseña de administrador
+        403: Usuario no autorizado
+        404: Usuario no encontrado
+        500: Error del servidor
+        
+    Note:
+        No se permite cambiar contraseñas de administradores
+        Solo usuarios administradores pueden usar esta función
+    """
     if not current_user.administrador:
         return jsonify({'error': 'Solo los administradores pueden cambiar contraseñas'}), 403
 

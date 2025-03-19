@@ -1,18 +1,27 @@
+<!-- Plantilla para la gestión de usuarios (sección administrativa) -->
+<!-- Extiende la plantilla base manteniendo la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título específico para esta página -->
 {% block title %}Lista de Usuarios{% endblock %}
 
+<!-- Contenido principal de la página de administración -->
 {% block body %}
+<!-- Contenedor principal con margen superior -->
 <div class="container mt-4">
+    <!-- Título de la sección -->
     <h2>Lista de Usuarios</h2>
     
+    <!-- Botón para añadir nuevos usuarios -->
     <div class="mb-3">
         <a href="{{ url_for('auth.registro') }}" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Nuevo Usuario
         </a>
     </div>
 
+    <!-- Tabla de usuarios con estilo a rayas -->
     <table class="table table-striped">
+        <!-- Encabezados de columna -->
         <thead>
             <tr>
                 <th>ID</th>
@@ -21,11 +30,14 @@
                 <th>Acciones</th>
             </tr>
         </thead>
+        <!-- Cuerpo de la tabla con datos dinámicos -->
         <tbody>
             {% for usuario in usuarios %}
+            <!-- Fila de usuario con atributo data para identificación en JavaScript -->
             <tr data-user-id="{{ usuario.id }}">
                 <td>{{ usuario.id }}</td>
                 <td>{{ usuario.nombre }}</td>
+                <!-- Columna con indicador visual del rol de administrador -->
                 <td>
                     {% if usuario.administrador %}
                         <span class="badge bg-primary">Sí</span>
@@ -33,15 +45,19 @@
                         <span class="badge bg-secondary">No</span>
                     {% endif %}
                 </td>
+                <!-- Columna con acciones disponibles (solo para usuarios no administradores) -->
                 <td>
                     {% if not usuario.administrador %}
-                        <div class="d-flex gap-2"> <!-- Cambiado de btn-group a d-flex con gap -->
+                        <!-- Contenedor flexible para botones de acción -->
+                        <div class="d-flex gap-2">
+                            <!-- Botón para cambiar contraseña -->
                             <button class="btn btn-sm btn-secondary" 
                                     onclick="cambiarPassword('{{ usuario.id }}', '{{ usuario.nombre }}')"
                                     type="button">
                                 <i class="fas fa-key"></i>
                                 <span class="ms-1">Cambiar Contraseña</span>
                             </button>
+                            <!-- Botón para eliminar usuario -->
                             <button class="btn btn-sm btn-danger" 
                                     onclick="eliminarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}')"
                                     type="button">
@@ -57,32 +73,43 @@
     </table>
 </div>
 
-<!-- Modal Cambiar Contraseña -->
+<!-- Modal para cambiar contraseña - Oculto por defecto -->
 <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
     <div class="modal-dialog">
+        <!-- Contenido del modal -->
         <div class="modal-content">
+            <!-- Encabezado del modal con título y botón de cierre -->
             <div class="modal-header">
                 <h5 class="modal-title" id="passwordModalLabel">Cambiar Contraseña</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <!-- Cuerpo del modal con formulario -->
             <div class="modal-body">
+                <!-- Información del usuario seleccionado -->
                 <p class="mb-3">Cambiar contraseña para: <strong id="userName"></strong></p>
+                <!-- Formulario para cambio de contraseña -->
                 <form id="passwordForm">
+                    <!-- Campo oculto para el ID del usuario -->
                     <input type="hidden" id="userId">
+                    <!-- Campo para nueva contraseña -->
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">Nueva Contraseña</label>
                         <input type="password" class="form-control" id="newPassword" required>
                     </div>
+                    <!-- Campo para confirmar contraseña -->
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
                         <input type="password" class="form-control" id="confirmPassword" required>
                     </div>
                 </form>
             </div>
+            <!-- Pie del modal con botones de acción -->
             <div class="modal-footer">
+                <!-- Botón para cancelar operación -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i> Cancelar
                 </button>
+                <!-- Botón para guardar cambios -->
                 <button type="button" class="btn btn-primary" id="savePassword">
                     <i class="fas fa-save"></i> Guardar Cambios
                 </button>
@@ -92,10 +119,13 @@
 </div>
 {% endblock %}
 
+<!-- Scripts específicos para la funcionalidad de gestión de usuarios -->
 {% block customjs %}
+<!-- Definición de URLs para operaciones AJAX -->
 <script>
     const deleteUrl = "{{ url_for('auth.eliminar_usuario', id=0) }}";
     const changePasswordUrl = "{{ url_for('auth.cambiar_password_admin', id=0) }}";
 </script>
+<!-- Script principal con funciones de gestión de usuarios -->
 <script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
 {% endblock %}

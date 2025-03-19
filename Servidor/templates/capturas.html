@@ -1,13 +1,18 @@
+<!-- Extiende la plantilla base que contiene la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título de la página con el ID del equipo y la fecha -->
 {% block title %}Capturas - {{ equipo_id }} - {{ fecha }}{% endblock %}
 
+<!-- Incluye estilos específicos para la vista de capturas -->
 {% block customcss %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/capturas.css') }}">
 {% endblock %}
 
+<!-- Contenido principal de la página -->
 {% block body %}
 <div class="container mt-4">
+    <!-- Barra de navegación de migas de pan para ubicación actual -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('capturas_control.panel_control') }}">Panel de Control</a></li>
@@ -16,18 +21,25 @@
         </ol>
     </nav>
 
+    <!-- Tarjeta principal que contiene las capturas -->
     <div class="card">
+        <!-- Encabezado con la fecha de las capturas -->
         <div class="card-header">
             Capturas del {{ fecha }}
         </div>
+        <!-- Cuerpo de la tarjeta con la cuadrícula de capturas -->
         <div class="card-body">
             {% if capturas %}
+                <!-- Grid responsivo de tarjetas de capturas -->
                 <div class="capture-grid">
                     {% for captura in capturas %}
+                    <!-- Tarjeta individual de captura -->
                     <div class="capture-card" data-captura-id="{{ captura.id }}">
+                        <!-- Hora de la captura -->
                         <div class="fw-bold mb-2">
                             {{ captura.fecha.strftime('%H:%M:%S') }}
                         </div>
+                        <!-- Imagen de la captura si existe -->
                         {% if captura.imagen %}
                             <a href="{{ url_for('capturas_view.ver_imagen', dato_id=captura.id) }}" 
                                target="_blank"
@@ -37,25 +49,31 @@
                                      alt="Captura {{ captura.fecha.strftime('%H:%M:%S') }}">
                             </a>
                         {% else %}
+                            <!-- Placeholder cuando no hay imagen -->
                             <div class="d-flex align-items-center justify-content-center bg-light text-muted p-3" 
                                  style="height: 150px;">
                                 <small>No hay imagen disponible</small>
                             </div>
                         {% endif %}
+                        <!-- Texto extraído de la captura -->
                         <div class="small text-muted mt-2">
                             {{ captura.texto[:100] }}...
                         </div>
+                        <!-- Botones de acción para la captura -->
                         <div class="d-flex gap-2 mt-3 justify-content-center">
                             {% if captura.imagen %}
+                            <!-- Botón de descarga de imagen -->
                             <a href="{{ url_for('capturas_files.descargar_imagen', dato_id=captura.id) }}" 
                                class="btn btn-primary btn-sm">
                                 <i class="fas fa-download me-1"></i>Imagen
                             </a>
                             {% endif %}
+                            <!-- Botón de descarga de texto -->
                             <a href="{{ url_for('capturas_files.descargar_texto', dato_id=captura.id) }}" 
                                class="btn btn-info btn-sm text-white">
                                 <i class="fas fa-file-alt me-1"></i>Texto
                             </a>
+                            <!-- Botón de eliminar captura -->
                             <button class="btn btn-danger btn-sm delete-btn" data-id="{{ captura.id }}">
                                 <i class="fas fa-trash me-1"></i>Eliminar
                             </button>
@@ -64,6 +82,7 @@
                     {% endfor %}
                 </div>
             {% else %}
+                <!-- Mensaje cuando no hay capturas -->
                 <p class="text-muted">No hay capturas disponibles para esta fecha.</p>
             {% endif %}
         </div>
@@ -71,8 +90,10 @@
 </div>
 {% endblock %}
 
+<!-- Scripts específicos para la funcionalidad de capturas -->
 {% block customjs %}
 <script>
+    // URLs para las operaciones de eliminación y retorno
     const deleteUrl = "{{ url_for('capturas_files.eliminar_captura', dato_id=0) }}";
     const returnUrl = "{{ url_for('capturas_view.ver_equipo', equipo_id=equipo_id) }}";
 </script>

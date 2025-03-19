@@ -1,17 +1,29 @@
+<!-- Extiende la plantilla base que contiene la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título de la página -->
 {% block title %}Inicio - IA Detector{% endblock %}
 
+<!-- Contenido principal de la página -->
 {% block body %}
+<!-- Contenedor principal con margen superior -->
 <div class="container mt-5">
+    <!-- Jumbotron - Elemento destacado de Bootstrap -->
     <div class="jumbotron">
+        <!-- Título principal con estilo display-4 de Bootstrap -->
         <h1 class="display-4">Bienvenido a IA Detector</h1>
+        <!-- Subtítulo o descripción del sistema -->
         <p class="lead">Sistema de detección y monitoreo de actividad sospechosa</p>
+        <!-- Línea divisoria -->
         <hr class="my-4">
+        
+        <!-- Contenido condicional basado en la autenticación -->
         {% if current_user.is_authenticated %}
+            <!-- Mensaje y botón para usuarios autenticados -->
             <p>Accede a tu panel de control para gestionar las capturas.</p>
             <a class="btn btn-primary btn-lg" href="{{ url_for('capturas_control.panel_control') }}" role="button">Panel de Control</a>
         {% else %}
+            <!-- Mensaje y botón para usuarios no autenticados -->
             <p>Inicia sesión para acceder al sistema.</p>
             <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">Iniciar Sesión</a>
         {% endif %}

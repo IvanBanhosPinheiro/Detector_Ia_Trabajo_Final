@@ -1,3 +1,17 @@
+"""
+Módulo de control de capturas.
+
+Este Blueprint maneja las operaciones de control del sistema de capturas,
+incluyendo el panel de control, la activación/desactivación de capturas,
+la alternancia de modos y la recepción de archivos de captura.
+
+Las operaciones principales incluyen:
+- Panel de control con visualización del estado
+- Cambio entre modo automático y manual
+- Activación/desactivación de capturas
+- Recepción y almacenamiento de capturas desde clientes
+- Consulta del estado del sistema
+"""
 from flask import Blueprint, request, render_template, current_app
 # Imports de Flask-Login
 from flask_login import login_required, current_user
@@ -20,7 +34,20 @@ modo_automatico = True  # Control por horario (True) o manual (False)
 # Ruta del panel de control
 @capturas_control.route('/dashboard')
 @login_required
-def panel_control():    
+def panel_control():
+    """
+    Muestra el panel de control principal.
+    
+    Recupera las capturas del usuario actual, las agrupa por equipos y fechas,
+    y muestra el estado actual del sistema de capturas.
+    
+    Returns:
+        render_template: Página del panel de control con datos dinámicos
+        
+    Note:
+        Requiere autenticación previa
+        Muestra solo capturas del usuario autenticado
+    """    
     # Obtener datos del usuario actual
     datos = Datos.query.filter_by(id_usuario=current_user.id).order_by(Datos.fecha.desc()).all()
     
@@ -55,7 +82,20 @@ def panel_control():
 @capturas_control.route('/toggle_capture', methods=['POST'])
 @login_required
 def toggle_capture():
-    """Alterna el estado de las capturas"""
+    """
+    Alterna el estado de las capturas.
+    
+    En modo manual, activa o desactiva las capturas.
+    En modo automático, fuerza el cambio a modo manual y activa las capturas.
+    
+    Returns:
+        dict: Estado actualizado del sistema de capturas en formato JSON
+        
+    Note:
+        Requiere autenticación previa
+        En modo automático, cambia automáticamente a modo manual
+        En modo manual, alterna entre activado/desactivado
+    """
     estado = get_estado_sistema()
     
     if estado['modo_automatico']:
@@ -75,7 +115,23 @@ def toggle_capture():
 @capturas_control.route('/toggle_modo', methods=['POST'])
 @login_required
 def toggle_modo():
-    """Alterna entre modo automático y manual"""
+    """
+    Alterna entre modo automático y manual.
+    
+    Cambia la forma en que se controla la activación de capturas:
+    - Modo automático: Controlado por horarios predefinidos
+    - Modo manual: Controlado directamente por el usuario
+    
+    Returns:
+        dict: Estado actualizado del sistema de capturas en formato JSON
+        
+    Side Effects:
+        En modo automático: Desactiva capturas y despierta el comprobador de horarios
+        En modo manual: Activa capturas para el usuario actual
+        
+    Note:
+        Requiere autenticación previa
+    """
     estado = get_estado_sistema()
     nuevo_modo = not estado['modo_automatico']
     
@@ -92,6 +148,33 @@ def toggle_modo():
 # Ruta para recibir capturas
 @capturas_control.route('/uploads', methods=['POST'])
 def upload():
+    """
+    Recibe y procesa capturas enviadas por los clientes.
+    
+    Verifica que las capturas estén habilitadas, valida los datos recibidos,
+    y almacena tanto el texto extraído como la imagen capturada (si existe).
+    
+    Request Form:
+        cliente_id (str): Identificador único del cliente
+        timestamp (str): Marca temporal en formato YYYYMMDD_HHMMSS
+        
+    Request Files:
+        data (file): Archivo de texto con contenido capturado (obligatorio)
+        screenshot (file): Imagen capturada (opcional)
+        
+    Returns:
+        str: Mensaje de confirmación o error
+        
+    Status Codes:
+        200: Captura recibida y almacenada correctamente
+        400: Datos faltantes o formato incorrecto
+        403: Capturas deshabilitadas o falta profesor activo
+        500: Error interno del servidor
+        
+    Note:
+        No requiere autenticación (llamada desde clientes)
+        Registra información de debug en la consola
+    """
     try:
         global capture_enabled, profesor_activo
         # Debug: Imprimir todos los datos recibidos
@@ -171,7 +254,22 @@ def upload():
 @capturas_control.route('/capture_status')
 @login_required
 def get_capture_status():
-    """Obtiene el estado actual de las capturas"""
+    """
+    Obtiene el estado actual de las capturas.
+    
+    Devuelve un objeto JSON con información sobre si las capturas
+    están habilitadas, el modo actual, y los usuarios relacionados.
+    
+    Returns:
+        dict: Estado del sistema de capturas en formato JSON con:
+            - enabled: Si las capturas están activadas
+            - modo_automatico: Si está en modo automático u manual
+            - user_id: ID del profesor para el que se captura
+            - current_user_id: ID del usuario actual
+            
+    Note:
+        Requiere autenticación previa
+    """
     return {
         'enabled': capture_enabled,
         'modo_automatico': modo_automatico,
@@ -180,7 +278,21 @@ def get_capture_status():
     }
     
 def get_estado_sistema():
-    """Obtiene el estado del sistema sin necesitar contexto de request"""
+    """
+    Obtiene el estado del sistema sin necesitar contexto de request.
+    
+    Función auxiliar que proporciona el estado actual del sistema
+    para uso interno, sin requerir un contexto HTTP activo.
+    
+    Returns:
+        dict: Estado del sistema de capturas en formato JSON con:
+            - enabled: Si las capturas están activadas
+            - modo_automatico: Si está en modo automático u manual
+            - user_id: ID del profesor para el que se captura
+            
+    Note:
+        Función interna, no expuesta como endpoint
+    """
     return {
         'enabled': capture_enabled,
         'modo_automatico': modo_automatico,
@@ -188,7 +300,25 @@ def get_estado_sistema():
     }
 
 def set_capture_status(enabled, user_id, modo=None):
-    """Actualiza el estado de las capturas"""
+    """
+    Actualiza el estado de las capturas.
+    
+    Modifica las variables globales que controlan el estado del sistema.
+    
+    Args:
+        enabled (bool): Si las capturas deben estar activadas
+        user_id (int): ID del usuario para el que se capturan datos (None si desactivado)
+        modo (bool, opcional): Modo automático (True) o manual (False)
+        
+    Side Effects:
+        Modifica las variables globales:
+            - capture_enabled
+            - profesor_activo
+            - modo_automatico (solo si se especifica)
+            
+    Note:
+        Función interna, no expuesta como endpoint
+    """
     global capture_enabled, profesor_activo, modo_automatico
     capture_enabled = enabled
     profesor_activo = user_id

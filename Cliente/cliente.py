@@ -7,6 +7,16 @@ from io import BytesIO
 
 # Función para obtener la ruta base
 def get_base_path():
+    
+    """
+    Determina la ruta base del programa dependiendo de si se ejecuta como script o ejecutable.
+    
+    Returns:
+        str: Ruta absoluta al directorio que contiene el ejecutable o script.
+            - Si es ejecutable: directorio del .exe
+            - Si es script: directorio del .py
+    """
+
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
     else:
@@ -35,6 +45,18 @@ ventana_activa_anterior = None
 
 # Función para descargar el archivo de palabras clave del servidor
 def descargar_keywords():
+    
+    """
+    Descarga la lista de palabras clave desde el servidor y las guarda localmente.
+    
+    Realiza una petición GET al endpoint /keywords del servidor configurado.
+    Si la descarga es exitosa, convierte el texto recibido en una lista de palabras
+    y las guarda en formato pickle en el archivo keywords.pkl.
+    
+    Raises:
+        Exception: Si hay errores de conexión o en la respuesta del servidor
+    """
+    
     try:
         print(f"[{datetime.now()}] Intentando descargar las palabras clave desde: {url_keywords}")
         response = requests.get(url_keywords)
@@ -52,6 +74,17 @@ def descargar_keywords():
 
 # Función para tomar captura de pantalla
 def tomar_captura_pantalla():
+    
+    """
+    Captura la pantalla actual y la prepara para su procesamiento y envío.
+    
+    Returns:
+        tuple: Contiene tres elementos:
+            - BytesIO: Buffer con la imagen en formato PNG para envío
+            - PIL.Image: Objeto imagen para procesamiento OCR
+            - str: Timestamp en formato 'YYYYMMDD_HHMMSS'
+    """
+    
     # Tomar captura de pantalla
     screenshot = pyautogui.screenshot()
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -63,6 +96,22 @@ def tomar_captura_pantalla():
 
 # Función para enviar una alerta al servidor
 def enviar_alerta_servidor(screenshot_bytes_io, txt_data, timestamp):
+    
+    """
+    Envía una alerta al servidor con la captura de pantalla y datos relacionados.
+
+    Args:
+        screenshot_bytes_io (BytesIO): Buffer conteniendo la imagen en formato PNG
+        txt_data (str): Texto con información de la alerta (PC, ventana, texto detectado)
+        timestamp (str): Identificador temporal del momento de la captura
+
+    Raises:
+        Exception: Si hay errores de conexión o en la respuesta del servidor
+
+    Note:
+        Envía los datos mediante POST multipart/form-data al endpoint /uploads
+    """
+    
     try:
         files = {
             'screenshot': ('screenshot.png', screenshot_bytes_io, 'image/png'),
@@ -108,6 +157,20 @@ def cargar_keywords():
 
 # Función para realizar OCR en la captura de pantalla y detectar uso de IA
 def detectar_uso_ia_pantalla():
+    
+    """
+    Analiza la pantalla actual en busca de palabras clave relacionadas con IA.
+    
+    Proceso:
+    1. Captura la pantalla actual
+    2. Extrae texto mediante OCR
+    3. Compara con lista de palabras clave
+    4. Si encuentra coincidencias, envía alerta al servidor
+
+    Note:
+        Utiliza la ventana activa actual almacenada en ventana_activa_anterior
+    """
+    
     screenshot_bytes_io, screenshot, timestamp = tomar_captura_pantalla()
     # Extraer texto usando OCR
     text = pytesseract.image_to_string(screenshot)
@@ -125,6 +188,21 @@ def detectar_uso_ia_pantalla():
 
 # Bucle principal para monitorear el cambio de ventana activa
 if __name__ == "__main__":
+    
+    """
+    Punto de entrada principal del programa.
+    
+    Flujo de ejecución:
+    1. Descarga inicial de palabras clave
+    2. Bucle infinito que:
+        - Monitorea cambios de ventana activa
+        - Detecta uso de IA cuando hay cambios
+        - Maneja errores sin interrumpir ejecución
+    
+    Note:
+        Usa time.sleep(1) para reducir uso de CPU
+    """
+    
     # Descargar archivo de palabras clave del servidor al iniciar
     descargar_keywords()
 

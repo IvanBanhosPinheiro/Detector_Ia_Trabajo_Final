@@ -1,17 +1,28 @@
+<!-- Plantilla para el formulario de inicio de sesión -->
+<!-- Extiende la plantilla base manteniendo la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título específico para esta página -->
 {% block title %}Inicio de sesión{% endblock %}
 
+<!-- Contenido principal del formulario de login -->
 {% block body %} 
+<!-- Contenedor centrado verticalmente con altura mínima -->
 <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+  <!-- Formulario de login con estilo de tarjeta blanca -->
   <form class="bg-white p-4 rounded shadow-sm" style="max-width: 330px;" method="post" action="{{ url_for('auth.login') }}">
+    <!-- Cabecera del formulario centrada -->
     <div class="text-center">
+      <!-- Logo de la aplicación -->
       <img class="mb-4" src="{{url_for('static', filename='img/flask.png')}}" alt="" width="72" height="72">
+      <!-- Título del formulario -->
       <h1 class="h3 mb-3 fw-normal">Inicio de sesión</h1>
     </div>
 
+    <!-- Campo de nombre de usuario -->
     <div class="mb-3">
       <label for="usuario">Usuario</label>
+      <!-- Input con auto-enfoque y validaciones básicas -->
       <input type="text" 
              class="form-control" 
              name="usuario" 
@@ -23,8 +34,10 @@
              autofocus>
     </div>
 
+    <!-- Campo de contraseña -->
     <div class="mb-3">
       <label for="password">Contraseña</label>
+      <!-- Input tipo password con validación de longitud mínima -->
       <input type="password" 
              class="form-control" 
              name="password" 
@@ -34,13 +47,17 @@
              required>
     </div>
 
+    <!-- Botón de envío del formulario -->
     <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Iniciar sesión</button>
     
+    <!-- Pie de página con copyright -->
     <p class="mt-5 mb-3 text-muted text-center">&copy; 2025</p>
   </form>
 </div>
 {% endblock %}
 
+<!-- Incluye JavaScript específico para la funcionalidad de login -->
 {% block customjs %}
+<!-- Script que maneja el estado del botón durante el envío del formulario -->
 <script src="{{ url_for('static', filename='js/login.js')}}"></script>
 {% endblock %}

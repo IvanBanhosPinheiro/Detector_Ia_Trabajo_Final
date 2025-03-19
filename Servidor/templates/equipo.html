@@ -1,13 +1,18 @@
+<!-- Extiende la plantilla base que contiene la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título de la página con el ID del equipo -->
 {% block title %}Capturas - {{ equipo_id }}{% endblock %}
 
+<!-- Incluye estilos específicos para la vista de equipo -->
 {% block customcss %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/equipo.css') }}">
 {% endblock %}
 
+<!-- Contenido principal de la página -->
 {% block body %}
 <div class="container mt-4">
+    <!-- Barra de navegación de migas de pan -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('capturas_control.panel_control') }}">Panel de Control</a></li>
@@ -15,24 +20,36 @@
         </ol>
     </nav>
 
+    <!-- Tarjeta principal que contiene las capturas -->
     <div class="card">
+        <!-- Encabezado con identificación del equipo -->
         <div class="card-header">
             Capturas de {{ equipo_id }}
         </div>
+        <!-- Cuerpo de la tarjeta con la cuadrícula de fechas -->
         <div class="card-body">
             {% if fechas %}
+                <!-- Grid de carpetas de fechas -->
                 <div class="date-grid">
                     {% for fecha, capturas in fechas.items() %}
+                    <!-- Elemento individual de fecha con sus capturas -->
                     <div class="date-item" data-fecha="{{ fecha }}">
+                        <!-- Tarjeta de fecha con imagen y botón de eliminar -->
                         <div class="date-card">
-                            <a href="{{ url_for('capturas_view.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}" class="text-decoration-none text-dark">
+                            <!-- Enlace a la vista detallada de capturas -->
+                            <a href="{{ url_for('capturas_view.ver_fecha', equipo_id=equipo_id, fecha=fecha) }}" 
+                               class="text-decoration-none text-dark">
+                                <!-- Icono de carpeta -->
                                 <img src="{{ url_for('static', filename='img/carpeta.jpg') }}" 
                                      alt="Carpeta" 
                                      class="img-fluid mb-3" 
                                      style="width: 100px; height: 100px;">
+                                <!-- Información de la fecha -->
                                 <div class="fw-bold mb-2">{{ fecha }}</div>
+                                <!-- Contador de capturas -->
                                 <div class="text-muted small">{{ capturas|length }} capturas</div>
                             </a>
+                            <!-- Botón para eliminar la carpeta de fecha -->
                             <button class="btn btn-danger w-100 mt-3 d-flex align-items-center justify-content-center gap-2" 
                                     data-fecha="{{ fecha }}"
                                     onclick="eliminarFecha(this)">
@@ -43,6 +60,7 @@
                     {% endfor %}
                 </div>
             {% else %}
+                <!-- Mensaje cuando no hay capturas disponibles -->
                 <p class="text-muted">No hay capturas disponibles para este equipo.</p>
             {% endif %}
         </div>
@@ -50,6 +68,7 @@
 </div>
 {% endblock %}
 
+<!-- Incluye JavaScript específico para la funcionalidad de equipo -->
 {% block customjs %}
 <script src="{{ url_for('static', filename='js/equipo.js') }}"></script>
 {% endblock %}

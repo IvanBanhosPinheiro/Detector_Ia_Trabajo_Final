@@ -1,55 +1,70 @@
+<!-- Plantilla para el formulario de registro de usuarios -->
+<!-- Extiende la plantilla base manteniendo la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título específico para esta página -->
 {% block title %}Registro{% endblock %}
 
-
+<!-- Contenido principal del formulario de registro -->
 {% block body %}
+<!-- Contenedor centrado verticalmente con altura mínima -->
 <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <!-- Formulario de registro con estilo de tarjeta blanca -->
     <form class="bg-white p-4 rounded shadow-sm" style="max-width: 330px;" method="post" action="{{ url_for('auth.registro') }}">
+      <!-- Cabecera del formulario centrada -->
       <div class="text-center">
+        <!-- Logo de la aplicación -->
         <img class="mb-4" src="{{url_for('static', filename='img/flask.png')}}" alt="" width="72" height="72">
+        <!-- Título del formulario -->
         <h1 class="h3 mb-3 fw-normal">Registro de Usuario</h1>
       </div>
         
+      <!-- Campo de nombre de usuario -->
+      <div class="mb-3">
+          <!-- Etiqueta del campo -->
+          <label for="usuario">Nombre de usuario</label>
+          <!-- Input con validación de longitud mínima y máxima -->
+          <input type="text" 
+                 class="form-control" 
+                 name="usuario" 
+                 id="usuario" 
+                 placeholder="Usuario"
+                 minlength="5"
+                 maxlength="20"
+                 required>
+      </div>
 
-        <div class="mb-3">
-            <label for="usuario">Nombre de usuario</label>
-            <input type="text" 
-                   class="form-control" 
-                   name="usuario" 
-                   id="usuario" 
-                   placeholder="Usuario"
-                   minlength="5"
-                   maxlength="20"
-                   required>
-        </div>
+      <!-- Campo de contraseña -->
+      <div class="mb-3">
+          <label for="password">Contraseña</label>
+          <!-- Input tipo password con validación de longitud mínima -->
+          <input type="password" 
+                 class="form-control" 
+                 name="password" 
+                 id="password" 
+                 placeholder="Contraseña"
+                 minlength="6"
+                 required>
+      </div>
 
-        <div class="mb-3">
-            <label for="password">Contraseña</label>
-            <input type="password" 
-                   class="form-control" 
-                   name="password" 
-                   id="password" 
-                   placeholder="Contraseña"
-                   minlength="6"
-                   required>
-        </div>
+      <!-- Campo de confirmación de contraseña -->
+      <div class="mb-3">
+          <label for="password_confirm">Confirmar contraseña</label>
+          <!-- Input para verificar que la contraseña se ingresó correctamente -->
+          <input type="password" 
+                 class="form-control" 
+                 name="password_confirm" 
+                 id="password_confirm" 
+                 placeholder="Confirmar contraseña"
+                 minlength="6"
+                 required>
+      </div>
 
-        <div class="mb-3">
-            <label for="password_confirm">Confirmar contraseña</label>
-            <input type="password" 
-                   class="form-control" 
-                   name="password_confirm" 
-                   id="password_confirm" 
-                   placeholder="Confirmar contraseña"
-                   minlength="6"
-                   required>
-        </div>
-
-        <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Registrarse</button>
-        
-
-        <p class="mt-5 mb-3 text-muted text-center">&copy; 2025</p>
+      <!-- Botón de envío del formulario -->
+      <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Registrarse</button>
+      
+      <!-- Pie de página con copyright -->
+      <p class="mt-5 mb-3 text-muted text-center">&copy; 2025</p>
     </form>
 </div>
 {% endblock %}

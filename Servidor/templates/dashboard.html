@@ -1,20 +1,24 @@
+<!-- Extiende la plantilla base que contiene la estructura común -->
 {% extends "base.html" %}
 
+<!-- Define el título de la página -->
 {% block title %}Panel de Control{% endblock %}
 
+<!-- Incluye estilos específicos para el dashboard -->
 {% block customcss %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
 
+<!-- Contenido principal del dashboard -->
 {% block body %}
 <div class="container mt-4">
     <h2 class="mb-4">Panel de Control</h2>
     
-    <!-- Control de Capturas -->
+    <!-- Panel de Control de Capturas -->
     <div class="card mb-4">
         <div class="card-header">Control de Capturas</div>
         <div class="card-body">
-            <!-- Modo Automático Switch -->
+            <!-- Switch para alternar entre modo automático y manual -->
             <div class="form-check form-switch mb-3">
                 <input class="form-check-input" type="checkbox" id="toggleModo" 
                     {% if modo_automatico %}checked{% endif %}>
@@ -23,14 +27,16 @@
                 </label>
             </div>
 
-            <!-- Estado Global (siempre visible) -->
+            <!-- Panel de estado del sistema con indicadores visuales -->
             <div class="alert {% if capture_enabled %}alert-success{% else %}alert-secondary{% endif %} mb-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <strong>Estado del Sistema:</strong> 
+                        <!-- Indicador de estado con colores contextuales -->
                         <span class="{% if capture_enabled %}text-success{% else %}text-danger{% endif %}">
                             {% if capture_enabled %}Activado{% else %}Desactivado{% endif %}
                         </span>
+                        <!-- Información del usuario activo -->
                         {% if capture_enabled and user %}
                             <div class="mt-1">
                                 <i class="fas fa-user"></i> Guardando para: <strong>{{ user }}</strong>
@@ -41,7 +47,7 @@
                 </div>
             </div>
 
-            <!-- Control Manual (visible solo cuando modo_automatico es false) -->
+            <!-- Controles manuales (visibles solo en modo manual) -->
             <div id="controlManual" class="{% if modo_automatico %}d-none{% endif %}">
                 <button id="toggleCapture" class="btn {% if capture_enabled %}btn-danger{% else %}btn-primary{% endif %}">
                     {% if capture_enabled %}Detener Capturas{% else %}Iniciar Capturas{% endif %}
@@ -50,13 +56,15 @@
         </div>
     </div>
 
-    <!-- Mosaico de Carpetas -->
+    <!-- Visualización de equipos y capturas -->
     <div class="card">
         <div class="card-header">Capturas por Equipo</div>
         <div class="card-body">
             {% if equipos %}
+            <!-- Grid responsivo de carpetas de equipos -->
             <div class="folder-grid">
                 {% for equipo_id, fechas in equipos.items() %}
+                <!-- Tarjeta individual de equipo con estadísticas -->
                 <a href="{{ url_for('capturas_view.ver_equipo', equipo_id=equipo_id) }}" 
                    class="folder-item text-decoration-none text-dark">
                     <div class="folder-card">
@@ -71,6 +79,7 @@
                 {% endfor %}
             </div>
             {% else %}
+            <!-- Mensaje cuando no hay capturas -->
             <p class="text-muted">No hay capturas disponibles.</p>
             {% endif %}
         </div>
@@ -78,7 +87,7 @@
 </div>
 {% endblock %}
 
-
+<!-- Incluye JavaScript específico para la funcionalidad del dashboard -->
 {% block customjs %}
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}
