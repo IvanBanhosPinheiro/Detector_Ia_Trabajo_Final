@@ -59,6 +59,14 @@ En la carpeta del Servidor encontrarás un archivo **`deploy.bat`** que automati
 
 1. **Construir** la imagen Docker a partir del Dockerfile (si existe) o de la configuración incluida en el proyecto.  
 2. **Ejecutar** el contenedor mapeando el puerto correspondiente (generalmente el **5000**) para que puedas acceder al Servidor desde tu navegador o desde el Cliente.
+3. **Configurar** el archivo `config.ini` (si lo requieres), indicando:
+   - El **puerto** que usará Flask (por defecto 5000).
+   - Las **credenciales** para crear automáticamente el primer usuario administrador.
+   - Parámetros de la **base de datos** (por defecto se usa SQLite).
+
+   > **Nota sobre la primera cuenta de administrador**:  
+   > Al arrancar el servidor por primera vez, la aplicación creará automáticamente un usuario administrador utilizando los credenciales especificados en el archivo `config.ini`.  
+   > Esta cuenta será la que podrás usar para acceder inicialmente a la interfaz con privilegios de administrador.
 
 **Para usarlo**:
 
@@ -94,6 +102,11 @@ Si prefieres no usar contenedores o estás en una etapa de desarrollo, también 
    - El **puerto** que usará Flask (por defecto 5000).  
    - Las **credenciales** para crear automáticamente el primer usuario administrador.  
    - Parámetros de la **base de datos** (por defecto se usa SQLite).
+
+   > **Nota sobre la primera cuenta de administrador**:  
+   > Al arrancar el servidor por primera vez, la aplicación creará automáticamente un usuario administrador utilizando los credenciales especificados en el archivo `config.ini`.  
+   > Esta cuenta será la que podrás usar para acceder inicialmente a la interfaz con privilegios de administrador.
+
 
 6. **Ejecuta** el Servidor:  
    ```bash   

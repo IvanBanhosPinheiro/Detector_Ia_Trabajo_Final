@@ -221,6 +221,6 @@ if __name__ == "__main__":
                 detectar_uso_ia_pantalla()
 
             # Esperar un corto intervalo antes de verificar nuevamente
-            time.sleep(1)
+            time.sleep(0.2)
         except Exception as e:
             print(f"[{datetime.now()}] Error en el monitoreo de ventana activa: {str(e)}")
