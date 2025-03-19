@@ -82,7 +82,7 @@ Si prefieres no usar contenedores o estás en una etapa de desarrollo, también 
    .\venv\Scripts\activate        # En Windows
    # source venv/bin/activate     # En Linux / Mac
   ```
- ### 4.2 Ejecución Local (sin Docker)
+### 4.2 Ejecución Local (sin Docker)
 
 Si prefieres no usar contenedores o estás en una etapa de desarrollo, también puedes iniciar el Servidor localmente siguiendo estos pasos:
 
