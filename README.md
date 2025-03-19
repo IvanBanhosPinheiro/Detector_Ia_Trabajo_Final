@@ -76,24 +76,30 @@ Si prefieres no usar contenedores o estás en una etapa de desarrollo, también 
 
 1. **Clona** este repositorio o descarga el código fuente del Servidor.  
 2. **Instala** Python **3.8.20** (si no lo tienes).  
-3. **Crea** un entorno virtual (opcional, pero recomendado):
-   ```bash
-   python -m venv venv
-   .\venv\Scripts\activate        # En Windows
-   # source venv/bin/activate     # En Linux / Mac
-  ```
-  
-### 4.2 Ejecución Local (sin Docker)
-
-Si prefieres no usar contenedores o estás en una etapa de desarrollo, también puedes iniciar el Servidor localmente siguiendo estos pasos:
-
-1. **Clona** este repositorio o descarga el código fuente del Servidor.  
-2. **Instala** Python **3.8.20** (si no lo tienes).  
-3. **Crea** un entorno virtual (opcional, pero recomendado):
-
-   ```bash
-   python -m venv venv
-   .\venv\Scripts\activate   # En Windows
-   # source venv/bin/activate  # En Linux/Mac
+3. **Crea** un entorno virtual (opcional, pero recomendado):  
+   ```bash 
+   python -m venv venv  
+   .\venv\Scripts\activate (Windows)  
+   source venv/bin/activate (Linux/Mac)
    ```
+
+4. **Instala** las dependencias:  
+   ```bash  
+   pip install -r requirements.txt
+   ```
+
+5. **Configura** el archivo `config.ini` (si corresponde), indicando:  
+   - El **puerto** que usará Flask (por defecto 5000).  
+   - Las **credenciales** para crear automáticamente el primer usuario administrador.  
+   - Parámetros de la **base de datos** (por defecto se usa SQLite).
+
+6. **Ejecuta** el Servidor:  
+   ```bash   
+   python run.py
+   ```
+
+Tras el arranque, el Servidor quedará **escuchando** las peticiones del Cliente, así como cualquier acceso web al panel de control. Accede desde tu navegador a [http://127.0.0.1:5000](http://127.0.0.1:5000) (o a la IP/puerto configurado).
+
+  
+
    
