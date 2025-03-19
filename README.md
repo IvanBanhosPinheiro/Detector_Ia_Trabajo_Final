@@ -5,7 +5,9 @@ Este proyecto es un **sistema Cliente-Servidor** diseñado para la monitorizaci�
 - **Cliente**: Realiza capturas de pantalla en Windows, extrae texto con OCR y detecta la presencia de palabras clave.
 - **Servidor**: Recibe y almacena las capturas, permitiendo a los usuarios (profesores/administradores) visualizarlas y gestionar el sistema a través de un panel web.
 
-Además, el repositorio incluye un archivo **`.bat`** (en la carpeta del servidor) que automatiza la construcción y el despliegue en **Docker**, facilitando la instalación y puesta en marcha del servidor en contenedores.
+Además, el repositorio incluye:
+- Un archivo **`deploy.bat`** (en la carpeta del servidor) que automatiza la construcción y el despliegue en **Docker**, facilitando la instalación y puesta en marcha del servidor en contenedores.
+- Un documento **`Memoria.pdf`** que contiene toda la documentación necesaria de forma más detallada, incluyendo explicaciones adicionales, diagramas y aspectos técnicos profundos.
 
 ## 2. Principales Características
 
@@ -100,6 +102,132 @@ Si prefieres no usar contenedores o estás en una etapa de desarrollo, también 
 
 Tras el arranque, el Servidor quedará **escuchando** las peticiones del Cliente, así como cualquier acceso web al panel de control. Accede desde tu navegador a [http://127.0.0.1:5000](http://127.0.0.1:5000) (o a la IP/puerto configurado).
 
-  
+## 5. Instalación y Configuración del Cliente
 
-   
+El Cliente es una aplicación de **Python** (versión 3.8.20) que captura la pantalla, realiza OCR y detecta palabras clave. Estas capturas se envían al Servidor siempre y cuando las capturas estén activadas (modo manual o automático).
+
+### 5.1 Usando el Instalador
+
+En la sección de _Releases_ del repositorio encontrarás un **instalador** para el Cliente.  
+- Tras la instalación, localiza el archivo `config.ini` que se genera en la carpeta de instalación.  
+- Ajusta los siguientes parámetros:
+  - `ruta`: la ubicación del ejecutable de Tesseract (por ejemplo, `C:\Program Files\Tesseract-OCR\tesseract.exe`).  
+  - `servidor`: la URL del Servidor (por defecto, `http://127.0.0.1:5000` si está en la misma máquina).
+
+Cuando lances el Cliente, se iniciará un bucle que:
+1. Monitorea la ventana activa cada cierto intervalo.
+2. Captura la pantalla y la procesa con OCR.
+3. Busca coincidencias con las palabras clave (descargadas desde el Servidor).
+4. Envía la captura y el texto extraído si encuentra alguna palabra clave.
+
+### 5.2 Ejecutando desde Código Fuente
+
+Si prefieres usar el código fuente:
+1. **Clona** o descarga el repositorio del Cliente.
+2. **Instala** Python 3.8.20 (o la versión compatible).
+3. **Crea** un entorno virtual (opcional, recomendado).
+4. **Instala** las dependencias:
+   ```bash  
+   pip install -r requirements.txt
+   ```
+5. **Configura** el archivo `config.ini` indicando:
+   - `ruta`: ruta de Tesseract OCR.
+   - `servidor`: dirección del Servidor Flask.
+6. **Ejecuta** el archivo principal (p.ej. `cliente.py`):
+   ```bash  
+   python cliente.py
+   ```
+
+Al arrancar, el Cliente descargará automáticamente las palabras clave y empezará a monitorear la pantalla. Cada cambio de ventana activa o cada cierto intervalo (según configuración) generará una captura, que será procesada y enviada al Servidor si contiene coincidencias.
+
+## 6. Uso de la Aplicación Web
+
+El sistema ofrece un **panel web** para el Profesor y el Administrador, accesible en la ruta base del Servidor (por defecto [http://127.0.0.1:5000](http://127.0.0.1:5000)).
+
+### 6.1 Inicio de Sesión
+
+1. Visita la URL principal del Servidor (e.g., `http://127.0.0.1:5000`).
+2. Serás redirigido a la pantalla de **login**, donde deberás ingresar tus credenciales (usuario y contraseña).
+
+**Roles disponibles**:
+
+- **Administrador**: Privilegios para gestionar todo el sistema (usuarios, palabras clave, horarios, etc.).
+- **Profesor**: Puede visualizar sus capturas, activar/desactivar el modo de captura y ver estadísticas.
+
+### 6.2 Panel de Control (Profesor)
+
+Tras iniciar sesión como Profesor:
+1. Accede a **Panel Control** para:
+   - Ver el **estado** de las capturas (activadas/desactivadas).
+   - Cambiar entre **modo automático** (según horario) y **modo manual**.
+   - Activar o desactivar manualmente las capturas (si está en modo manual).
+2. Visualiza tus **equipos** y las capturas asociadas:
+   - Ordenadas por **fecha**.
+   - Permite descargar la imagen o el texto extraído, así como eliminar capturas individuales o masivas.
+
+### 6.3 Panel de Administración
+
+Tras iniciar sesión como Administrador:
+1. **Gestión de Usuarios**  
+   - Crear nuevos usuarios (profesores).
+   - Eliminar usuarios y todas sus capturas.
+   - Cambiar la contraseña de cualquier usuario.
+2. **Editar Palabras Clave**  
+   - Añadir, modificar o eliminar términos que activan las alertas en el Cliente.
+3. **Configurar Horarios**  
+   - Establecer rangos de tiempo en los que las capturas se activan o desactivan automáticamente para determinados usuarios.
+4. **Revisar Capturas**  
+   - Al igual que un profesor, el administrador puede acceder a las capturas almacenadas en el sistema (o a las de todos los usuarios, según la implementación).
+
+### 6.4 Cierre de Sesión
+
+Al finalizar, haz clic en “Cerrar Sesión” para volver a la pantalla de login y asegurar que nadie más acceda a tus permisos.
+
+## 7. Posibles Mejoras Futuras
+
+Si bien el proyecto cumple las funcionalidades básicas de monitoreo y envío de capturas, se pueden plantear diversas mejoras y extensiones:
+
+1. **Notificaciones en Tiempo Real**  
+   - Implementar un mecanismo de *push notifications* (por ejemplo, WebSockets) para alertar inmediatamente al profesor o al administrador cuando se detecta una palabra clave.
+
+2. **Encriptación de Comunicaciones**  
+   - Configurar el servidor Flask para trabajar sobre **HTTPS**, asegurando que las capturas y datos viajen cifrados.
+
+3. **Base de Datos Externa**  
+   - Sustituir la base de datos SQLite por una solución en la nube (MySQL, PostgreSQL, etc.) para un entorno productivo y con mayor concurrencia.
+
+4. **Logs y Auditoría**  
+   - Registrar en detalle la actividad del sistema (hora de envío de capturas, logs de acceso, etc.) en un archivo o base de datos de auditoría.
+
+5. **Gestión de Permisos Más Detallada**  
+   - Ampliar el sistema de roles para contemplar perfiles intermedios o restricciones más finas (por ejemplo, profesores con visibilidad solo de ciertos equipos).
+
+6. **Interfaz de Análisis**  
+   - Incluir gráficos o resúmenes estadísticos para que los administradores/profesores vean cuántas capturas se han realizado o cuántas coincidencias con palabras clave ha habido en un periodo de tiempo.
+
+7. **Soporte Multiplataforma para el Cliente**  
+   - Adaptar el proceso de captura y OCR para equipos Linux o macOS, ampliando el alcance de la aplicación.
+
+Con estas ideas, el proyecto podría evolucionar hacia un sistema de monitoreo más robusto, seguro y escalable.
+
+## 8. Conclusiones
+
+Este sistema de monitorización Cliente-Servidor demuestra cómo integrar diferentes tecnologías (Flask, PyTesseract, PyAutoGUI, Docker) para lograr un control de uso en equipos remotos:
+
+- **Viabilidad Técnica**: Se logra capturar, procesar y almacenar imágenes de manera eficaz. El uso de OCR y la búsqueda de palabras clave funciona correctamente para los propósitos iniciales.
+- **Arquitectura Modular**: Separar la funcionalidad en Blueprints (Flask) y módulos (Cliente) facilita la escalabilidad, el mantenimiento y la comprensión de cada parte del sistema.
+- **Seguridad y Roles**: Aunque se ha implementado un esquema básico de roles (administrador y profesor) con contraseñas cifradas, este enfoque podría mejorarse con HTTPS, tokens JWT, etc. según las necesidades de despliegue real.
+- **Uso de Docker**: La posibilidad de desplegar el servidor dentro de contenedores simplifica la instalación en distintos entornos. El script `deploy.bat` automatiza la mayor parte del proceso.
+
+En conjunto, el proyecto proporciona una **prueba de concepto funcional** que puede servir como base para implementaciones más robustas y escalables en entornos de monitorización de exámenes, laboratorios o equipos remotos.
+
+---
+
+## 9. Licencia y Contacto
+
+Este proyecto se distribuye bajo una licencia de uso libre (por ejemplo, [MIT License](https://opensource.org/licenses/MIT) o similar). Puedes clonar, modificar y reutilizar el código con fines educativos o de investigación.
+
+**Contacto**:  
+Si tienes dudas o sugerencias, abre un _issue_ en el repositorio o contacta al autor/colaboradores a través del canal especificado en el proyecto.
+
+¡Gracias por tu interés en este proyecto!
