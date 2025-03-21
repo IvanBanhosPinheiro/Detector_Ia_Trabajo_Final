@@ -11,6 +11,8 @@ from flask import Flask, render_template
 from flask_login import LoginManager
 import configparser
 
+
+
 #Importamos la rutas absolutas
 from routes.ruta_abs import get_data_path
 
@@ -29,6 +31,7 @@ from routes.error import error
 
 # Importamos el hilo de comprobación de horarios
 from background_process.horario_checker import HorarioChecker
+
 
 
 # Inicialización de Flask
@@ -111,4 +114,5 @@ if __name__ == '__main__':
     app.horario_checker = horario_checker  # Guardar referencia al hilo en la aplicación
     horario_checker.start()
     
+    # Arrancar servidor
     app.run(host='0.0.0.0', port=port)

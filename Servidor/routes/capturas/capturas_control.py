@@ -12,6 +12,7 @@ Las operaciones principales incluyen:
 - Recepción y almacenamiento de capturas desde clientes
 - Consulta del estado del sistema
 """
+import queue, sqlalchemy.exc, time
 from flask import Blueprint, request, render_template, current_app
 # Imports de Flask-Login
 from flask_login import login_required, current_user
@@ -30,6 +31,11 @@ capture_enabled = False  # Estado de captura
 profesor_activo = None  # ID del profesor actualmente capturando
 modo_automatico = True  # Control por horario (True) o manual (False)
 
+# Cola global para almacenar capturas pendientes
+capturas_pendientes = queue.Queue(maxsize=100)
+
+# Número de capturas a procesar por cada solicitud
+MAX_CAPTURAS_POR_CICLO = 5
 
 # Ruta del panel de control
 @capturas_control.route('/dashboard')
@@ -149,10 +155,11 @@ def toggle_modo():
 @capturas_control.route('/uploads', methods=['POST'])
 def upload():
     """
-    Recibe y procesa capturas enviadas por los clientes.
+    Recibe capturas enviadas por los clientes y las encola para procesamiento.
     
-    Verifica que las capturas estén habilitadas, valida los datos recibidos,
-    y almacena tanto el texto extraído como la imagen capturada (si existe).
+    En lugar de procesar inmediatamente en la base de datos, coloca la 
+    captura en una cola y devuelve respuesta rápida al cliente.
+    Posteriormente, procesa algunas capturas pendientes de la cola.
     
     Request Form:
         cliente_id (str): Identificador único del cliente
@@ -166,20 +173,14 @@ def upload():
         str: Mensaje de confirmación o error
         
     Status Codes:
-        200: Captura recibida y almacenada correctamente
+        200: Captura recibida correctamente
         400: Datos faltantes o formato incorrecto
         403: Capturas deshabilitadas o falta profesor activo
         500: Error interno del servidor
-        
-    Note:
-        No requiere autenticación (llamada desde clientes)
-        Registra información de debug en la consola
+        503: Cola llena, servidor ocupado
     """
     try:
         global capture_enabled, profesor_activo
-        # Debug: Imprimir todos los datos recibidos
-        print(f"[{datetime.now()}] Form data: {request.form}")
-        print(f"[{datetime.now()}] Files: {request.files}")
         
         # Verificar que las capturas están habilitadas y hay un profesor activo
         if not capture_enabled or profesor_activo is None:
@@ -210,45 +211,146 @@ def upload():
             print(f"[{datetime.now()}] Falta archivo data")
             return 'Falta archivo data', 400
 
-        # Buscar o crear el equipo
-        equipo = Equipo.query.filter_by(nombre=cliente_id).first()
-        if not equipo:
-            equipo = Equipo(nombre=cliente_id)
-            db.session.add(equipo)
-            db.session.commit()
+        # Preparar datos para la cola
+        datos_captura = {
+            'cliente_id': cliente_id,
+            'profesor_activo': profesor_activo,
+            'fecha': fecha,
+            'texto': None,
+            'imagen': None
+        }
 
-        # Crear nuevo registro de datos
-        nuevo_dato = Datos(
-            id_usuario=profesor_activo,
-            id_equipo=equipo.id,
-            fecha=fecha
-        )
-
-        # Guardar el contenido del archivo de texto
+        # Procesar archivos
         archivo_texto = request.files['data']
         try:
             texto_contenido = archivo_texto.read().decode('utf-8')
-            nuevo_dato.texto = texto_contenido
+            datos_captura['texto'] = texto_contenido
         except UnicodeDecodeError as e:
             print(f"[{datetime.now()}] Error decodificando texto: {str(e)}")
             return 'Error en codificación del archivo', 400
 
-        # Guardar screenshot si existe
         if 'screenshot' in request.files:
             screenshot = request.files['screenshot']
-            nuevo_dato.imagen = screenshot.read()
+            datos_captura['imagen'] = screenshot.read()
 
-        # Guardar en la base de datos
-        db.session.add(nuevo_dato)
-        db.session.commit()
-
-        print(f"[{datetime.now()}] Datos recibidos correctamente de {cliente_id} para profesor {profesor_activo}")
-        return 'OK', 200
+        # Intentar encolar la captura
+        try:
+            capturas_pendientes.put(datos_captura, block=False)
+            print(f"[{datetime.now()}] Captura de {cliente_id} encolada correctamente")
+            
+            # Procesar algunas capturas pendientes
+            procesar_capturas_pendientes()
+            
+            return 'OK', 200
+        except queue.Full:
+            print(f"[{datetime.now()}] Cola llena, rechazando captura de {cliente_id}")
+            return 'Servidor ocupado, intentar más tarde', 503
         
     except Exception as e:
         print(f"[{datetime.now()}] Error inesperado: {str(e)}")
-        db.session.rollback()
         return 'Error interno del servidor', 500
+
+
+def procesar_capturas_pendientes():
+    """
+    Procesa algunas capturas pendientes de la cola.
+    
+    Esta función intenta procesar hasta MAX_CAPTURAS_POR_CICLO capturas de la cola,
+    serializando las escrituras en la base de datos para evitar bloqueos.
+    """
+    capturas_procesadas = 0
+    
+    while not capturas_pendientes.empty() and capturas_procesadas < MAX_CAPTURAS_POR_CICLO:
+        try:
+            # Obtener la siguiente captura de la cola sin bloquear
+            datos_captura = capturas_pendientes.get(block=False)
+            
+            # Procesar la captura
+            resultado = guardar_captura_en_bd(datos_captura)
+            
+            # Marcar como procesada (se haya procesado correctamente o no)
+            capturas_pendientes.task_done()
+            
+            if resultado:
+                capturas_procesadas += 1
+            
+        except queue.Empty:
+            # La cola estaba vacía
+            break
+        except Exception as e:
+            print(f"[{datetime.now()}] Error procesando capturas pendientes: {str(e)}")
+            break
+
+
+def guardar_captura_en_bd(datos_captura):
+    """
+    Guarda una captura en la base de datos con sistema de reintentos.
+    
+    Args:
+        datos_captura (dict): Datos de la captura a guardar
+        
+    Returns:
+        bool: True si se guardó correctamente, False en caso de error
+    """
+    max_reintentos = 3
+    reintentos = 0
+    tiempo_espera = 0.2  # Segundos iniciales
+    
+    while reintentos <= max_reintentos:
+        try:
+            cliente_id = datos_captura['cliente_id']
+            profesor_activo = datos_captura['profesor_activo']
+            fecha = datos_captura['fecha']
+            
+            # Buscar o crear el equipo
+            equipo = Equipo.query.filter_by(nombre=cliente_id).first()
+            if not equipo:
+                equipo = Equipo(nombre=cliente_id)
+                db.session.add(equipo)
+                db.session.commit()
+            
+            # Crear nuevo registro de datos
+            nuevo_dato = Datos(
+                id_usuario=profesor_activo,
+                id_equipo=equipo.id,
+                fecha=fecha,
+                texto=datos_captura.get('texto'),
+                imagen=datos_captura.get('imagen')
+            )
+            
+            # Guardar en la base de datos
+            db.session.add(nuevo_dato)
+            db.session.commit()
+            
+            print(f"[{datetime.now()}] Captura de {cliente_id} guardada (intento {reintentos+1})")
+            return True
+            
+        except sqlalchemy.exc.OperationalError as e:
+            # Verificar si es un error de base de datos bloqueada
+            error_mensaje = str(e).lower()
+            if "database is locked" in error_mensaje or "sqlite_busy" in error_mensaje:
+                reintentos += 1
+                db.session.rollback()
+                
+                if reintentos <= max_reintentos:
+                    # Tiempo de espera creciente
+                    tiempo_espera_actual = tiempo_espera * (2 ** (reintentos - 1))
+                    print(f"[{datetime.now()}] Base de datos bloqueada, esperando {tiempo_espera_actual}s")
+                    time.sleep(tiempo_espera_actual)
+                else:
+                    print(f"[{datetime.now()}] Máximo de reintentos alcanzado")
+                    return False
+            else:
+                # Otro tipo de error de base de datos
+                print(f"[{datetime.now()}] Error de base de datos: {str(e)}")
+                db.session.rollback()
+                return False
+        except Exception as e:
+            print(f"[{datetime.now()}] Error guardando captura: {str(e)}")
+            db.session.rollback()
+            return False
+    
+    return False
 
 # Ruta para obtener el estado de las capturas
 @capturas_control.route('/capture_status')
