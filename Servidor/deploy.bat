@@ -7,13 +7,17 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-REM Ejecutar el contenedor
+REM Eliminar contenedor anterior si existe (opcional pero recomendable)
+echo Eliminando contenedor anterior si existe...
+docker rm -f serverdetectoria >nul 2>&1
+
+REM Ejecutar el contenedor con reinicio automático
 echo Ejecutando el contenedor...
-docker run -d -p 5000:5000 --name serverdetectoria -v mi-bd:/app/instance serverdetectoria
+docker run -d --restart=always -p 5000:5000 --name serverdetectoria -v mi-bd:/app/instance serverdetectoria
 if %errorlevel% neq 0 (
     echo Error al ejecutar el contenedor.
     exit /b %errorlevel%
 )
 
-echo Despliegue completado con éxito.
+echo Despliegue completado con éxito. El contenedor se reiniciará automáticamente al arrancar Windows si Docker está activo.
 pause
