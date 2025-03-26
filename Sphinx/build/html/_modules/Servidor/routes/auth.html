@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servidor.routes.auth &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">Servidor.routes.auth</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para Servidor.routes.auth</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo de autenticación y gestión de usuarios.</span>
+
+<span class="sd">Este Blueprint maneja todas las operaciones relacionadas con la autenticación</span>
+<span class="sd">y administración de usuarios, incluyendo inicio de sesión, registro de nuevos</span>
+<span class="sd">usuarios, cierre de sesión, y gestión de credenciales.</span>
+
+<span class="sd">Las operaciones principales incluyen:</span>
+<span class="sd">- Login de usuarios</span>
+<span class="sd">- Registro de nuevos profesores (solo administradores)</span>
+<span class="sd">- Logout</span>
+<span class="sd">- Listado de usuarios (solo administradores)</span>
+<span class="sd">- Eliminación de usuarios (solo administradores)</span>
+<span class="sd">- Cambio de contraseñas (solo administradores)</span>
+
+<span class="sd">Todas las operaciones administrativas están restringidas a usuarios</span>
+<span class="sd">con privilegios de administrador.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Imports necesarios de Flask y sus extensiones</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">logout_user</span>
+<span class="c1"># Imports de modelos</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Usuario</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">Datos</span>
+
+
+<span class="c1"># Creación del blueprint de autenticación</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;auth&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Ruta para el login de usuarios</span>
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.auth.login">[documentos]</a><span class="nd">@auth</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maneja la autenticación de usuarios.</span>
+<span class="sd">    </span>
+<span class="sd">    Procesa las credenciales enviadas por el usuario y establece la sesión</span>
+<span class="sd">    si son correctas. Redirige a usuarios ya autenticados.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        GET: Muestra el formulario de inicio de sesión</span>
+<span class="sd">        POST: Procesa las credenciales enviadas</span>
+<span class="sd">    </span>
+<span class="sd">    Form Data:</span>
+<span class="sd">        usuario: Nombre de usuario</span>
+<span class="sd">        password: Contraseña del usuario</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        GET: Template del formulario de login</span>
+<span class="sd">        POST (éxito): Redirección al panel de control con mensaje de éxito</span>
+<span class="sd">        POST (error): Template de login con mensaje de error y código 401</span>
+<span class="sd">        </span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; login()</span>
+<span class="sd">        # GET: Muestra formulario</span>
+<span class="sd">        # POST correcto: Redirige al panel</span>
+<span class="sd">        # POST incorrecto: Mensaje de error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Si ya está autenticado, redirigir al panel</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;capturas_control.panel_control&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Si es una petición POST, procesar el formulario</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">nombre</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;usuario&#39;</span><span class="p">]</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># Buscar usuario en la base de datos</span>
+        <span class="n">usuario</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">nombre</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        
+        <span class="c1"># Verificar credenciales</span>
+        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">usuario</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+            <span class="n">login_user</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Has iniciado sesión correctamente&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;capturas_control.panel_control&#39;</span><span class="p">))</span>
+        
+        <span class="c1"># Credenciales incorrectas</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Usuario o contraseña incorrectos&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;auth/login.html&#39;</span><span class="p">),</span> <span class="mi">401</span>
+    
+    <span class="c1"># Si es GET, mostrar formulario</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;auth/login.html&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># Ruta para registrar un nuevo usuario</span>
+<div class="viewcode-block" id="registro"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.auth.registro">[documentos]</a><span class="nd">@auth</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/registro&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">registro</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maneja el registro de nuevos usuarios (profesores).</span>
+<span class="sd">    </span>
+<span class="sd">    Crea nuevos usuarios con rol de profesor (no administrador).</span>
+<span class="sd">    Solo accesible para usuarios con privilegios de administrador.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        GET: Muestra el formulario de registro</span>
+<span class="sd">        POST: Procesa el registro del nuevo usuario</span>
+<span class="sd">        </span>
+<span class="sd">    Form Data:</span>
+<span class="sd">        usuario: Nombre del nuevo usuario</span>
+<span class="sd">        password: Contraseña elegida</span>
+<span class="sd">        password_confirm: Confirmación de la contraseña</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        GET: Template del formulario de registro</span>
+<span class="sd">        POST (éxito): Redirección a la lista de usuarios</span>
+<span class="sd">        POST (error): Template de registro con mensaje de error</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Error en la base de datos al registrar</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Solo usuarios administradores pueden registrar nuevos usuarios</span>
+<span class="sd">        Las contraseñas se almacenan de forma segura (hash)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Verificar permisos de administrador</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;capturas_control.panel_control&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Si es POST, procesar el formulario</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">nombre</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;usuario&#39;</span><span class="p">]</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+        <span class="n">password_confirm</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;password_confirm&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># Verificar si el usuario ya existe</span>
+        <span class="k">if</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">nombre</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">():</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;El nombre de usuario ya está en uso&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/registro.html&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Verificar que las contraseñas coincidan</span>
+        <span class="k">if</span> <span class="n">password</span> <span class="o">!=</span> <span class="n">password_confirm</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Las contraseñas no coinciden&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/registro.html&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Crear nuevo usuario profesor</span>
+        <span class="n">nuevo_usuario</span> <span class="o">=</span> <span class="n">Usuario</span><span class="p">(</span>
+            <span class="n">nombre</span><span class="o">=</span><span class="n">nombre</span><span class="p">,</span>
+            <span class="n">administrador</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Los nuevos usuarios no son administradores</span>
+        <span class="p">)</span>
+        <span class="n">nuevo_usuario</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+        
+        <span class="c1"># Intentar guardar en la base de datos</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nuevo_usuario</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Usuario registrado correctamente&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;auth.lista_usuarios&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Error al registrar usuario&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+                    
+    <span class="c1"># Si es GET o falló el registro, mostrar formulario</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/registro.html&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># Ruta para cerrar sesión</span>
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.auth.logout">[documentos]</a><span class="nd">@auth</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">logout</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cierra la sesión del usuario actual.</span>
+<span class="sd">    </span>
+<span class="sd">    Termina la sesión activa y redirige al formulario de login.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        redirect: Redirección a la página de login con mensaje de confirmación</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Requiere autenticación previa</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logout_user</span><span class="p">()</span>
+    <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Has cerrado sesión correctamente&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;auth.login&#39;</span><span class="p">))</span></div>
+
+<span class="c1"># Ruta para ver la lista de usuarios</span>
+<div class="viewcode-block" id="lista_usuarios"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.auth.lista_usuarios">[documentos]</a><span class="nd">@auth</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/usuarios&quot;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lista_usuarios</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Muestra la lista de todos los usuarios del sistema.</span>
+<span class="sd">    </span>
+<span class="sd">    Recupera todos los usuarios de la base de datos y los presenta</span>
+<span class="sd">    en una interfaz que permite su gestión (eliminar, cambiar contraseña).</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        render_template: Página con la lista de usuarios</span>
+<span class="sd">        redirect: Redirección al panel si no es administrador</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Solo usuarios administradores pueden acceder a esta función</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Verificar permisos de administrador</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;capturas_control.panel_control&#39;</span><span class="p">))</span>
+        
+    <span class="c1"># Obtener todos los usuarios</span>
+    <span class="n">usuarios</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;admin/usuarios.html&quot;</span><span class="p">,</span> <span class="n">usuarios</span><span class="o">=</span><span class="n">usuarios</span><span class="p">)</span></div>
+
+<span class="c1"># Ruta para eliminar un usuario</span>
+<div class="viewcode-block" id="eliminar_usuario"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.auth.eliminar_usuario">[documentos]</a><span class="nd">@auth</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/usuario/&lt;int:id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">eliminar_usuario</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Elimina un usuario y todas sus capturas asociadas.</span>
+<span class="sd">    </span>
+<span class="sd">    Primero elimina todas las capturas relacionadas con el usuario</span>
+<span class="sd">    y luego elimina el usuario en sí dentro de una transacción.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        id (int): ID del usuario a eliminar</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Mensaje de éxito o error con código HTTP apropiado</span>
+<span class="sd">        </span>
+<span class="sd">    Status Codes:</span>
+<span class="sd">        200: Usuario eliminado correctamente</span>
+<span class="sd">        400: Intento de eliminar un administrador</span>
+<span class="sd">        403: Usuario no autorizado</span>
+<span class="sd">        404: Usuario no encontrado</span>
+<span class="sd">        500: Error del servidor</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        No se permite eliminar usuarios con rol de administrador</span>
+<span class="sd">        Solo usuarios administradores pueden eliminar otros usuarios</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Verificar permisos de administrador</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;No autorizado&#39;</span><span class="p">,</span> <span class="mi">403</span>
+        
+    <span class="c1"># Buscar usuario y verificar que no sea admin</span>
+    <span class="n">usuario</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;No se puede eliminar un administrador&#39;</span><span class="p">,</span> <span class="mi">400</span>
+        
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Primero eliminar todas las capturas asociadas</span>
+        <span class="n">capturas</span> <span class="o">=</span> <span class="n">Datos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_usuario</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">captura</span> <span class="ow">in</span> <span class="n">capturas</span><span class="p">:</span>
+            <span class="c1"># Eliminar registro de la base de datos</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">captura</span><span class="p">)</span>
+            
+        <span class="c1"># Luego eliminar el usuario</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s1">&#39;Usuario y sus capturas eliminados correctamente&#39;</span><span class="p">,</span> <span class="mi">200</span>
+        
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error al eliminar usuario: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;Error al eliminar usuario&#39;</span><span class="p">,</span> <span class="mi">500</span></div>
+
+<span class="c1"># Ruta para cambiar la contraseña del usuario actual</span>
+<div class="viewcode-block" id="cambiar_password_admin"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.auth.cambiar_password_admin">[documentos]</a><span class="nd">@auth</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/cambiar_password_admin/&lt;int:id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cambiar_password_admin</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cambia la contraseña de un usuario específico.</span>
+<span class="sd">    </span>
+<span class="sd">    Permite a un administrador cambiar la contraseña de cualquier</span>
+<span class="sd">    usuario no administrador sin necesitar la contraseña anterior.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        id (int): ID del usuario cuya contraseña se cambiará</span>
+<span class="sd">        </span>
+<span class="sd">    Request JSON:</span>
+<span class="sd">        new_password (str): Nueva contraseña a establecer</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        JSON: Mensaje de éxito o error</span>
+<span class="sd">        </span>
+<span class="sd">    Status Codes:</span>
+<span class="sd">        200: Contraseña actualizada correctamente</span>
+<span class="sd">        400: Contraseña vacía o intento de cambiar contraseña de administrador</span>
+<span class="sd">        403: Usuario no autorizado</span>
+<span class="sd">        404: Usuario no encontrado</span>
+<span class="sd">        500: Error del servidor</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        No se permite cambiar contraseñas de administradores</span>
+<span class="sd">        Solo usuarios administradores pueden usar esta función</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Solo los administradores pueden cambiar contraseñas&#39;</span><span class="p">}),</span> <span class="mi">403</span>
+
+    <span class="c1"># No permitir cambiar contraseña de administradores</span>
+    <span class="n">usuario</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No se puede cambiar la contraseña de un administrador&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">new_password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;new_password&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_password</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;La contraseña no puede estar vacía&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">usuario</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">new_password</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Contraseña actualizada correctamente para </span><span class="si">{</span><span class="n">usuario</span><span class="o">.</span><span class="n">nombre</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Error al actualizar la contraseña&#39;</span><span class="p">}),</span> <span class="mi">500</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

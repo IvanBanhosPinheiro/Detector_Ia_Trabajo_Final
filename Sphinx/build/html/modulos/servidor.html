@@ -1,0 +1,1785 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servidor del Detector de IA &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../ejemplos.html" />
+    <link rel="prev" title="Cliente del Detector de IA" href="cliente.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Módulos del Detector de IA</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cliente.html">Cliente del Detector de IA</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Servidor del Detector de IA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#componentes-principales">Componentes Principales</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arquitectura-del-sistema">Arquitectura del Sistema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modulo-principal">Módulo Principal</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Servidor.run.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Servidor.run.load_user"><code class="docutils literal notranslate"><span class="pre">load_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Servidor.run.index"><code class="docutils literal notranslate"><span class="pre">index()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#modulos-del-servidor">Módulos del Servidor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modelos-de-datos">Modelos de Datos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#autenticacion">Autenticación</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gestion-de-palabras-clave">Gestión de Palabras Clave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gestion-de-capturas">Gestión de Capturas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gestion-de-horarios">Gestión de Horarios</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#proceso-en-segundo-plano">Proceso en Segundo Plano</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Módulos del Detector de IA</a></li>
+      <li class="breadcrumb-item active">Servidor del Detector de IA</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modulos/servidor.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="servidor-del-detector-de-ia">
+<h1>Servidor del Detector de IA<a class="headerlink" href="#servidor-del-detector-de-ia" title="Enlace permanente a este encabezado"></a></h1>
+<p>Este módulo implementa el servidor central que gestiona el sistema de detección de IA,
+procesando las alertas de los clientes y proporcionando una interfaz de administración.</p>
+<section id="componentes-principales">
+<h2>Componentes Principales<a class="headerlink" href="#componentes-principales" title="Enlace permanente a este encabezado"></a></h2>
+<ul class="simple">
+<li><p><strong>Aplicación Flask</strong>: Núcleo del servidor web</p></li>
+<li><p><strong>Sistema de autenticación</strong>: Control de acceso seguro</p></li>
+<li><p><strong>Base de datos</strong>: Almacenamiento persistente de datos</p></li>
+<li><p><strong>Módulos funcionales</strong>:
+* Gestión de palabras clave
+* Procesamiento de capturas
+* Control de horarios
+* Interfaz de administración</p></li>
+</ul>
+</section>
+<section id="arquitectura-del-sistema">
+<h2>Arquitectura del Sistema<a class="headerlink" href="#arquitectura-del-sistema" title="Enlace permanente a este encabezado"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌────────────────┐      ┌────────────────┐      ┌────────────────┐
+│   Cliente      │      │    Servidor    │      │   Base de      │
+│   (Agente)     │─────&gt;│     Flask      │─────&gt;│    Datos       │
+│                │      │                │      │                │
+└────────────────┘      └───────┬────────┘      └────────────────┘
+                               │
+                  ┌────────────┼────────────┐
+                  │            │            │
+        ┌─────────▼───┐ ┌──────▼─────┐ ┌────▼──────┐
+        │  Gestión de │ │ Gestión de │ │ Gestión de│
+        │ Palabras    │ │  Capturas  │ │ Horarios  │
+        │  Clave      │ │            │ │           │
+        └─────────────┘ └────────────┘ └───────────┘
+</pre></div>
+</div>
+</section>
+<section id="modulo-principal">
+<h2>Módulo Principal<a class="headerlink" href="#modulo-principal" title="Enlace permanente a este encabezado"></a></h2>
+<span class="target" id="module-Servidor.run"></span><p>Módulo principal de la aplicación Flask.
+Configura y arranca el servidor web con todas sus funcionalidades.</p>
+<p>Este módulo:
+- Inicializa la aplicación Flask
+- Configura bases de datos y autenticación
+- Registra todos los blueprints
+- Inicia el servidor y procesos en segundo plano</p>
+<dl class="simple">
+<dt>Imports:</dt><dd><p>flask: Framework web utilizado para crear la aplicación
+flask_login: Gestión de autenticación de usuarios
+configparser: Lectura de archivos de configuración</p>
+</dd>
+</dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="Servidor.run.app">
+<span class="sig-name descname"><span class="pre">app</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Flask</span> <span class="pre">'Servidor.run'&gt;</span></em><a class="headerlink" href="#Servidor.run.app" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Configuración principal de Flask:
+SECRET_KEY: Clave secreta para sesiones
+SQLALCHEMY_DATABASE_URI: Ubicación de la base de datos SQLite
+SQLALCHEMY_TRACK_MODIFICATIONS: Desactivar tracking de modificaciones</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.run.load_user">
+<span class="sig-name descname"><span class="pre">load_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/run.html#load_user"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.run.load_user" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Carga un usuario desde la base de datos para Flask-Login.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> (<em>int</em>) – ID del usuario a cargar</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Objeto Usuario o None si no existe</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#Servidor.models.models.Usuario" title="Servidor.models.models.Usuario">Usuario</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.run.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/run.html#index"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.run.index" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Ruta principal de la aplicación.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Plantilla renderizada de la página principal</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="modulos-del-servidor">
+<h2>Módulos del Servidor<a class="headerlink" href="#modulos-del-servidor" title="Enlace permanente a este encabezado"></a></h2>
+<section id="modelos-de-datos">
+<h3>Modelos de Datos<a class="headerlink" href="#modelos-de-datos" title="Enlace permanente a este encabezado"></a></h3>
+<span class="target" id="module-Servidor.models.models"></span><p>Módulo de modelos de datos.</p>
+<p>Define las estructuras de datos para la aplicación mediante SQLAlchemy ORM,
+incluyendo los modelos para usuarios, equipos, capturas de datos y horarios.</p>
+<p>Los modelos implementados son:
+- Usuario: Usuarios del sistema (administradores y profesores)
+- Equipo: Computadoras que envían capturas al servidor
+- Datos: Capturas de pantalla y texto extraído
+- Horario: Configuración de horarios para capturas automáticas</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/models/models.html#Usuario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.models.models.Usuario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de usuario del sistema.</p>
+<p>Representa tanto a administradores como profesores. Hereda de UserMixin
+para proporcionar los métodos necesarios para Flask-Login.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#Servidor.models.models.Usuario.id" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Identificador único del usuario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.nombre">
+<span class="sig-name descname"><span class="pre">nombre</span></span><a class="headerlink" href="#Servidor.models.models.Usuario.nombre" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Nombre de usuario único</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.password_hash">
+<span class="sig-name descname"><span class="pre">password_hash</span></span><a class="headerlink" href="#Servidor.models.models.Usuario.password_hash" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Hash de la contraseña (nunca la contraseña en texto plano)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.administrador">
+<span class="sig-name descname"><span class="pre">administrador</span></span><a class="headerlink" href="#Servidor.models.models.Usuario.administrador" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Indica si el usuario tiene permisos de administrador</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.datos">
+<span class="sig-name descname"><span class="pre">datos</span></span><a class="headerlink" href="#Servidor.models.models.Usuario.datos" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Relación con las capturas asociadas al usuario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>relationship</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.horarios">
+<span class="sig-name descname"><span class="pre">horarios</span></span><a class="headerlink" href="#Servidor.models.models.Usuario.horarios" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Relación con los horarios asociados al usuario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>relationship</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Los usuarios con administrador=True tienen acceso a todas las
+funciones administrativas del sistema</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id0" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">nombre</span></span><a class="headerlink" href="#id1" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">password_hash</span></span><a class="headerlink" href="#id2" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">administrador</span></span><a class="headerlink" href="#id3" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">datos</span></span><a class="headerlink" href="#id4" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">horarios</span></span><a class="headerlink" href="#id5" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.set_password">
+<span class="sig-name descname"><span class="pre">set_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/models/models.html#Usuario.set_password"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.models.models.Usuario.set_password" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Establece la contraseña del usuario.</p>
+<p>Convierte la contraseña en texto plano a un hash seguro
+para almacenamiento en la base de datos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>password</strong> (<em>str</em>) – Contraseña en texto plano</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>La contraseña original nunca se almacena, solo su hash</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.check_password">
+<span class="sig-name descname"><span class="pre">check_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/models/models.html#Usuario.check_password"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.models.models.Usuario.check_password" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Verifica si la contraseña proporcionada es correcta.</p>
+<p>Compara la contraseña en texto plano con el hash almacenado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>password</strong> (<em>str</em>) – Contraseña a verificar</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>True si la contraseña es correcta, False en caso contrario</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Usuario.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#Servidor.models.models.Usuario.query" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Advertencia</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Servidor.models.models.Equipo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Equipo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/models/models.html#Equipo"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.models.models.Equipo" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de equipo o dispositivo cliente.</p>
+<p>Representa un equipo o computadora que envía capturas al servidor.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Equipo.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#Servidor.models.models.Equipo.id" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Identificador único del equipo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Equipo.nombre">
+<span class="sig-name descname"><span class="pre">nombre</span></span><a class="headerlink" href="#Servidor.models.models.Equipo.nombre" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Nombre único del equipo (generalmente su identificador de red)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Equipo.datos">
+<span class="sig-name descname"><span class="pre">datos</span></span><a class="headerlink" href="#Servidor.models.models.Equipo.datos" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Relación con las capturas generadas por este equipo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>relationship</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id6" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">nombre</span></span><a class="headerlink" href="#id7" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">datos</span></span><a class="headerlink" href="#id8" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Equipo.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#Servidor.models.models.Equipo.query" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Advertencia</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Datos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/models/models.html#Datos"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.models.models.Datos" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de datos capturados.</p>
+<p>Almacena la información capturada por los clientes, incluyendo
+imágenes de pantalla y texto extraído.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#Servidor.models.models.Datos.id" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Identificador único de la captura</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.id_usuario">
+<span class="sig-name descname"><span class="pre">id_usuario</span></span><a class="headerlink" href="#Servidor.models.models.Datos.id_usuario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>ID del usuario (profesor) propietario de la captura</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.id_equipo">
+<span class="sig-name descname"><span class="pre">id_equipo</span></span><a class="headerlink" href="#Servidor.models.models.Datos.id_equipo" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>ID del equipo que generó la captura</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.fecha">
+<span class="sig-name descname"><span class="pre">fecha</span></span><a class="headerlink" href="#Servidor.models.models.Datos.fecha" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Fecha y hora de la captura</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.imagen">
+<span class="sig-name descname"><span class="pre">imagen</span></span><a class="headerlink" href="#Servidor.models.models.Datos.imagen" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Datos binarios de la imagen capturada</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LargeBinary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.texto">
+<span class="sig-name descname"><span class="pre">texto</span></span><a class="headerlink" href="#Servidor.models.models.Datos.texto" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Texto extraído de la captura o enviado por el cliente</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Text</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.usuario">
+<span class="sig-name descname"><span class="pre">usuario</span></span><a class="headerlink" href="#Servidor.models.models.Datos.usuario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Relación con el usuario propietario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>relationship</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.equipo">
+<span class="sig-name descname"><span class="pre">equipo</span></span><a class="headerlink" href="#Servidor.models.models.Datos.equipo" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Relación con el equipo origen</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>relationship</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id9" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">id_usuario</span></span><a class="headerlink" href="#id10" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">id_equipo</span></span><a class="headerlink" href="#id11" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">fecha</span></span><a class="headerlink" href="#id12" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">imagen</span></span><a class="headerlink" href="#id13" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">texto</span></span><a class="headerlink" href="#id14" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Datos.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#Servidor.models.models.Datos.query" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Advertencia</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Horario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/models/models.html#Horario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.models.models.Horario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Modelo de horario para capturas automáticas.</p>
+<p>Define períodos de tiempo en los que el sistema capturará
+automáticamente la actividad de los equipos para un usuario específico.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#Servidor.models.models.Horario.id" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Identificador único del horario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.hora_inicio">
+<span class="sig-name descname"><span class="pre">hora_inicio</span></span><a class="headerlink" href="#Servidor.models.models.Horario.hora_inicio" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Hora de inicio del período de captura</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.hora_fin">
+<span class="sig-name descname"><span class="pre">hora_fin</span></span><a class="headerlink" href="#Servidor.models.models.Horario.hora_fin" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Hora de finalización del período de captura</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.dia">
+<span class="sig-name descname"><span class="pre">dia</span></span><a class="headerlink" href="#Servidor.models.models.Horario.dia" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Día de la semana (0=Lunes, 6=Domingo)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.id_usuario">
+<span class="sig-name descname"><span class="pre">id_usuario</span></span><a class="headerlink" href="#Servidor.models.models.Horario.id_usuario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>ID del usuario (profesor) asociado con este horario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.usuario">
+<span class="sig-name descname"><span class="pre">usuario</span></span><a class="headerlink" href="#Servidor.models.models.Horario.usuario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Relación con el usuario propietario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>relationship</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>En modo automático, el sistema utilizará estos horarios para
+activar y desactivar las capturas sin intervención manual</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#id15" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">hora_inicio</span></span><a class="headerlink" href="#id16" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">hora_fin</span></span><a class="headerlink" href="#id17" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">dia</span></span><a class="headerlink" href="#id18" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">id_usuario</span></span><a class="headerlink" href="#id19" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.models.models.Horario.query">
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#Servidor.models.models.Horario.query" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Advertencia</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="autenticacion">
+<h3>Autenticación<a class="headerlink" href="#autenticacion" title="Enlace permanente a este encabezado"></a></h3>
+<span class="target" id="module-Servidor.routes.auth"></span><p>Módulo de autenticación y gestión de usuarios.</p>
+<p>Este Blueprint maneja todas las operaciones relacionadas con la autenticación
+y administración de usuarios, incluyendo inicio de sesión, registro de nuevos
+usuarios, cierre de sesión, y gestión de credenciales.</p>
+<p>Las operaciones principales incluyen:
+- Login de usuarios
+- Registro de nuevos profesores (solo administradores)
+- Logout
+- Listado de usuarios (solo administradores)
+- Eliminación de usuarios (solo administradores)
+- Cambio de contraseñas (solo administradores)</p>
+<p>Todas las operaciones administrativas están restringidas a usuarios
+con privilegios de administrador.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.auth.login">
+<span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/auth.html#login"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.auth.login" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Maneja la autenticación de usuarios.</p>
+<p>Procesa las credenciales enviadas por el usuario y establece la sesión
+si son correctas. Redirige a usuarios ya autenticados.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.routes.auth.GET">
+<span class="sig-name descname"><span class="pre">GET</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Servidor.routes.auth.GET" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra el formulario de inicio de sesión</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.routes.auth.POST">
+<span class="sig-name descname"><span class="pre">POST</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Servidor.routes.auth.POST" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Procesa las credenciales enviadas</p>
+</dd></dl>
+
+<dl class="simple">
+<dt>Form Data:</dt><dd><p>usuario: Nombre de usuario
+password: Contraseña del usuario</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Template del formulario de login
+POST (éxito): Redirección al panel de control con mensaje de éxito
+POST (error): Template de login con mensaje de error y código 401</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>GET</p>
+</dd>
+</dl>
+<p class="rubric">Ejemplo</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">login</span><span class="p">()</span>
+<span class="go"># GET: Muestra formulario</span>
+<span class="go"># POST correcto: Redirige al panel</span>
+<span class="go"># POST incorrecto: Mensaje de error</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.auth.registro">
+<span class="sig-name descname"><span class="pre">registro</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/auth.html#registro"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.auth.registro" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Maneja el registro de nuevos usuarios (profesores).</p>
+<p>Crea nuevos usuarios con rol de profesor (no administrador).
+Solo accesible para usuarios con privilegios de administrador.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">GET</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id20" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra el formulario de registro</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">POST</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id21" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Procesa el registro del nuevo usuario</p>
+</dd></dl>
+
+<dl class="simple">
+<dt>Form Data:</dt><dd><p>usuario: Nombre del nuevo usuario
+password: Contraseña elegida
+password_confirm: Confirmación de la contraseña</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Template del formulario de registro
+POST (éxito): Redirección a la lista de usuarios
+POST (error): Template de registro con mensaje de error</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>GET</p>
+</dd>
+<dt class="field-odd">Muestra<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Error en la base de datos al registrar</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Solo usuarios administradores pueden registrar nuevos usuarios
+Las contraseñas se almacenan de forma segura (hash)</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.auth.logout">
+<span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/auth.html#logout"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.auth.logout" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Cierra la sesión del usuario actual.</p>
+<p>Termina la sesión activa y redirige al formulario de login.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Redirección a la página de login con mensaje de confirmación</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>redirect</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.auth.lista_usuarios">
+<span class="sig-name descname"><span class="pre">lista_usuarios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/auth.html#lista_usuarios"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.auth.lista_usuarios" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra la lista de todos los usuarios del sistema.</p>
+<p>Recupera todos los usuarios de la base de datos y los presenta
+en una interfaz que permite su gestión (eliminar, cambiar contraseña).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Página con la lista de usuarios
+redirect: Redirección al panel si no es administrador</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>render_template</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Solo usuarios administradores pueden acceder a esta función</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.auth.eliminar_usuario">
+<span class="sig-name descname"><span class="pre">eliminar_usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/auth.html#eliminar_usuario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.auth.eliminar_usuario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Elimina un usuario y todas sus capturas asociadas.</p>
+<p>Primero elimina todas las capturas relacionadas con el usuario
+y luego elimina el usuario en sí dentro de una transacción.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>int</em>) – ID del usuario a eliminar</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mensaje de éxito o error con código HTTP apropiado</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Usuario eliminado correctamente
+400: Intento de eliminar un administrador
+403: Usuario no autorizado
+404: Usuario no encontrado
+500: Error del servidor</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>No se permite eliminar usuarios con rol de administrador
+Solo usuarios administradores pueden eliminar otros usuarios</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.auth.cambiar_password_admin">
+<span class="sig-name descname"><span class="pre">cambiar_password_admin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/auth.html#cambiar_password_admin"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.auth.cambiar_password_admin" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Cambia la contraseña de un usuario específico.</p>
+<p>Permite a un administrador cambiar la contraseña de cualquier
+usuario no administrador sin necesitar la contraseña anterior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>int</em>) – ID del usuario cuya contraseña se cambiará</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Request JSON:</dt><dd><p>new_password (str): Nueva contraseña a establecer</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mensaje de éxito o error</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Contraseña actualizada correctamente
+400: Contraseña vacía o intento de cambiar contraseña de administrador
+403: Usuario no autorizado
+404: Usuario no encontrado
+500: Error del servidor</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>No se permite cambiar contraseñas de administradores
+Solo usuarios administradores pueden usar esta función</p>
+</div>
+</dd></dl>
+
+</section>
+<section id="gestion-de-palabras-clave">
+<h3>Gestión de Palabras Clave<a class="headerlink" href="#gestion-de-palabras-clave" title="Enlace permanente a este encabezado"></a></h3>
+<span class="target" id="module-Servidor.routes.keywords"></span><p>Módulo de gestión de palabras clave (keywords).</p>
+<p>Este Blueprint maneja las operaciones relacionadas con el archivo keywords.txt,
+incluyendo la edición y descarga del archivo que contiene las palabras clave
+utilizadas para la detección de actividades sospechosas.</p>
+<p>Las operaciones principales incluyen:
+- Edición del contenido del archivo keywords.txt
+- Descarga del archivo keywords.txt
+- Restricción de acceso a usuarios administradores</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.keywords.editar_keywords">
+<span class="sig-name descname"><span class="pre">editar_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/keywords.html#editar_keywords"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.keywords.editar_keywords" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Maneja la edición del archivo de palabras clave.</p>
+<p>Permite a usuarios administradores ver y modificar el contenido del archivo
+keywords.txt a través de una interfaz web. Si el archivo no existe,
+se creará al guardar los cambios.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.routes.keywords.GET">
+<span class="sig-name descname"><span class="pre">GET</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Servidor.routes.keywords.GET" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra el formulario con el contenido actual</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.routes.keywords.POST">
+<span class="sig-name descname"><span class="pre">POST</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Servidor.routes.keywords.POST" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Procesa los cambios enviados y actualiza el archivo</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Template renderizado con el contenido actual
+POST: Redirección a la misma página tras actualizar</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>GET</p>
+</dd>
+<dt class="field-odd">Muestra<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Si hay errores al leer o escribir el archivo</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Solo usuarios administradores pueden acceder a esta función</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.keywords.descargar_keywords">
+<span class="sig-name descname"><span class="pre">descargar_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/keywords.html#descargar_keywords"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.keywords.descargar_keywords" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Permite la descarga del archivo de palabras clave.</p>
+<p>Envía el archivo keywords.txt como adjunto para que el usuario
+pueda descargarlo. Si el archivo no existe, devuelve un error 404.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Archivo keywords.txt como adjunto descargable
+str: Mensaje de error con código 404 o 500 si hay problemas</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+<dt class="field-odd">Muestra<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Si hay errores al acceder o enviar el archivo</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Esta ruta está disponible públicamente para permitir
+que los clientes actualicen sus listas de palabras clave</p>
+</div>
+</dd></dl>
+
+</section>
+<section id="gestion-de-capturas">
+<h3>Gestión de Capturas<a class="headerlink" href="#gestion-de-capturas" title="Enlace permanente a este encabezado"></a></h3>
+<span class="target" id="module-Servidor.routes.capturas.capturas_control"></span><p>Módulo de control de capturas.</p>
+<p>Este Blueprint maneja las operaciones de control del sistema de capturas,
+incluyendo el panel de control, la activación/desactivación de capturas,
+la alternancia de modos y la recepción de archivos de captura.</p>
+<p>Las operaciones principales incluyen:
+- Panel de control con visualización del estado
+- Cambio entre modo automático y manual
+- Activación/desactivación de capturas
+- Recepción y almacenamiento de capturas desde clientes
+- Consulta del estado del sistema</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.panel_control">
+<span class="sig-name descname"><span class="pre">panel_control</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#panel_control"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.panel_control" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra el panel de control principal.</p>
+<p>Recupera las capturas del usuario actual, las agrupa por equipos y fechas,
+y muestra el estado actual del sistema de capturas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Página del panel de control con datos dinámicos</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>render_template</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Muestra solo capturas del usuario autenticado</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.toggle_capture">
+<span class="sig-name descname"><span class="pre">toggle_capture</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#toggle_capture"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.toggle_capture" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Alterna el estado de las capturas.</p>
+<p>En modo manual, activa o desactiva las capturas.
+En modo automático, fuerza el cambio a modo manual y activa las capturas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Estado actualizado del sistema de capturas en formato JSON</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+En modo automático, cambia automáticamente a modo manual
+En modo manual, alterna entre activado/desactivado</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.toggle_modo">
+<span class="sig-name descname"><span class="pre">toggle_modo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#toggle_modo"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.toggle_modo" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Alterna entre modo automático y manual.</p>
+<p>Cambia la forma en que se controla la activación de capturas:
+- Modo automático: Controlado por horarios predefinidos
+- Modo manual: Controlado directamente por el usuario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Estado actualizado del sistema de capturas en formato JSON</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><p>En modo automático: Desactiva capturas y despierta el comprobador de horarios
+En modo manual: Activa capturas para el usuario actual</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#upload"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.upload" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Recibe capturas enviadas por los clientes y las encola para procesamiento.</p>
+<p>En lugar de procesar inmediatamente en la base de datos, coloca la
+captura en una cola y devuelve respuesta rápida al cliente.
+Posteriormente, procesa algunas capturas pendientes de la cola.</p>
+<dl class="simple">
+<dt>Request Form:</dt><dd><p>cliente_id (str): Identificador único del cliente
+timestamp (str): Marca temporal en formato YYYYMMDD_HHMMSS</p>
+</dd>
+<dt>Request Files:</dt><dd><p>data (file): Archivo de texto con contenido capturado (obligatorio)
+screenshot (file): Imagen capturada (opcional)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mensaje de confirmación o error</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Captura recibida correctamente
+400: Datos faltantes o formato incorrecto
+403: Capturas deshabilitadas o falta profesor activo
+500: Error interno del servidor
+503: Cola llena, servidor ocupado</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.procesar_capturas_pendientes">
+<span class="sig-name descname"><span class="pre">procesar_capturas_pendientes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#procesar_capturas_pendientes"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.procesar_capturas_pendientes" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Procesa algunas capturas pendientes de la cola.</p>
+<p>Esta función intenta procesar hasta MAX_CAPTURAS_POR_CICLO capturas de la cola,
+serializando las escrituras en la base de datos para evitar bloqueos.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.guardar_captura_en_bd">
+<span class="sig-name descname"><span class="pre">guardar_captura_en_bd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datos_captura</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#guardar_captura_en_bd"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.guardar_captura_en_bd" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Guarda una captura en la base de datos con sistema de reintentos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>datos_captura</strong> (<em>dict</em>) – Datos de la captura a guardar</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>True si se guardó correctamente, False en caso de error</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.get_capture_status">
+<span class="sig-name descname"><span class="pre">get_capture_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#get_capture_status"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.get_capture_status" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Obtiene el estado actual de las capturas.</p>
+<p>Devuelve un objeto JSON con información sobre si las capturas
+están habilitadas, el modo actual, y los usuarios relacionados.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Estado del sistema de capturas en formato JSON con:</dt><dd><ul class="simple">
+<li><p>enabled: Si las capturas están activadas</p></li>
+<li><p>modo_automatico: Si está en modo automático u manual</p></li>
+<li><p>user_id: ID del profesor para el que se captura</p></li>
+<li><p>current_user_id: ID del usuario actual</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.get_estado_sistema">
+<span class="sig-name descname"><span class="pre">get_estado_sistema</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#get_estado_sistema"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.get_estado_sistema" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Obtiene el estado del sistema sin necesitar contexto de request.</p>
+<p>Función auxiliar que proporciona el estado actual del sistema
+para uso interno, sin requerir un contexto HTTP activo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Estado del sistema de capturas en formato JSON con:</dt><dd><ul class="simple">
+<li><p>enabled: Si las capturas están activadas</p></li>
+<li><p>modo_automatico: Si está en modo automático u manual</p></li>
+<li><p>user_id: ID del profesor para el que se captura</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Función interna, no expuesta como endpoint</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_control.set_capture_status">
+<span class="sig-name descname"><span class="pre">set_capture_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_control.html#set_capture_status"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_control.set_capture_status" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Actualiza el estado de las capturas.</p>
+<p>Modifica las variables globales que controlan el estado del sistema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enabled</strong> (<em>bool</em>) – Si las capturas deben estar activadas</p></li>
+<li><p><strong>user_id</strong> (<em>int</em>) – ID del usuario para el que se capturan datos (None si desactivado)</p></li>
+<li><p><strong>modo</strong> (<em>bool</em><em>, </em><em>opcional</em>) – Modo automático (True) o manual (False)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><dl class="simple">
+<dt>Modifica las variables globales:</dt><dd><ul class="simple">
+<li><p>capture_enabled</p></li>
+<li><p>profesor_activo</p></li>
+<li><p>modo_automatico (solo si se especifica)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Función interna, no expuesta como endpoint</p>
+</div>
+</dd></dl>
+
+<span class="target" id="module-Servidor.routes.capturas.capturas_view"></span><p>Módulo de visualización de capturas.</p>
+<p>Este Blueprint maneja las operaciones de visualización de capturas guardadas en el sistema,
+proporcionando diferentes vistas: equipos, fechas, miniaturas e imágenes completas.</p>
+<p>Las operaciones principales incluyen:
+- Visualización de equipos con capturas
+- Visualización de capturas por fecha
+- Generación de miniaturas de imágenes
+- Visualización de imágenes completas</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_view.ver_equipo">
+<span class="sig-name descname"><span class="pre">ver_equipo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">equipo_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_view.html#ver_equipo"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_view.ver_equipo" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra las capturas agrupadas por fecha para un equipo específico.</p>
+<p>Recupera todas las capturas asociadas al usuario actual para el equipo
+especificado y las organiza por fechas en formato YYYY-MM-DD.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>equipo_id</strong> (<em>str</em>) – Identificador único del equipo</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Página con las capturas agrupadas por fecha</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>render_template</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Solo muestra capturas propiedad del usuario actual</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_view.ver_fecha">
+<span class="sig-name descname"><span class="pre">ver_fecha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">equipo_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fecha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_view.html#ver_fecha"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_view.ver_fecha" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra las capturas de un equipo en una fecha específica.</p>
+<p>Filtra las capturas por equipo y rango de 24 horas para la fecha indicada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>equipo_id</strong> (<em>str</em>) – Identificador único del equipo</p></li>
+<li><p><strong>fecha</strong> (<em>str</em>) – Fecha en formato YYYY-MM-DD</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Página con las capturas de la fecha seleccionada
+redirect: Redirección a la vista del equipo si la fecha es inválida</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>render_template</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Si el formato de fecha es inválido</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Solo muestra capturas propiedad del usuario actual</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_view.miniatura">
+<span class="sig-name descname"><span class="pre">miniatura</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dato_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_view.html#miniatura"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_view.miniatura" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Genera y devuelve una miniatura de la imagen capturada.</p>
+<p>Crea una versión redimensionada (250x150) de la imagen original para
+mostrarla como vista previa en la interfaz de usuario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dato_id</strong> (<em>int</em>) – ID de la captura en la base de datos</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Imagen PNG redimensionada
+abort: Código de error HTTP si hay problemas</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>send_file</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Miniatura generada correctamente
+403: Usuario no autorizado
+404: Captura no encontrada
+500: Error al generar la miniatura</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Verifica que la captura pertenezca al usuario actual</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_view.ver_imagen">
+<span class="sig-name descname"><span class="pre">ver_imagen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dato_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_view.html#ver_imagen"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_view.ver_imagen" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Muestra la imagen capturada en tamaño completo.</p>
+<p>Recupera y envía la imagen original almacenada en la base de datos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dato_id</strong> (<em>int</em>) – ID de la captura en la base de datos</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Imagen PNG en tamaño original
+str: Mensaje de error con código HTTP apropiado</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>send_file</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Imagen enviada correctamente
+403: Usuario no autorizado
+404: Captura no encontrada</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Verifica que la captura pertenezca al usuario actual</p>
+</div>
+</dd></dl>
+
+<span class="target" id="module-Servidor.routes.capturas.capturas_files"></span><p>Módulo de gestión de archivos de capturas.</p>
+<p>Este Blueprint maneja las operaciones de archivos relacionados con las capturas,
+incluyendo descargas de imágenes y textos, así como operaciones de eliminación.</p>
+<p>Las operaciones principales incluyen:
+- Eliminación de capturas por fecha
+- Descarga de imágenes capturadas
+- Descarga de texto extraído
+- Eliminación de capturas individuales</p>
+<p>Todas las operaciones verifican que el usuario actual sea propietario de las capturas.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_files.eliminar_fecha">
+<span class="sig-name descname"><span class="pre">eliminar_fecha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">equipo_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fecha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_files.html#eliminar_fecha"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_files.eliminar_fecha" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Elimina todas las capturas de un equipo en una fecha específica.</p>
+<p>Busca y elimina todas las capturas realizadas en un rango de 24 horas
+correspondiente a la fecha indicada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>equipo_id</strong> (<em>str</em>) – Identificador único del equipo</p></li>
+<li><p><strong>fecha</strong> (<em>str</em>) – Fecha en formato YYYY-MM-DD</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Respuesta vacía con código 204 si se eliminaron correctamente
+str: Mensaje de error con código 500 en caso contrario</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Error al eliminar las capturas o problemas con la base de datos</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Solo elimina capturas propiedad del usuario actual</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_files.descargar_imagen">
+<span class="sig-name descname"><span class="pre">descargar_imagen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dato_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_files.html#descargar_imagen"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_files.descargar_imagen" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Permite la descarga de una imagen capturada.</p>
+<p>Recupera la imagen almacenada en la base de datos y la envía
+como un archivo adjunto descargable en formato PNG.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dato_id</strong> (<em>int</em>) – ID de la captura en la base de datos</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Archivo PNG descargable
+abort: Código de error HTTP si hay problemas</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>send_file</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Imagen enviada correctamente para descarga
+403: Usuario no autorizado
+404: Captura no encontrada
+500: Error al procesar la descarga</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Verifica que la captura pertenezca al usuario actual</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_files.descargar_texto">
+<span class="sig-name descname"><span class="pre">descargar_texto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dato_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_files.html#descargar_texto"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_files.descargar_texto" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Permite la descarga del texto extraído de una captura.</p>
+<p>Recupera el texto almacenado en la base de datos y lo envía
+como un archivo adjunto descargable en formato TXT con codificación UTF-8.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dato_id</strong> (<em>int</em>) – ID de la captura en la base de datos</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Archivo TXT descargable
+abort: Código de error HTTP si hay problemas</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>send_file</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>200: Texto enviado correctamente para descarga
+403: Usuario no autorizado
+404: Captura no encontrada
+500: Error al procesar la descarga</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Verifica que la captura pertenezca al usuario actual</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.capturas.capturas_files.eliminar_captura">
+<span class="sig-name descname"><span class="pre">eliminar_captura</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dato_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/capturas/capturas_files.html#eliminar_captura"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.capturas.capturas_files.eliminar_captura" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Elimina una captura individual.</p>
+<p>Busca la captura por su ID y la elimina de la base de datos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dato_id</strong> (<em>int</em>) – ID de la captura a eliminar</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Respuesta vacía con código 204 si se eliminó correctamente
+abort: Código de error HTTP si hay problemas</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>204: Captura eliminada correctamente
+403: Usuario no autorizado
+404: Captura no encontrada
+500: Error al eliminar la captura</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación previa
+Verifica que la captura pertenezca al usuario actual</p>
+</div>
+</dd></dl>
+
+</section>
+<section id="gestion-de-horarios">
+<h3>Gestión de Horarios<a class="headerlink" href="#gestion-de-horarios" title="Enlace permanente a este encabezado"></a></h3>
+<span class="target" id="module-Servidor.routes.horarios"></span><p>Módulo de gestión de horarios.</p>
+<p>Este Blueprint maneja las operaciones relacionadas con los horarios de profesores,
+incluyendo la creación, visualización y eliminación de horarios para la detección
+automática de actividades en función del tiempo.</p>
+<p>Las operaciones principales incluyen:
+- Listado de horarios existentes
+- Creación de nuevos horarios
+- Eliminación de horarios
+- Validación de superposiciones y conflictos</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.horarios.lista_horarios">
+<span class="sig-name descname"><span class="pre">lista_horarios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/horarios.html#lista_horarios"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.horarios.lista_horarios" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Vista para listar y gestionar horarios.</p>
+<p>Muestra una página con todos los horarios configurados y un formulario
+para añadir nuevos horarios. Solo accesible para administradores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Página de gestión de horarios
+redirect: Redirección a página principal si no es administrador</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>render_template</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Requiere autenticación
+Solo usuarios administradores pueden acceder a esta función</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.horarios.crear_horario">
+<span class="sig-name descname"><span class="pre">crear_horario</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/horarios.html#crear_horario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.horarios.crear_horario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Añade un nuevo horario al sistema.</p>
+<p>Procesa el formulario de creación de horario y valida que no haya
+superposiciones con otros horarios existentes para el mismo día.</p>
+<dl class="simple">
+<dt>Request Form:</dt><dd><p>usuario (str): ID del usuario asociado al horario
+dia (int): Día de la semana (0=Lunes, 6=Domingo)
+hora_inicio (str): Hora de inicio en formato HH:MM
+hora_fin (str): Hora de fin en formato HH:MM</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mensaje de éxito o error</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>201: Horario creado correctamente
+400: Error de validación (horario superpuesto o horas inválidas)
+403: Usuario no autorizado
+500: Error del servidor</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Solo usuarios administradores pueden crear horarios</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Servidor.routes.horarios.eliminar_horario">
+<span class="sig-name descname"><span class="pre">eliminar_horario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/routes/horarios.html#eliminar_horario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.routes.horarios.eliminar_horario" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Elimina un horario existente.</p>
+<p>Busca el horario por su ID y lo elimina de la base de datos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>int</em>) – ID del horario a eliminar</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Respuesta vacía con código 204 si se eliminó correctamente
+JSON: Mensaje de error en caso contrario</p>
+</dd>
+<dt class="field-odd">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Status Codes:</dt><dd><p>204: Horario eliminado correctamente
+403: Usuario no autorizado
+404: Horario no encontrado
+500: Error del servidor</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Solo usuarios administradores pueden eliminar horarios</p>
+</div>
+</dd></dl>
+
+</section>
+<section id="proceso-en-segundo-plano">
+<h3>Proceso en Segundo Plano<a class="headerlink" href="#proceso-en-segundo-plano" title="Enlace permanente a este encabezado"></a></h3>
+<span class="target" id="module-Servidor.background_process.horario_checker"></span><p>Calcula el tiempo hasta la próxima comprobación necesaria de horarios.</p>
+<p>Determina cuándo debe ocurrir la próxima comprobación de horarios basándose en:
+1. El fin del horario activo actual (si existe)
+2. El inicio del próximo horario programado</p>
+<p>Utiliza un mecanismo de espera inteligente que:
+- Selecciona el tiempo más corto entre los eventos relevantes
+- Permite ser despertado manualmente cuando hay cambios en la configuración
+- Establece un tiempo predeterminado si no hay horarios programados</p>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>La función no retorna valores, pero hace que el hilo</dt><dd><p>espere hasta el próximo tiempo relevante</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Pone al hilo en estado de espera hasta el tiempo calculado</p></li>
+<li><p>Imprime información de depuración sobre la próxima comprobación</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>La función asume que los horarios no se superponen en un mismo día</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HorarioChecker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/background_process/horario_checker.html#HorarioChecker"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Thread</span></code></p>
+<p>Hilo de verificación de horarios para el modo automático.</p>
+<p>Esta clase implementa un hilo que verifica periódicamente los horarios
+configurados y activa/desactiva las capturas en consecuencia.</p>
+<p>Hereda de threading.Thread y se ejecuta como un daemon, terminando
+automáticamente cuando el programa principal finaliza.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.app">
+<span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.app" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Instancia de la aplicación Flask</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.running">
+<span class="sig-name descname"><span class="pre">running</span></span><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.running" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Indica si el hilo debe continuar ejecutándose</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.wakeup_event">
+<span class="sig-name descname"><span class="pre">wakeup_event</span></span><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.wakeup_event" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Evento para controlar el ciclo de espera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Event</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>El hilo utiliza el contexto de aplicación Flask para acceder
+a la base de datos y otras funciones de la aplicación.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/background_process/horario_checker.html#HorarioChecker.run"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.run" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Punto de entrada principal del hilo.</p>
+<p>Implementa el bucle principal que verifica horarios periódicamente.
+Espera 5 segundos iniciales para permitir que la aplicación se inicialice
+completamente, y luego alterna entre verificar horarios y calcular
+el tiempo de espera hasta la próxima verificación necesaria.</p>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Modifica el estado del sistema de capturas</p></li>
+<li><p>Imprime información de depuración</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Captura excepciones para evitar que el hilo termine inesperadamente</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.comprobar_horarios">
+<span class="sig-name descname"><span class="pre">comprobar_horarios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/background_process/horario_checker.html#HorarioChecker.comprobar_horarios"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.comprobar_horarios" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Comprueba qué profesor debe estar activo según el horario actual.</p>
+<p>Verifica si el momento actual coincide con algún horario programado.
+Si encuentra un horario activo, activa las capturas para el profesor
+correspondiente. Si no, desactiva las capturas.</p>
+<dl class="simple">
+<dt>Process:</dt><dd><ol class="arabic simple">
+<li><p>Verifica si el modo automático está activado</p></li>
+<li><p>Obtiene el día y hora actual</p></li>
+<li><p>Busca un horario que coincida con el momento actual</p></li>
+<li><p>Activa/desactiva las capturas según corresponda</p></li>
+</ol>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Llama a set_capture_status() para modificar el estado del sistema</p></li>
+<li><p>Imprime información de depuración</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Solo tiene efecto si el sistema está en modo automático</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.esperar_siguiente">
+<span class="sig-name descname"><span class="pre">esperar_siguiente</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/background_process/horario_checker.html#HorarioChecker.esperar_siguiente"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.esperar_siguiente" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Calcula el tiempo hasta la próxima comprobación necesaria de horarios.</p>
+<p>Determina cuándo debe ocurrir la próxima comprobación de horarios basándose en:
+1. El fin del horario activo actual (si existe)
+2. El inicio del próximo horario programado</p>
+<p>Utiliza un mecanismo de espera inteligente que:
+- Selecciona el tiempo más corto entre los eventos relevantes
+- Permite ser despertado manualmente cuando hay cambios en la configuración
+- Establece un tiempo predeterminado si no hay horarios programados</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>La función no retorna valores, pero hace que el hilo</dt><dd><p>espere hasta el próximo tiempo relevante</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Pone al hilo en estado de espera hasta el tiempo calculado</p></li>
+<li><p>Imprime información de depuración sobre la próxima comprobación</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>La función asume que los horarios no se superponen en un mismo día</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/background_process/horario_checker.html#HorarioChecker.stop"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.stop" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Detiene el hilo de comprobación.</p>
+<p>Establece la bandera “running” a False, lo que hará que el bucle
+principal termine en su próxima iteración.</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>No termina inmediatamente el hilo, sino que permite que
+termine de forma controlada en su próxima iteración</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Servidor.background_process.horario_checker.HorarioChecker.despertar">
+<span class="sig-name descname"><span class="pre">despertar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Servidor/background_process/horario_checker.html#HorarioChecker.despertar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Servidor.background_process.horario_checker.HorarioChecker.despertar" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Despierta al hilo para forzar una comprobación inmediata.</p>
+<p>Activa el evento de despertar, lo que interrumpe cualquier espera
+en curso y fuerza al hilo a realizar una comprobación de horarios.</p>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Activa self.wakeup_event</p></li>
+<li><p>Imprime mensaje de depuración</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Útil cuando se cambia la configuración de horarios o
+se alterna manualmente entre modo automático y manual</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="cliente.html" class="btn btn-neutral float-left" title="Cliente del Detector de IA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="../ejemplos.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

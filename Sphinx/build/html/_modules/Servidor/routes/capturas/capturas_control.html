@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servidor.routes.capturas.capturas_control &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">Servidor.routes.capturas.capturas_control</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para Servidor.routes.capturas.capturas_control</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo de control de capturas.</span>
+
+<span class="sd">Este Blueprint maneja las operaciones de control del sistema de capturas,</span>
+<span class="sd">incluyendo el panel de control, la activación/desactivación de capturas,</span>
+<span class="sd">la alternancia de modos y la recepción de archivos de captura.</span>
+
+<span class="sd">Las operaciones principales incluyen:</span>
+<span class="sd">- Panel de control con visualización del estado</span>
+<span class="sd">- Cambio entre modo automático y manual</span>
+<span class="sd">- Activación/desactivación de capturas</span>
+<span class="sd">- Recepción y almacenamiento de capturas desde clientes</span>
+<span class="sd">- Consulta del estado del sistema</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">queue</span><span class="o">,</span><span class="w"> </span><span class="nn">sqlalchemy.exc</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="c1"># Imports de Flask-Login</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span>
+
+<span class="c1"># Imports de modelos</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Equipo</span><span class="p">,</span> <span class="n">Datos</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">Usuario</span>
+
+<span class="c1"># Imports de sistema y utilidades</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="n">capturas_control</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;capturas_control&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Variables globales para control de capturas</span>
+<span class="n">capture_enabled</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Estado de captura</span>
+<span class="n">profesor_activo</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># ID del profesor actualmente capturando</span>
+<span class="n">modo_automatico</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Control por horario (True) o manual (False)</span>
+
+<span class="c1"># Cola global para almacenar capturas pendientes</span>
+<span class="n">capturas_pendientes</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Número de capturas a procesar por cada solicitud</span>
+<span class="n">MAX_CAPTURAS_POR_CICLO</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># Ruta del panel de control</span>
+<div class="viewcode-block" id="panel_control"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.panel_control">[documentos]</a><span class="nd">@capturas_control</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/dashboard&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">panel_control</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Muestra el panel de control principal.</span>
+<span class="sd">    </span>
+<span class="sd">    Recupera las capturas del usuario actual, las agrupa por equipos y fechas,</span>
+<span class="sd">    y muestra el estado actual del sistema de capturas.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        render_template: Página del panel de control con datos dinámicos</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Requiere autenticación previa</span>
+<span class="sd">        Muestra solo capturas del usuario autenticado</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="c1"># Obtener datos del usuario actual</span>
+    <span class="n">datos</span> <span class="o">=</span> <span class="n">Datos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">id_usuario</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Datos</span><span class="o">.</span><span class="n">fecha</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    
+    <span class="c1"># Agrupar por equipos</span>
+    <span class="n">equipos</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">dato</span> <span class="ow">in</span> <span class="n">datos</span><span class="p">:</span>
+        <span class="n">equipo_id</span> <span class="o">=</span> <span class="n">dato</span><span class="o">.</span><span class="n">equipo</span><span class="o">.</span><span class="n">nombre</span>
+        <span class="n">fecha_str</span> <span class="o">=</span> <span class="n">dato</span><span class="o">.</span><span class="n">fecha</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">equipo_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">equipos</span><span class="p">:</span>
+            <span class="n">equipos</span><span class="p">[</span><span class="n">equipo_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            
+        <span class="k">if</span> <span class="n">fecha_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">equipos</span><span class="p">[</span><span class="n">equipo_id</span><span class="p">]:</span>
+            <span class="n">equipos</span><span class="p">[</span><span class="n">equipo_id</span><span class="p">][</span><span class="n">fecha_str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            
+        <span class="n">equipos</span><span class="p">[</span><span class="n">equipo_id</span><span class="p">][</span><span class="n">fecha_str</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dato</span><span class="p">)</span>
+   <span class="c1"># Obtener nombre del usuario activo si existe</span>
+    <span class="n">nombre_usuario</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">profesor_activo</span><span class="p">:</span>
+        <span class="n">usuario</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">profesor_activo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="p">:</span>
+            <span class="n">nombre_usuario</span> <span class="o">=</span> <span class="n">usuario</span><span class="o">.</span><span class="n">nombre</span>
+    
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;dashboard.html&#39;</span><span class="p">,</span> 
+                         <span class="n">capture_enabled</span><span class="o">=</span><span class="n">capture_enabled</span><span class="p">,</span>
+                         <span class="n">modo_automatico</span><span class="o">=</span><span class="n">modo_automatico</span><span class="p">,</span>
+                         <span class="n">user</span> <span class="o">=</span> <span class="n">nombre_usuario</span><span class="p">,</span>
+                         <span class="n">equipos</span><span class="o">=</span><span class="n">equipos</span><span class="p">)</span></div>
+    
+    
+<span class="c1"># Ruta para habilitar/deshabilitar capturas</span>
+<div class="viewcode-block" id="toggle_capture"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.toggle_capture">[documentos]</a><span class="nd">@capturas_control</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/toggle_capture&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">toggle_capture</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Alterna el estado de las capturas.</span>
+<span class="sd">    </span>
+<span class="sd">    En modo manual, activa o desactiva las capturas.</span>
+<span class="sd">    En modo automático, fuerza el cambio a modo manual y activa las capturas.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Estado actualizado del sistema de capturas en formato JSON</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Requiere autenticación previa</span>
+<span class="sd">        En modo automático, cambia automáticamente a modo manual</span>
+<span class="sd">        En modo manual, alterna entre activado/desactivado</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">estado</span> <span class="o">=</span> <span class="n">get_estado_sistema</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">estado</span><span class="p">[</span><span class="s1">&#39;modo_automatico&#39;</span><span class="p">]:</span>
+        <span class="c1"># Cambiar a modo manual</span>
+        <span class="n">set_capture_status</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">modo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Alternar estado en modo manual</span>
+        <span class="n">nuevo_estado</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">estado</span><span class="p">[</span><span class="s1">&#39;enabled&#39;</span><span class="p">]</span>
+        <span class="n">set_capture_status</span><span class="p">(</span>
+            <span class="n">enabled</span><span class="o">=</span><span class="n">nuevo_estado</span><span class="p">,</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">nuevo_estado</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">get_capture_status</span><span class="p">()</span></div>
+
+<span class="c1"># Ruta para cambiar el modo de capturas</span>
+<div class="viewcode-block" id="toggle_modo"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.toggle_modo">[documentos]</a><span class="nd">@capturas_control</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/toggle_modo&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">toggle_modo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Alterna entre modo automático y manual.</span>
+<span class="sd">    </span>
+<span class="sd">    Cambia la forma en que se controla la activación de capturas:</span>
+<span class="sd">    - Modo automático: Controlado por horarios predefinidos</span>
+<span class="sd">    - Modo manual: Controlado directamente por el usuario</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Estado actualizado del sistema de capturas en formato JSON</span>
+<span class="sd">        </span>
+<span class="sd">    Side Effects:</span>
+<span class="sd">        En modo automático: Desactiva capturas y despierta el comprobador de horarios</span>
+<span class="sd">        En modo manual: Activa capturas para el usuario actual</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Requiere autenticación previa</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">estado</span> <span class="o">=</span> <span class="n">get_estado_sistema</span><span class="p">()</span>
+    <span class="n">nuevo_modo</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">estado</span><span class="p">[</span><span class="s1">&#39;modo_automatico&#39;</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">nuevo_modo</span><span class="p">:</span>  <span class="c1"># Cambio a automático</span>
+        <span class="n">set_capture_status</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">modo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Despertar al hilo para que compruebe horarios</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">current_app</span><span class="p">,</span> <span class="s1">&#39;horario_checker&#39;</span><span class="p">):</span>
+            <span class="n">current_app</span><span class="o">.</span><span class="n">horario_checker</span><span class="o">.</span><span class="n">despertar</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Cambio a manual</span>
+        <span class="n">set_capture_status</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">modo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">get_capture_status</span><span class="p">()</span></div>
+
+<span class="c1"># Ruta para recibir capturas</span>
+<div class="viewcode-block" id="upload"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.upload">[documentos]</a><span class="nd">@capturas_control</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/uploads&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recibe capturas enviadas por los clientes y las encola para procesamiento.</span>
+<span class="sd">    </span>
+<span class="sd">    En lugar de procesar inmediatamente en la base de datos, coloca la </span>
+<span class="sd">    captura en una cola y devuelve respuesta rápida al cliente.</span>
+<span class="sd">    Posteriormente, procesa algunas capturas pendientes de la cola.</span>
+<span class="sd">    </span>
+<span class="sd">    Request Form:</span>
+<span class="sd">        cliente_id (str): Identificador único del cliente</span>
+<span class="sd">        timestamp (str): Marca temporal en formato YYYYMMDD_HHMMSS</span>
+<span class="sd">        </span>
+<span class="sd">    Request Files:</span>
+<span class="sd">        data (file): Archivo de texto con contenido capturado (obligatorio)</span>
+<span class="sd">        screenshot (file): Imagen capturada (opcional)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Mensaje de confirmación o error</span>
+<span class="sd">        </span>
+<span class="sd">    Status Codes:</span>
+<span class="sd">        200: Captura recibida correctamente</span>
+<span class="sd">        400: Datos faltantes o formato incorrecto</span>
+<span class="sd">        403: Capturas deshabilitadas o falta profesor activo</span>
+<span class="sd">        500: Error interno del servidor</span>
+<span class="sd">        503: Cola llena, servidor ocupado</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">capture_enabled</span><span class="p">,</span> <span class="n">profesor_activo</span>
+        
+        <span class="c1"># Verificar que las capturas están habilitadas y hay un profesor activo</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">capture_enabled</span> <span class="ow">or</span> <span class="n">profesor_activo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Estado capturas: </span><span class="si">{</span><span class="n">capture_enabled</span><span class="si">}</span><span class="s2">, Profesor activo: </span><span class="si">{</span><span class="n">profesor_activo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Capturas deshabilitadas&#39;</span><span class="p">,</span> <span class="mi">403</span>
+
+        <span class="c1"># Obtener datos del formulario con verificación</span>
+        <span class="k">if</span> <span class="s1">&#39;cliente_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Falta cliente_id en el formulario&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Falta cliente_id&#39;</span><span class="p">,</span> <span class="mi">400</span>
+            
+        <span class="k">if</span> <span class="s1">&#39;timestamp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Falta timestamp en el formulario&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Falta timestamp&#39;</span><span class="p">,</span> <span class="mi">400</span>
+
+        <span class="n">cliente_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;cliente_id&#39;</span><span class="p">]</span>
+        <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Convertir el timestamp del formato &#39;20250312_192909&#39; a datetime</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fecha</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">timestamp_str</span><span class="p">,</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">_%H%M%S&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al parsear timestamp: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Formato de timestamp inválido&#39;</span><span class="p">,</span> <span class="mi">400</span>
+
+        <span class="c1"># Verificar archivos requeridos</span>
+        <span class="k">if</span> <span class="s1">&#39;data&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Falta archivo data&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Falta archivo data&#39;</span><span class="p">,</span> <span class="mi">400</span>
+
+        <span class="c1"># Preparar datos para la cola</span>
+        <span class="n">datos_captura</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;cliente_id&#39;</span><span class="p">:</span> <span class="n">cliente_id</span><span class="p">,</span>
+            <span class="s1">&#39;profesor_activo&#39;</span><span class="p">:</span> <span class="n">profesor_activo</span><span class="p">,</span>
+            <span class="s1">&#39;fecha&#39;</span><span class="p">:</span> <span class="n">fecha</span><span class="p">,</span>
+            <span class="s1">&#39;texto&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;imagen&#39;</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Procesar archivos</span>
+        <span class="n">archivo_texto</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">texto_contenido</span> <span class="o">=</span> <span class="n">archivo_texto</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">datos_captura</span><span class="p">[</span><span class="s1">&#39;texto&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">texto_contenido</span>
+        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error decodificando texto: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Error en codificación del archivo&#39;</span><span class="p">,</span> <span class="mi">400</span>
+
+        <span class="k">if</span> <span class="s1">&#39;screenshot&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="n">screenshot</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;screenshot&#39;</span><span class="p">]</span>
+            <span class="n">datos_captura</span><span class="p">[</span><span class="s1">&#39;imagen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">screenshot</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="c1"># Intentar encolar la captura</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">capturas_pendientes</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">datos_captura</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Captura de </span><span class="si">{</span><span class="n">cliente_id</span><span class="si">}</span><span class="s2"> encolada correctamente&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Procesar algunas capturas pendientes</span>
+            <span class="n">procesar_capturas_pendientes</span><span class="p">()</span>
+            
+            <span class="k">return</span> <span class="s1">&#39;OK&#39;</span><span class="p">,</span> <span class="mi">200</span>
+        <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Cola llena, rechazando captura de </span><span class="si">{</span><span class="n">cliente_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Servidor ocupado, intentar más tarde&#39;</span><span class="p">,</span> <span class="mi">503</span>
+        
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error inesperado: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;Error interno del servidor&#39;</span><span class="p">,</span> <span class="mi">500</span></div>
+
+
+<div class="viewcode-block" id="procesar_capturas_pendientes"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.procesar_capturas_pendientes">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">procesar_capturas_pendientes</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Procesa algunas capturas pendientes de la cola.</span>
+<span class="sd">    </span>
+<span class="sd">    Esta función intenta procesar hasta MAX_CAPTURAS_POR_CICLO capturas de la cola,</span>
+<span class="sd">    serializando las escrituras en la base de datos para evitar bloqueos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">capturas_procesadas</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">capturas_pendientes</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">and</span> <span class="n">capturas_procesadas</span> <span class="o">&lt;</span> <span class="n">MAX_CAPTURAS_POR_CICLO</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Obtener la siguiente captura de la cola sin bloquear</span>
+            <span class="n">datos_captura</span> <span class="o">=</span> <span class="n">capturas_pendientes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            
+            <span class="c1"># Procesar la captura</span>
+            <span class="n">resultado</span> <span class="o">=</span> <span class="n">guardar_captura_en_bd</span><span class="p">(</span><span class="n">datos_captura</span><span class="p">)</span>
+            
+            <span class="c1"># Marcar como procesada (se haya procesado correctamente o no)</span>
+            <span class="n">capturas_pendientes</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="n">resultado</span><span class="p">:</span>
+                <span class="n">capturas_procesadas</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+        <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+            <span class="c1"># La cola estaba vacía</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error procesando capturas pendientes: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">break</span></div>
+
+
+<div class="viewcode-block" id="guardar_captura_en_bd"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.guardar_captura_en_bd">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">guardar_captura_en_bd</span><span class="p">(</span><span class="n">datos_captura</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Guarda una captura en la base de datos con sistema de reintentos.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        datos_captura (dict): Datos de la captura a guardar</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True si se guardó correctamente, False en caso de error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">max_reintentos</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">reintentos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tiempo_espera</span> <span class="o">=</span> <span class="mf">0.2</span>  <span class="c1"># Segundos iniciales</span>
+    
+    <span class="k">while</span> <span class="n">reintentos</span> <span class="o">&lt;=</span> <span class="n">max_reintentos</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cliente_id</span> <span class="o">=</span> <span class="n">datos_captura</span><span class="p">[</span><span class="s1">&#39;cliente_id&#39;</span><span class="p">]</span>
+            <span class="n">profesor_activo</span> <span class="o">=</span> <span class="n">datos_captura</span><span class="p">[</span><span class="s1">&#39;profesor_activo&#39;</span><span class="p">]</span>
+            <span class="n">fecha</span> <span class="o">=</span> <span class="n">datos_captura</span><span class="p">[</span><span class="s1">&#39;fecha&#39;</span><span class="p">]</span>
+            
+            <span class="c1"># Buscar o crear el equipo</span>
+            <span class="n">equipo</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">cliente_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">equipo</span><span class="p">:</span>
+                <span class="n">equipo</span> <span class="o">=</span> <span class="n">Equipo</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">cliente_id</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">equipo</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            
+            <span class="c1"># Crear nuevo registro de datos</span>
+            <span class="n">nuevo_dato</span> <span class="o">=</span> <span class="n">Datos</span><span class="p">(</span>
+                <span class="n">id_usuario</span><span class="o">=</span><span class="n">profesor_activo</span><span class="p">,</span>
+                <span class="n">id_equipo</span><span class="o">=</span><span class="n">equipo</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="n">fecha</span><span class="o">=</span><span class="n">fecha</span><span class="p">,</span>
+                <span class="n">texto</span><span class="o">=</span><span class="n">datos_captura</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;texto&#39;</span><span class="p">),</span>
+                <span class="n">imagen</span><span class="o">=</span><span class="n">datos_captura</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;imagen&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+            
+            <span class="c1"># Guardar en la base de datos</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nuevo_dato</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Captura de </span><span class="si">{</span><span class="n">cliente_id</span><span class="si">}</span><span class="s2"> guardada (intento </span><span class="si">{</span><span class="n">reintentos</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+            
+        <span class="k">except</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">OperationalError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Verificar si es un error de base de datos bloqueada</span>
+            <span class="n">error_mensaje</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;database is locked&quot;</span> <span class="ow">in</span> <span class="n">error_mensaje</span> <span class="ow">or</span> <span class="s2">&quot;sqlite_busy&quot;</span> <span class="ow">in</span> <span class="n">error_mensaje</span><span class="p">:</span>
+                <span class="n">reintentos</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+                
+                <span class="k">if</span> <span class="n">reintentos</span> <span class="o">&lt;=</span> <span class="n">max_reintentos</span><span class="p">:</span>
+                    <span class="c1"># Tiempo de espera creciente</span>
+                    <span class="n">tiempo_espera_actual</span> <span class="o">=</span> <span class="n">tiempo_espera</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">reintentos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Base de datos bloqueada, esperando </span><span class="si">{</span><span class="n">tiempo_espera_actual</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">tiempo_espera_actual</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Máximo de reintentos alcanzado&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Otro tipo de error de base de datos</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error de base de datos: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error guardando captura: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+<span class="c1"># Ruta para obtener el estado de las capturas</span>
+<div class="viewcode-block" id="get_capture_status"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.get_capture_status">[documentos]</a><span class="nd">@capturas_control</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/capture_status&#39;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_capture_status</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obtiene el estado actual de las capturas.</span>
+<span class="sd">    </span>
+<span class="sd">    Devuelve un objeto JSON con información sobre si las capturas</span>
+<span class="sd">    están habilitadas, el modo actual, y los usuarios relacionados.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Estado del sistema de capturas en formato JSON con:</span>
+<span class="sd">            - enabled: Si las capturas están activadas</span>
+<span class="sd">            - modo_automatico: Si está en modo automático u manual</span>
+<span class="sd">            - user_id: ID del profesor para el que se captura</span>
+<span class="sd">            - current_user_id: ID del usuario actual</span>
+<span class="sd">            </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Requiere autenticación previa</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="n">capture_enabled</span><span class="p">,</span>
+        <span class="s1">&#39;modo_automatico&#39;</span><span class="p">:</span> <span class="n">modo_automatico</span><span class="p">,</span>
+        <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">profesor_activo</span><span class="p">,</span>
+        <span class="s1">&#39;current_user_id&#39;</span><span class="p">:</span> <span class="n">current_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="p">}</span></div>
+    
+<div class="viewcode-block" id="get_estado_sistema"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.get_estado_sistema">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_estado_sistema</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obtiene el estado del sistema sin necesitar contexto de request.</span>
+<span class="sd">    </span>
+<span class="sd">    Función auxiliar que proporciona el estado actual del sistema</span>
+<span class="sd">    para uso interno, sin requerir un contexto HTTP activo.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Estado del sistema de capturas en formato JSON con:</span>
+<span class="sd">            - enabled: Si las capturas están activadas</span>
+<span class="sd">            - modo_automatico: Si está en modo automático u manual</span>
+<span class="sd">            - user_id: ID del profesor para el que se captura</span>
+<span class="sd">            </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Función interna, no expuesta como endpoint</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;enabled&#39;</span><span class="p">:</span> <span class="n">capture_enabled</span><span class="p">,</span>
+        <span class="s1">&#39;modo_automatico&#39;</span><span class="p">:</span> <span class="n">modo_automatico</span><span class="p">,</span>
+        <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">profesor_activo</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="set_capture_status"><a class="viewcode-back" href="../../../../modulos/servidor.html#Servidor.routes.capturas.capturas_control.set_capture_status">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">set_capture_status</span><span class="p">(</span><span class="n">enabled</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">modo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Actualiza el estado de las capturas.</span>
+<span class="sd">    </span>
+<span class="sd">    Modifica las variables globales que controlan el estado del sistema.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        enabled (bool): Si las capturas deben estar activadas</span>
+<span class="sd">        user_id (int): ID del usuario para el que se capturan datos (None si desactivado)</span>
+<span class="sd">        modo (bool, opcional): Modo automático (True) o manual (False)</span>
+<span class="sd">        </span>
+<span class="sd">    Side Effects:</span>
+<span class="sd">        Modifica las variables globales:</span>
+<span class="sd">            - capture_enabled</span>
+<span class="sd">            - profesor_activo</span>
+<span class="sd">            - modo_automatico (solo si se especifica)</span>
+<span class="sd">            </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Función interna, no expuesta como endpoint</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">capture_enabled</span><span class="p">,</span> <span class="n">profesor_activo</span><span class="p">,</span> <span class="n">modo_automatico</span>
+    <span class="n">capture_enabled</span> <span class="o">=</span> <span class="n">enabled</span>
+    <span class="n">profesor_activo</span> <span class="o">=</span> <span class="n">user_id</span>
+    <span class="k">if</span> <span class="n">modo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">modo_automatico</span> <span class="o">=</span> <span class="n">modo</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

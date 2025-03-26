@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitectura y Funcionamiento &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="_static/translations.js?v=efdbd0b9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Interfaz Web" href="interfaz.html" />
+    <link rel="prev" title="Instalación y Configuración" href="instalacion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html">Documentación Técnica Completa - Sistema de Detección de IA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objetivos.html">Objetivos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tecnologias.html">Tecnologías Empleadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estructura.html">Estructura de Directorios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instalacion.html">Instalación y Configuración</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Arquitectura y Funcionamiento</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#modos-de-captura">Modos de Captura</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flujo-de-trabajo">Flujo de Trabajo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interfaz.html">Interfaz Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="casos.html">Casos de Uso Principales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pruebas.html">Pruebas y Validación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusiones.html">Conclusiones y Mejoras Futuras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Desarrollo:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="licencia.html">Licencia y Créditos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Arquitectura y Funcionamiento</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/funcionamiento.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arquitectura-y-funcionamiento">
+<h1>Arquitectura y Funcionamiento<a class="headerlink" href="#arquitectura-y-funcionamiento" title="Enlace permanente a este encabezado"></a></h1>
+<p>El sistema se compone de:</p>
+<ul>
+<li><p><strong>Cliente</strong>:
+- Monitoriza la ventana activa (ej. cada segundo).
+- Captura la pantalla (PyAutoGUI).
+- Extrae texto (Pytesseract).
+- Si encuentra coincidencias con las <em>keywords</em>, envía la imagen y el</p>
+<blockquote>
+<div><p>texto al servidor vía HTTP POST.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>El modo de captura puede ser «manual» (el profesor decide encender
+o apagar) o «automático» (basado en horarios).</p></li>
+</ul>
+</li>
+<li><p><strong>Servidor</strong>:
+- Recibe las peticiones (<code class="docutils literal notranslate"><span class="pre">/uploads</span></code>, etc.).
+- Almacena la imagen y el texto en la base de datos (tabla</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">datos</span></code>).</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Asocia la captura a un <code class="docutils literal notranslate"><span class="pre">usuario</span></code> (profesor) y a un <code class="docutils literal notranslate"><span class="pre">equipo</span></code>.</p></li>
+<li><p>Ofrece paneles de gestión:
+- <em>Panel Control</em>: estado de capturas, modo manual/automático.
+- <em>Usuarios</em>: alta, baja y cambio de contraseñas.
+- <em>Horarios</em>: definir periodos para la captura automática.
+- <em>Keywords</em>: edición de las palabras clave.</p></li>
+</ul>
+</li>
+</ul>
+<section id="modos-de-captura">
+<h2>Modos de Captura<a class="headerlink" href="#modos-de-captura" title="Enlace permanente a este encabezado"></a></h2>
+<ul>
+<li><p><strong>Automático</strong>:
+- Se comprueban los <em>horarios</em> asociados al usuario. Si la hora</p>
+<blockquote>
+<div><p>actual entra en un horario válido, el servidor activa la
+recepción de capturas.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Manual</strong>:
+- El profesor, desde el panel, puede pinchar en “Activar/Desactivar</p>
+<blockquote>
+<div><p>capturas”.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>El servidor habilita o no la recepción de capturas según ese
+botón.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="flujo-de-trabajo">
+<h2>Flujo de Trabajo<a class="headerlink" href="#flujo-de-trabajo" title="Enlace permanente a este encabezado"></a></h2>
+<ol class="arabic">
+<li><p><strong>Inicio</strong>:
+- El profesor inicia sesión en <code class="docutils literal notranslate"><span class="pre">http://&lt;servidor&gt;:5000</span></code>.
+- Puede ver su <em>panel de control</em>, cambiar modo a manual o</p>
+<blockquote>
+<div><p>automático.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Capturas</strong>:
+- El cliente está corriendo en cada PC de alumnos, monitorea</p>
+<blockquote>
+<div><p>ventanas.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Si detecta palabra clave, sube la captura al servidor.</p></li>
+</ul>
+</li>
+<li><p><strong>Almacenamiento</strong>:
+- El servidor guarda la información en la base de datos (fecha,</p>
+<blockquote>
+<div><p>imagen, texto).</p>
+</div></blockquote>
+</li>
+<li><p><strong>Revisión</strong>:
+- El profesor entra a ver sus equipos y las capturas agrupadas por</p>
+<blockquote>
+<div><p>fecha/hora.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Puede descargar la imagen, el texto o eliminarla.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="instalacion.html" class="btn btn-neutral float-left" title="Instalación y Configuración" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="interfaz.html" class="btn btn-neutral float-right" title="Interfaz Web" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

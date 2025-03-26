@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casos de Uso &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="_static/translations.js?v=efdbd0b9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Pruebas y Validación" href="pruebas.html" />
+    <link rel="prev" title="Interfaz Web" href="interfaz.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html">Documentación Técnica Completa - Sistema de Detección de IA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objetivos.html">Objetivos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tecnologias.html">Tecnologías Empleadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estructura.html">Estructura de Directorios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instalacion.html">Instalación y Configuración</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcionamiento.html">Arquitectura y Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaz.html">Interfaz Web</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Casos de Uso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pruebas.html">Pruebas y Validación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusiones.html">Conclusiones y Mejoras Futuras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Desarrollo:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="licencia.html">Licencia y Créditos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Casos de Uso</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/casos.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="casos-de-uso">
+<h1>Casos de Uso<a class="headerlink" href="#casos-de-uso" title="Enlace permanente a este encabezado"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Identificador y Nombre:</strong></p></td>
+<td><p>CU-Usuario (Uso general del sistema por parte de usuarios)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Descripción:</strong></p></td>
+<td><p>El usuario accede al sistema mediante la interfaz web y realiza acciones
+según su rol (profesor o administrador), gestionando información a
+través de distintas pantallas (panel de control, gestión de usuarios,
+horarios, capturas, etc.).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Actores:</strong></p></td>
+<td><p>Usuario (Profesor / Administrador)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Precondiciones:</strong></p></td>
+<td><div class="line-block">
+<div class="line">El usuario debe existir en la base de datos.</div>
+<div class="line">El servidor debe estar en ejecución.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><strong>Postcondiciones:</strong></p></td>
+<td><p>El usuario accede a las opciones de su rol (profesor/administrador).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Secuencia Normal:</strong></p></td>
+<td><div class="line-block">
+<div class="line">1. El usuario navega a la URL del sistema.</div>
+<div class="line">2. El sistema muestra la página de login.</div>
+<div class="line">3. El usuario ingresa credenciales (nombre y contraseña).</div>
+<div class="line">4. El sistema valida las credenciales.</div>
+<div class="line">5. Si son correctas, redirige al panel correspondiente (profesor o admin).</div>
+<div class="line">6. El usuario realiza las acciones disponibles según su rol (ver capturas,</div>
+<div class="line-block">
+<div class="line">gestionar usuarios, etc.).</div>
+</div>
+<div class="line">7. Finalmente, el usuario cierra sesión y el sistema regresa a la</div>
+<div class="line-block">
+<div class="line">pantalla de inicio.</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><strong>Excepciones:</strong></p></td>
+<td><div class="line-block">
+<div class="line">(p1) Usuario/contraseña incorrectos: se muestra un error y no se permite</div>
+<div class="line-block">
+<div class="line">el acceso.</div>
+</div>
+<div class="line">(p2) Se intenta acceder a funciones administrativas con un rol profesor:</div>
+<div class="line-block">
+<div class="line">el sistema niega el acceso.</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><strong>Rendimiento:</strong></p></td>
+<td><p>Respuesta en menos de 2 segundos en condiciones normales.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Frecuencia de Uso:</strong></p></td>
+<td><p>Diario, especialmente en horario de clases o exámenes.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Importancia:</strong></p></td>
+<td><p>Alta, pues este caso refleja la operación principal del sistema.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Urgencia:</strong></p></td>
+<td><p>Inmediata, ya que es la vía de acceso de profesores y administradores.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Comentarios:</strong></p></td>
+<td><p>Se requiere controlar cuidadosamente la seguridad, protegiendo las
+funcionalidades críticas para el rol administrador.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Identificador y Nombre:</strong></p></td>
+<td><p>CU-Cliente (Comportamiento del cliente en el sistema)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Descripción:</strong></p></td>
+<td><p>El cliente, ejecutado en segundo plano en el equipo del alumno, monitoriza
+la ventana activa y, cuando detecta coincidencias con palabras clave
+(referentes a uso de IA), realiza una captura de pantalla y la envía al
+servidor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Actores:</strong></p></td>
+<td><p>Cliente (software instalado en los equipos de los alumnos)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Precondiciones:</strong></p></td>
+<td><div class="line-block">
+<div class="line">Archivo de configuración (config.ini) con la ruta a Tesseract y la URL</div>
+<div class="line">del servidor.</div>
+<div class="line">El servidor debe estar disponible para recibir las capturas.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><strong>Postcondiciones:</strong></p></td>
+<td><p>Se generan y envían capturas al servidor si se detectan coincidencias.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Secuencia Normal:</strong></p></td>
+<td><div class="line-block">
+<div class="line">1. Al arrancar, el cliente lee su configuración (ruta Tesseract, servidor).</div>
+<div class="line">2. Periódicamente detecta la ventana activa y efectúa una captura.</div>
+<div class="line">3. Aplica OCR para extraer texto.</div>
+<div class="line">4. Compara el texto con las palabras clave descargadas del servidor.</div>
+<div class="line">5. Si coincide, envía la captura y el texto al servidor vía HTTP POST.</div>
+<div class="line">6. El servidor responde con éxito y el cliente continúa monitoreando.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><strong>Excepciones:</strong></p></td>
+<td><div class="line-block">
+<div class="line">(p1) Sin conexión al servidor: el cliente guarda la captura localmente e</div>
+<div class="line-block">
+<div class="line">intenta reenviarla más adelante.</div>
+</div>
+<div class="line">(p2) Configuración incorrecta (ruta Tesseract o servidor): el cliente</div>
+<div class="line-block">
+<div class="line">registra error y no procesa capturas.</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><strong>Rendimiento:</strong></p></td>
+<td><p>El OCR y el envío deben ejecutarse en pocos segundos para no ralentizar
+el equipo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Frecuencia de Uso:</strong></p></td>
+<td><p>Frecuente, pudiendo capturar cada X segundos y enviar al servidor al
+detectar coincidencias.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Importancia:</strong></p></td>
+<td><p>Crítica, pues sin el cliente no se recaban evidencias de uso de IA.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Urgencia:</strong></p></td>
+<td><p>Inmediata, ya que es la funcionalidad primordial para alimentar el
+servidor con datos.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Comentarios:</strong></p></td>
+<td><p>La política de notificación al usuario depende de la normativa; puede
+mostrarse o no un aviso de monitorización en segundo plano.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="interfaz.html" class="btn btn-neutral float-left" title="Interfaz Web" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="pruebas.html" class="btn btn-neutral float-right" title="Pruebas y Validación" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

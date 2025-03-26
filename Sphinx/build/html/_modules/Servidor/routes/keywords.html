@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servidor.routes.keywords &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">Servidor.routes.keywords</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para Servidor.routes.keywords</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo de gestión de palabras clave (keywords).</span>
+
+<span class="sd">Este Blueprint maneja las operaciones relacionadas con el archivo keywords.txt,</span>
+<span class="sd">incluyendo la edición y descarga del archivo que contiene las palabras clave</span>
+<span class="sd">utilizadas para la detección de actividades sospechosas.</span>
+
+<span class="sd">Las operaciones principales incluyen:</span>
+<span class="sd">- Edición del contenido del archivo keywords.txt</span>
+<span class="sd">- Descarga del archivo keywords.txt</span>
+<span class="sd">- Restricción de acceso a usuarios administradores</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">send_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.ruta_abs</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_path</span>
+
+<span class="n">keywords</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;keywords&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="editar_keywords"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.keywords.editar_keywords">[documentos]</a><span class="nd">@keywords</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/editar_keywords&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">editar_keywords</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maneja la edición del archivo de palabras clave.</span>
+<span class="sd">    </span>
+<span class="sd">    Permite a usuarios administradores ver y modificar el contenido del archivo</span>
+<span class="sd">    keywords.txt a través de una interfaz web. Si el archivo no existe,</span>
+<span class="sd">    se creará al guardar los cambios.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        GET: Muestra el formulario con el contenido actual</span>
+<span class="sd">        POST: Procesa los cambios enviados y actualiza el archivo</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        GET: Template renderizado con el contenido actual</span>
+<span class="sd">        POST: Redirección a la misma página tras actualizar</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Si hay errores al leer o escribir el archivo</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Solo usuarios administradores pueden acceder a esta función</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;capturas_control.panel_control&#39;</span><span class="p">))</span>
+        
+    <span class="n">ruta_keywords</span> <span class="o">=</span> <span class="n">get_data_path</span><span class="p">(</span><span class="s1">&#39;keywords.txt&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nuevo_contenido</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;contenido&#39;</span><span class="p">]</span>
+            <span class="n">palabras</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nuevo_contenido</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ruta_keywords</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">palabras</span><span class="p">)</span>
+                
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Archivo actualizado correctamente&#39;</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
+            
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error al guardar el archivo: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ruta_keywords</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ruta_keywords</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">contenido</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contenido</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;El archivo no existe. Se creará al guardar.&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">)</span>
+            
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">contenido</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">flash</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error al leer el archivo: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;admin/editarKeywords.html&#39;</span><span class="p">,</span> <span class="n">contenido</span><span class="o">=</span><span class="n">contenido</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="descargar_keywords"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.keywords.descargar_keywords">[documentos]</a><span class="nd">@keywords</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/keywords&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">descargar_keywords</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Permite la descarga del archivo de palabras clave.</span>
+<span class="sd">    </span>
+<span class="sd">    Envía el archivo keywords.txt como adjunto para que el usuario</span>
+<span class="sd">    pueda descargarlo. Si el archivo no existe, devuelve un error 404.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: Archivo keywords.txt como adjunto descargable</span>
+<span class="sd">        str: Mensaje de error con código 404 o 500 si hay problemas</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Si hay errores al acceder o enviar el archivo</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Esta ruta está disponible públicamente para permitir</span>
+<span class="sd">        que los clientes actualicen sus listas de palabras clave</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ruta_keywords</span> <span class="o">=</span> <span class="n">get_data_path</span><span class="p">(</span><span class="s1">&#39;keywords.txt&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ruta_keywords</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error: No se encuentra el archivo keywords en: </span><span class="si">{</span><span class="n">ruta_keywords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;Archivo de palabras clave no encontrado&#39;</span><span class="p">,</span> <span class="mi">404</span>
+
+        <span class="k">return</span> <span class="n">send_file</span><span class="p">(</span>
+            <span class="n">ruta_keywords</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;text/plain&#39;</span><span class="p">,</span>
+            <span class="n">as_attachment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">download_name</span><span class="o">=</span><span class="s1">&#39;keywords.txt&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al servir keywords.txt: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;Error interno del servidor&#39;</span><span class="p">,</span> <span class="mi">500</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

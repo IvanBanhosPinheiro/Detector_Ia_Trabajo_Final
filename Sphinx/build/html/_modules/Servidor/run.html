@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servidor.run &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">Servidor.run</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para Servidor.run</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo principal de la aplicación Flask.</span>
+<span class="sd">Configura y arranca el servidor web con todas sus funcionalidades.</span>
+
+<span class="sd">Este módulo:</span>
+<span class="sd">- Inicializa la aplicación Flask</span>
+<span class="sd">- Configura bases de datos y autenticación</span>
+<span class="sd">- Registra todos los blueprints</span>
+<span class="sd">- Inicia el servidor y procesos en segundo plano</span>
+
+<span class="sd">Imports:</span>
+<span class="sd">    flask: Framework web utilizado para crear la aplicación</span>
+<span class="sd">    flask_login: Gestión de autenticación de usuarios</span>
+<span class="sd">    configparser: Lectura de archivos de configuración</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoginManager</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
+
+
+
+<span class="c1">#Importamos la rutas absolutas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.ruta_abs</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_path</span>
+
+<span class="c1"># Importamos los modelos</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">Usuario</span> 
+
+<span class="c1"># Importar y registrar blueprints después de la configuración</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.error</span><span class="w"> </span><span class="kn">import</span> <span class="n">paginaNoEncontrada</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.keywords</span><span class="w"> </span><span class="kn">import</span> <span class="n">keywords</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.capturas.capturas_control</span><span class="w"> </span><span class="kn">import</span> <span class="n">capturas_control</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.capturas.capturas_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">capturas_view</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.capturas.capturas_files</span><span class="w"> </span><span class="kn">import</span> <span class="n">capturas_files</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.horarios</span><span class="w"> </span><span class="kn">import</span> <span class="n">horarios</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">routes.error</span><span class="w"> </span><span class="kn">import</span> <span class="n">error</span>
+
+<span class="c1"># Importamos el hilo de comprobación de horarios</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">background_process.horario_checker</span><span class="w"> </span><span class="kn">import</span> <span class="n">HorarioChecker</span>
+
+
+
+<span class="c1"># Inicialización de Flask</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Configuración principal de Flask:</span>
+<span class="sd">    SECRET_KEY: Clave secreta para sesiones</span>
+<span class="sd">    SQLALCHEMY_DATABASE_URI: Ubicación de la base de datos SQLite</span>
+<span class="sd">    SQLALCHEMY_TRACK_MODIFICATIONS: Desactivar tracking de modificaciones</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Configuración de la aplicación</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3-H^fJTYrwi4hjs&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SQLALCHEMY_DATABASE_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;sqlite:///database.db&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SQLALCHEMY_TRACK_MODIFICATIONS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Cargar configuración desde config.ini</span>
+<span class="n">config_path</span> <span class="o">=</span> <span class="n">get_data_path</span><span class="p">(</span><span class="s1">&#39;config.ini&#39;</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+<span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;Servidor&#39;</span><span class="p">][</span><span class="s1">&#39;puerto&#39;</span><span class="p">])</span>
+
+<span class="c1"># Inicialización de extensiones</span>
+<span class="n">db</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">()</span>
+<span class="n">login_manager</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">login_manager</span><span class="o">.</span><span class="n">login_view</span> <span class="o">=</span> <span class="s1">&#39;auth.login&#39;</span>
+
+<span class="c1"># Función para cargar usuario en Flask-Login</span>
+<div class="viewcode-block" id="load_user"><a class="viewcode-back" href="../../modulos/servidor.html#Servidor.run.load_user">[documentos]</a><span class="nd">@login_manager</span><span class="o">.</span><span class="n">user_loader</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Carga un usuario desde la base de datos para Flask-Login.</span>
+<span class="sd">    </span>
+<span class="sd">    :param user_id: ID del usuario a cargar</span>
+<span class="sd">    :type user_id: int</span>
+<span class="sd">    :return: Objeto Usuario o None si no existe</span>
+<span class="sd">    :rtype: Usuario</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span></div>
+
+<span class="c1"># Ruta principal</span>
+<div class="viewcode-block" id="index"><a class="viewcode-back" href="../../modulos/servidor.html#Servidor.run.index">[documentos]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ruta principal de la aplicación.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: Plantilla renderizada de la página principal</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span></div>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Registro de Blueprints:</span>
+<span class="sd">    auth: Gestión de autenticación y usuarios</span>
+<span class="sd">    error: Manejo de errores HTTP</span>
+<span class="sd">    keywords: Gestión de palabras clave</span>
+<span class="sd">    capturas_*: Módulos relacionados con la captura de pantalla</span>
+<span class="sd">        - control: Activación/desactivación de capturas</span>
+<span class="sd">        - view: Visualización de capturas</span>
+<span class="sd">        - files: Gestión de archivos de capturas</span>
+<span class="sd">    horarios: Gestión de horarios de profesores</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">capturas_control</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">capturas_files</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">capturas_view</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">horarios</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+<span class="c1"># Punto de entrada principal</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Punto de entrada principal de la aplicación.</span>
+<span class="sd">    </span>
+<span class="sd">    Realiza:</span>
+<span class="sd">    - Creación de tablas en la base de datos</span>
+<span class="sd">    - Verificación de usuario administrador</span>
+<span class="sd">    - Inicialización del verificador de horarios</span>
+<span class="sd">    - Arranque del servidor web</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">app_context</span><span class="p">():</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">create_all</span><span class="p">()</span>
+        
+        <span class="c1"># Crear usuario admin si no existe</span>
+        <span class="n">usuario</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Servidor&#39;</span><span class="p">][</span><span class="s1">&#39;usuario&#39;</span><span class="p">]</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Servidor&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+        
+        <span class="n">admin</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">usuario</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">admin</span><span class="p">:</span>
+            <span class="n">admin</span> <span class="o">=</span> <span class="n">Usuario</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">usuario</span><span class="p">,</span> <span class="n">administrador</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">admin</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">admin</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Usuario administrador creado:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Usuario: </span><span class="si">{</span><span class="n">usuario</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Contraseña: ********&#39;</span><span class="p">)</span>
+    
+    <span class="n">app</span><span class="o">.</span><span class="n">register_error_handler</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="n">paginaNoEncontrada</span><span class="p">)</span>   
+    <span class="c1"># Iniciar proceso de comprobación de horarios</span>
+    <span class="n">horario_checker</span> <span class="o">=</span> <span class="n">HorarioChecker</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">horario_checker</span> <span class="o">=</span> <span class="n">horario_checker</span>  <span class="c1"># Guardar referencia al hilo en la aplicación</span>
+    <span class="n">horario_checker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    
+    <span class="c1"># Arrancar servidor</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

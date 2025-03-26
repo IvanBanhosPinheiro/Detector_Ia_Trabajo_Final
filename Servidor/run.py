@@ -2,6 +2,12 @@
 Módulo principal de la aplicación Flask.
 Configura y arranca el servidor web con todas sus funcionalidades.
 
+Este módulo:
+- Inicializa la aplicación Flask
+- Configura bases de datos y autenticación
+- Registra todos los blueprints
+- Inicia el servidor y procesos en segundo plano
+
 Imports:
     flask: Framework web utilizado para crear la aplicación
     flask_login: Gestión de autenticación de usuarios
@@ -63,11 +69,25 @@ login_manager.login_view = 'auth.login'
 # Función para cargar usuario en Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    Carga un usuario desde la base de datos para Flask-Login.
+    
+    :param user_id: ID del usuario a cargar
+    :type user_id: int
+    :return: Objeto Usuario o None si no existe
+    :rtype: Usuario
+    """
     return Usuario.query.get(int(user_id))
 
 # Ruta principal
 @app.route("/")
 def index():
+    """
+    Ruta principal de la aplicación.
+    
+    :return: Plantilla renderizada de la página principal
+    :rtype: str
+    """
     return render_template("index.html")
 
 """
@@ -91,6 +111,15 @@ app.register_blueprint(error)
 
 # Punto de entrada principal
 if __name__ == '__main__':
+    """
+    Punto de entrada principal de la aplicación.
+    
+    Realiza:
+    - Creación de tablas en la base de datos
+    - Verificación de usuario administrador
+    - Inicialización del verificador de horarios
+    - Arranque del servidor web
+    """
     with app.app_context():
         db.create_all()
         

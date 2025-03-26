@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instalación y Configuración &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="_static/translations.js?v=efdbd0b9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Arquitectura y Funcionamiento" href="funcionamiento.html" />
+    <link rel="prev" title="Estructura de Directorios" href="estructura.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html">Documentación Técnica Completa - Sistema de Detección de IA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objetivos.html">Objetivos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tecnologias.html">Tecnologías Empleadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="estructura.html">Estructura de Directorios</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Instalación y Configuración</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requisitos-minimos">Requisitos Mínimos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#servidor-opcion-docker">Servidor: Opción Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#servidor-opcion-local">Servidor: Opción Local</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cliente-instalador">Cliente: Instalador</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cliente-ejecucion-desde-codigo-fuente">Cliente: Ejecución desde Código Fuente</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="funcionamiento.html">Arquitectura y Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaz.html">Interfaz Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="casos.html">Casos de Uso Principales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pruebas.html">Pruebas y Validación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusiones.html">Conclusiones y Mejoras Futuras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Desarrollo:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="licencia.html">Licencia y Créditos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Instalación y Configuración</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/instalacion.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="instalacion-y-configuracion">
+<h1>Instalación y Configuración<a class="headerlink" href="#instalacion-y-configuracion" title="Enlace permanente a este encabezado"></a></h1>
+<p>A continuación se describen los pasos más relevantes para poner en
+marcha el servidor y el cliente. Existen dos vías principales para el
+servidor:</p>
+<ol class="arabic simple">
+<li><p><strong>Ejecución con Docker</strong></p></li>
+<li><p><strong>Ejecución local</strong> (sin Docker, con Python directamente)</p></li>
+</ol>
+<section id="requisitos-minimos">
+<h2>Requisitos Mínimos<a class="headerlink" href="#requisitos-minimos" title="Enlace permanente a este encabezado"></a></h2>
+<ul class="simple">
+<li><p><strong>Servidor</strong>:
+- Python 3.8+ (si no usas Docker).
+- Recomendable 8 GB RAM y ~50 GB de disco libre.
+- SO: Windows 10/11, o Linux.
+- Docker (opcional).</p></li>
+<li><p><strong>Cliente</strong>:
+- Windows 10/11.
+- Python 3.8+ (si se compila desde fuente) o instalador EXE.
+- Tesseract OCR instalado (o incluido dentro del instalador).
+- 4 GB RAM recomendados.</p></li>
+</ul>
+</section>
+<section id="servidor-opcion-docker">
+<h2>Servidor: Opción Docker<a class="headerlink" href="#servidor-opcion-docker" title="Enlace permanente a este encabezado"></a></h2>
+<ol class="arabic">
+<li><p><strong>Editar</strong> <code class="docutils literal notranslate"><span class="pre">data/config.ini</span></code> con:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[Servidor]</span></code></p></li>
+<li><p>usuario = «admin»</p></li>
+<li><p>password = «adminpass»</p></li>
+<li><p>puerto = 5000</p></li>
+</ul>
+<p>Al arrancar por primera vez, se creará un <strong>usuario administrador</strong>
+con esas credenciales.</p>
+</li>
+<li><p><strong>Ejecutar</strong> en consola el script <code class="docutils literal notranslate"><span class="pre">deploy.bat</span></code> para:</p>
+<ul class="simple">
+<li><p>Construir la imagen Docker.</p></li>
+<li><p>Levantar el contenedor con Flask en el puerto 5000.</p></li>
+<li><p>Montar un volumen para la base de datos (<code class="docutils literal notranslate"><span class="pre">instance/database.db</span></code>).</p></li>
+</ul>
+</li>
+<li><p><strong>Verificar</strong> en el navegador:
+<code class="docutils literal notranslate"><span class="pre">http://localhost:5000</span></code>
+Debería mostrar la página de login; credenciales: <em>admin/adminpass</em>.</p></li>
+</ol>
+</section>
+<section id="servidor-opcion-local">
+<h2>Servidor: Opción Local<a class="headerlink" href="#servidor-opcion-local" title="Enlace permanente a este encabezado"></a></h2>
+<ol class="arabic">
+<li><p><strong>Clonar</strong> o descargar el proyecto.</p></li>
+<li><p>(Opcional) Crear un <strong>entorno virtual</strong> con Python &gt;= 3.8.</p></li>
+<li><p>Instalar dependencias:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</li>
+<li><p>Editar <code class="docutils literal notranslate"><span class="pre">data/config.ini</span></code> con las credenciales deseadas para el
+primer admin.</p></li>
+<li><p>Lanzar la aplicación:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run.py
+</pre></div>
+</div>
+</li>
+<li><p>Acceder en el navegador a
+<code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:5000</span></code> (o la IP/puerto configurado).</p></li>
+</ol>
+</section>
+<section id="cliente-instalador">
+<h2>Cliente: Instalador<a class="headerlink" href="#cliente-instalador" title="Enlace permanente a este encabezado"></a></h2>
+<p>Si se dispone de un <strong>instalador</strong> (ej. <code class="docutils literal notranslate"><span class="pre">IaDetectorCliente.exe</span></code>), se
+puede:</p>
+<ol class="arabic simple">
+<li><p>Ejecutar el instalador en el equipo cliente.</p></li>
+<li><p>Localizar y editar el <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> que genera:
+- <code class="docutils literal notranslate"><span class="pre">[Cliente]</span></code>
+- ruta = «C:\Program Files\Tesseract-OCR\tesseract.exe» (por ejemplo)
+- servidor = «<a class="reference external" href="http://192.168.0.10:5000">http://192.168.0.10:5000</a>» (IP o dominio del servidor)</p></li>
+<li><p>Verificar que, al ejecutarse, se active el bucle de detección
+(monitorizar ventanas y enviar capturas cuando se encuentre una
+palabra clave).</p></li>
+</ol>
+</section>
+<section id="cliente-ejecucion-desde-codigo-fuente">
+<h2>Cliente: Ejecución desde Código Fuente<a class="headerlink" href="#cliente-ejecucion-desde-codigo-fuente" title="Enlace permanente a este encabezado"></a></h2>
+<ol class="arabic">
+<li><p>Clonar o descargar la carpeta del <strong>cliente</strong>.</p></li>
+<li><p>Instalar librerías requeridas:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</li>
+<li><p>Editar <code class="docutils literal notranslate"><span class="pre">config.ini</span></code> con la ruta de Tesseract (apartado <code class="docutils literal notranslate"><span class="pre">[Cliente]</span></code>)
+y la IP del servidor.</p></li>
+<li><p>Iniciar con:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>cliente.py
+</pre></div>
+</div>
+</li>
+<li><p>El cliente descargará las <strong>keywords</strong> iniciales y comenzará a
+detectar ventanas activas, capturando la pantalla si halla
+coincidencias.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="estructura.html" class="btn btn-neutral float-left" title="Estructura de Directorios" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="funcionamiento.html" class="btn btn-neutral float-right" title="Arquitectura y Funcionamiento" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

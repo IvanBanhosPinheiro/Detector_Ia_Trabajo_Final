@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cliente.cliente &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">Cliente.cliente</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para Cliente.cliente</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">configparser</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span><span class="o">,</span><span class="w"> </span><span class="nn">pyautogui</span><span class="o">,</span><span class="w"> </span><span class="nn">requests</span><span class="o">,</span><span class="w"> </span><span class="nn">pytesseract</span><span class="o">,</span><span class="w"> </span><span class="nn">pickle</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pygetwindow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gw</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+
+
+
+<span class="c1"># Función para obtener la ruta base</span>
+<div class="viewcode-block" id="get_base_path"><a class="viewcode-back" href="../../modulos/cliente.html#Cliente.cliente.get_base_path">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_base_path</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determina la ruta base del programa dependiendo de si se ejecuta como script o ejecutable.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Ruta absoluta al directorio que contiene el ejecutable o script.</span>
+<span class="sd">            - Si es ejecutable: directorio del .exe</span>
+<span class="sd">            - Si es script: directorio del .py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;frozen&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span></div>
+
+<span class="c1"># Configuración</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+<span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_base_path</span><span class="p">(),</span> <span class="s1">&#39;config.ini&#39;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+<span class="n">keywords_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_base_path</span><span class="p">(),</span> <span class="s1">&#39;keywords.pkl&#39;</span><span class="p">)</span>
+
+<span class="c1"># Configuración de Tesseract</span>
+<span class="n">pytesseract</span><span class="o">.</span><span class="n">pytesseract</span><span class="o">.</span><span class="n">tesseract_cmd</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Cliente&#39;</span><span class="p">][</span><span class="s1">&#39;ruta&#39;</span><span class="p">]</span>
+
+<span class="c1"># Configuración del cliente</span>
+<span class="n">url_servidor</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;Cliente&#39;</span><span class="p">][</span><span class="s1">&#39;url_servidor&#39;</span><span class="p">]</span>
+
+<span class="c1"># URL para descargar el archivo de palabras clave del servidor</span>
+<span class="n">url_keywords</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url_servidor</span><span class="si">}</span><span class="s2">/keywords&quot;</span>
+
+<span class="c1"># Generar un identificador único para cada cliente usando el nombre del equipo</span>
+<span class="n">cliente_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;COMPUTERNAME&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown_client&#39;</span><span class="p">)</span>
+
+<span class="c1"># Variable para almacenar la ventana activa anterior</span>
+<span class="n">ventana_activa_anterior</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># Función para descargar el archivo de palabras clave del servidor</span>
+<div class="viewcode-block" id="descargar_keywords"><a class="viewcode-back" href="../../modulos/cliente.html#Cliente.cliente.descargar_keywords">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">descargar_keywords</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Descarga la lista de palabras clave desde el servidor y las guarda localmente.</span>
+<span class="sd">    </span>
+<span class="sd">    Realiza una petición GET al endpoint /keywords del servidor configurado.</span>
+<span class="sd">    Si la descarga es exitosa, convierte el texto recibido en una lista de palabras</span>
+<span class="sd">    y las guarda en formato pickle en el archivo keywords.pkl.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Si hay errores de conexión o en la respuesta del servidor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Intentando descargar las palabras clave desde: </span><span class="si">{</span><span class="n">url_keywords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_keywords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">keywords</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>  <span class="c1"># Convertir el texto en lista de palabras clave</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">keywords_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Archivo de palabras clave descargado exitosamente.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al descargar el archivo de palabras clave: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Respuesta del servidor: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al descargar el archivo de palabras clave: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># Función para tomar captura de pantalla</span>
+<div class="viewcode-block" id="tomar_captura_pantalla"><a class="viewcode-back" href="../../modulos/cliente.html#Cliente.cliente.tomar_captura_pantalla">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">tomar_captura_pantalla</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Captura la pantalla actual y la prepara para su procesamiento y envío.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Contiene tres elementos:</span>
+<span class="sd">            - BytesIO: Buffer con la imagen en formato PNG para envío</span>
+<span class="sd">            - PIL.Image: Objeto imagen para procesamiento OCR</span>
+<span class="sd">            - str: Timestamp en formato &#39;YYYYMMDD_HHMMSS&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Tomar captura de pantalla</span>
+    <span class="n">screenshot</span> <span class="o">=</span> <span class="n">pyautogui</span><span class="o">.</span><span class="n">screenshot</span><span class="p">()</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">_%H%M%S&#39;</span><span class="p">)</span>
+    <span class="c1"># Guardar la captura en un objeto BytesIO en lugar de guardarla en disco</span>
+    <span class="n">screenshot_bytes_io</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">screenshot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">screenshot_bytes_io</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
+    <span class="n">screenshot_bytes_io</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">screenshot_bytes_io</span><span class="p">,</span> <span class="n">screenshot</span><span class="p">,</span> <span class="n">timestamp</span></div>
+
+<span class="c1"># Función para enviar una alerta al servidor</span>
+<div class="viewcode-block" id="enviar_alerta_servidor"><a class="viewcode-back" href="../../modulos/cliente.html#Cliente.cliente.enviar_alerta_servidor">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">enviar_alerta_servidor</span><span class="p">(</span><span class="n">screenshot_bytes_io</span><span class="p">,</span> <span class="n">txt_data</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Envía una alerta al servidor con la captura de pantalla y datos relacionados.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        screenshot_bytes_io (BytesIO): Buffer conteniendo la imagen en formato PNG</span>
+<span class="sd">        txt_data (str): Texto con información de la alerta (PC, ventana, texto detectado)</span>
+<span class="sd">        timestamp (str): Identificador temporal del momento de la captura</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Si hay errores de conexión o en la respuesta del servidor</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Envía los datos mediante POST multipart/form-data al endpoint /uploads</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;screenshot&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;screenshot.png&#39;</span><span class="p">,</span> <span class="n">screenshot_bytes_io</span><span class="p">,</span> <span class="s1">&#39;image/png&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;alerta.txt&#39;</span><span class="p">,</span> <span class="n">txt_data</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;cliente_id&quot;</span><span class="p">:</span> <span class="n">cliente_id</span><span class="p">,</span> 
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>  <span class="c1"># Asegúrate de que timestamp sea string</span>
+        <span class="p">}</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Enviando datos: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Archivos: </span><span class="si">{</span><span class="p">[</span><span class="n">k</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url_servidor</span><span class="si">}</span><span class="s2">/uploads&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Respuesta: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Alerta enviada exitosamente&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al enviar la alerta: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al enviar la alerta: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="cargar_keywords"><a class="viewcode-back" href="../../modulos/cliente.html#Cliente.cliente.cargar_keywords">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">cargar_keywords</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Esta función carga las palabras clave desde el archivo binario &#39;keywords.pkl&#39; y las devuelve como una lista.</span>
+<span class="sd">    Si ocurre algún error al abrir o leer el archivo, se captura la excepción y se devuelve una lista vacía.</span>
+<span class="sd">    </span>
+<span class="sd">    El archivo &#39;keywords.pkl&#39; debe contener las palabras clave en un formato binario (guardadas previamente con pickle).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;keywords.pkl&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Archivo de palabras clave no encontrado.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">keywords_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error al cargar las palabras clave: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<span class="c1"># Función para realizar OCR en la captura de pantalla y detectar uso de IA</span>
+<div class="viewcode-block" id="detectar_uso_ia_pantalla"><a class="viewcode-back" href="../../modulos/cliente.html#Cliente.cliente.detectar_uso_ia_pantalla">[documentos]</a><span class="k">def</span><span class="w"> </span><span class="nf">detectar_uso_ia_pantalla</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analiza la pantalla actual en busca de palabras clave relacionadas con IA.</span>
+<span class="sd">    </span>
+<span class="sd">    Proceso:</span>
+<span class="sd">    1. Captura la pantalla actual</span>
+<span class="sd">    2. Extrae texto mediante OCR</span>
+<span class="sd">    3. Compara con lista de palabras clave</span>
+<span class="sd">    4. Si encuentra coincidencias, envía alerta al servidor</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Utiliza la ventana activa actual almacenada en ventana_activa_anterior</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">screenshot_bytes_io</span><span class="p">,</span> <span class="n">screenshot</span><span class="p">,</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">tomar_captura_pantalla</span><span class="p">()</span>
+    <span class="c1"># Extraer texto usando OCR</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">pytesseract</span><span class="o">.</span><span class="n">image_to_string</span><span class="p">(</span><span class="n">screenshot</span><span class="p">)</span>
+    
+     <span class="c1"># Cargar palabras clave desde el archivo binario</span>
+    <span class="n">keywords</span> <span class="o">=</span> <span class="n">cargar_keywords</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+    
+    <span class="c1"># Buscar palabras clave relacionadas con IA</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Posible uso de IA detectado en la pantalla: </span><span class="si">{</span><span class="n">text</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="n">txt_data</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Ordenador: </span><span class="si">{</span><span class="n">cliente_id</span><span class="si">}</span><span class="se">\n</span><span class="s2">Ventana: </span><span class="si">{</span><span class="n">ventana_activa_anterior</span><span class="si">}</span><span class="se">\n</span><span class="s2">Texto detectado: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">enviar_alerta_servidor</span><span class="p">(</span><span class="n">screenshot_bytes_io</span><span class="p">,</span> <span class="n">txt_data</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span></div>
+
+<span class="c1"># Bucle principal para monitorear el cambio de ventana activa</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Punto de entrada principal del programa.</span>
+<span class="sd">    </span>
+<span class="sd">    Flujo de ejecución:</span>
+<span class="sd">    1. Descarga inicial de palabras clave</span>
+<span class="sd">    2. Bucle infinito que:</span>
+<span class="sd">        - Monitorea cambios de ventana activa</span>
+<span class="sd">        - Detecta uso de IA cuando hay cambios</span>
+<span class="sd">        - Maneja errores sin interrumpir ejecución</span>
+<span class="sd">    </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Usa time.sleep(1) para reducir uso de CPU</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Descargar archivo de palabras clave del servidor al iniciar</span>
+    <span class="n">descargar_keywords</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Obtener la ventana activa actual</span>
+            <span class="n">ventana_activa</span> <span class="o">=</span> <span class="n">gw</span><span class="o">.</span><span class="n">getActiveWindow</span><span class="p">()</span>
+            <span class="n">nombre_ventana</span> <span class="o">=</span> <span class="n">ventana_activa</span><span class="o">.</span><span class="n">title</span> <span class="k">if</span> <span class="n">ventana_activa</span> <span class="k">else</span> <span class="s2">&quot;Unknown&quot;</span>
+
+            <span class="c1"># Verificar si la ventana activa ha cambiado</span>
+            <span class="k">if</span> <span class="n">ventana_activa_anterior</span> <span class="o">!=</span> <span class="n">nombre_ventana</span><span class="p">:</span>
+                <span class="n">ventana_activa_anterior</span> <span class="o">=</span> <span class="n">nombre_ventana</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Cambio de ventana detectado: </span><span class="si">{</span><span class="n">nombre_ventana</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Capturar pantalla y verificar uso de IA mediante OCR</span>
+                <span class="n">detectar_uso_ia_pantalla</span><span class="p">()</span>
+
+            <span class="c1"># Esperar un corto intervalo antes de verificar nuevamente</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">] Error en el monitoreo de ventana activa: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

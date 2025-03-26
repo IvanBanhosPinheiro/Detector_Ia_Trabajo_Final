@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cliente del Detector de IA &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="Servidor del Detector de IA" href="servidor.html" />
+    <link rel="prev" title="Módulos del Detector de IA" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Módulos del Detector de IA</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cliente del Detector de IA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#funcionalidades">Funcionalidades</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flujo-de-funcionamiento">Flujo de Funcionamiento</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentacion-del-codigo">Documentación del Código</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Cliente.cliente.get_base_path"><code class="docutils literal notranslate"><span class="pre">get_base_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Cliente.cliente.descargar_keywords"><code class="docutils literal notranslate"><span class="pre">descargar_keywords()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Cliente.cliente.tomar_captura_pantalla"><code class="docutils literal notranslate"><span class="pre">tomar_captura_pantalla()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Cliente.cliente.enviar_alerta_servidor"><code class="docutils literal notranslate"><span class="pre">enviar_alerta_servidor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Cliente.cliente.cargar_keywords"><code class="docutils literal notranslate"><span class="pre">cargar_keywords()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Cliente.cliente.detectar_uso_ia_pantalla"><code class="docutils literal notranslate"><span class="pre">detectar_uso_ia_pantalla()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="servidor.html">Servidor del Detector de IA</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Módulos del Detector de IA</a></li>
+      <li class="breadcrumb-item active">Cliente del Detector de IA</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modulos/cliente.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cliente-del-detector-de-ia">
+<h1>Cliente del Detector de IA<a class="headerlink" href="#cliente-del-detector-de-ia" title="Enlace permanente a este encabezado"></a></h1>
+<p>Este módulo implementa la aplicación cliente que monitorea la pantalla en busca de uso de IA.</p>
+<section id="funcionalidades">
+<h2>Funcionalidades<a class="headerlink" href="#funcionalidades" title="Enlace permanente a este encabezado"></a></h2>
+<ul class="simple">
+<li><p>Monitoreo continuo de la ventana activa</p></li>
+<li><p>Captura de pantalla al detectar cambios de ventana</p></li>
+<li><p>Procesamiento OCR para extraer texto</p></li>
+<li><p>Detección de palabras clave relacionadas con IA</p></li>
+<li><p>Envío de alertas al servidor central</p></li>
+</ul>
+</section>
+<section id="flujo-de-funcionamiento">
+<h2>Flujo de Funcionamiento<a class="headerlink" href="#flujo-de-funcionamiento" title="Enlace permanente a este encabezado"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────┐      ┌────────────────┐      ┌────────────────┐
+│  Monitorización │      │   Detección    │      │     Alerta     │
+│  de actividad   │─────&gt;│   mediante     │─────&gt;│    enviada     │
+│                 │      │      OCR       │      │  al servidor   │
+└─────────────────┘      └────────────────┘      └────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="documentacion-del-codigo">
+<h2>Documentación del Código<a class="headerlink" href="#documentacion-del-codigo" title="Enlace permanente a este encabezado"></a></h2>
+<span class="target" id="module-Cliente.cliente"></span><dl class="py function">
+<dt class="sig sig-object py" id="Cliente.cliente.get_base_path">
+<span class="sig-name descname"><span class="pre">get_base_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Cliente/cliente.html#get_base_path"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Cliente.cliente.get_base_path" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Determina la ruta base del programa dependiendo de si se ejecuta como script o ejecutable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Ruta absoluta al directorio que contiene el ejecutable o script.</dt><dd><ul class="simple">
+<li><p>Si es ejecutable: directorio del .exe</p></li>
+<li><p>Si es script: directorio del .py</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Cliente.cliente.descargar_keywords">
+<span class="sig-name descname"><span class="pre">descargar_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Cliente/cliente.html#descargar_keywords"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Cliente.cliente.descargar_keywords" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Descarga la lista de palabras clave desde el servidor y las guarda localmente.</p>
+<p>Realiza una petición GET al endpoint /keywords del servidor configurado.
+Si la descarga es exitosa, convierte el texto recibido en una lista de palabras
+y las guarda en formato pickle en el archivo keywords.pkl.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Muestra<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Si hay errores de conexión o en la respuesta del servidor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Cliente.cliente.tomar_captura_pantalla">
+<span class="sig-name descname"><span class="pre">tomar_captura_pantalla</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Cliente/cliente.html#tomar_captura_pantalla"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Cliente.cliente.tomar_captura_pantalla" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Captura la pantalla actual y la prepara para su procesamiento y envío.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Contiene tres elementos:</dt><dd><ul class="simple">
+<li><p>BytesIO: Buffer con la imagen en formato PNG para envío</p></li>
+<li><p>PIL.Image: Objeto imagen para procesamiento OCR</p></li>
+<li><p>str: Timestamp en formato “YYYYMMDD_HHMMSS”</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Tipo del valor devuelto<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Cliente.cliente.enviar_alerta_servidor">
+<span class="sig-name descname"><span class="pre">enviar_alerta_servidor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screenshot_bytes_io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txt_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Cliente/cliente.html#enviar_alerta_servidor"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Cliente.cliente.enviar_alerta_servidor" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Envía una alerta al servidor con la captura de pantalla y datos relacionados.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>screenshot_bytes_io</strong> (<em>BytesIO</em>) – Buffer conteniendo la imagen en formato PNG</p></li>
+<li><p><strong>txt_data</strong> (<em>str</em>) – Texto con información de la alerta (PC, ventana, texto detectado)</p></li>
+<li><p><strong>timestamp</strong> (<em>str</em>) – Identificador temporal del momento de la captura</p></li>
+</ul>
+</dd>
+<dt class="field-even">Muestra<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Si hay errores de conexión o en la respuesta del servidor</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Envía los datos mediante POST multipart/form-data al endpoint /uploads</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Cliente.cliente.cargar_keywords">
+<span class="sig-name descname"><span class="pre">cargar_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Cliente/cliente.html#cargar_keywords"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Cliente.cliente.cargar_keywords" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Esta función carga las palabras clave desde el archivo binario “keywords.pkl” y las devuelve como una lista.
+Si ocurre algún error al abrir o leer el archivo, se captura la excepción y se devuelve una lista vacía.</p>
+<p>El archivo “keywords.pkl” debe contener las palabras clave en un formato binario (guardadas previamente con pickle).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Cliente.cliente.detectar_uso_ia_pantalla">
+<span class="sig-name descname"><span class="pre">detectar_uso_ia_pantalla</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/Cliente/cliente.html#detectar_uso_ia_pantalla"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#Cliente.cliente.detectar_uso_ia_pantalla" title="Enlazar permanentemente con esta definición"></a></dt>
+<dd><p>Analiza la pantalla actual en busca de palabras clave relacionadas con IA.</p>
+<p>Proceso:
+1. Captura la pantalla actual
+2. Extrae texto mediante OCR
+3. Compara con lista de palabras clave
+4. Si encuentra coincidencias, envía alerta al servidor</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Utiliza la ventana activa actual almacenada en ventana_activa_anterior</p>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="index.html" class="btn btn-neutral float-left" title="Módulos del Detector de IA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="servidor.html" class="btn btn-neutral float-right" title="Servidor del Detector de IA" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

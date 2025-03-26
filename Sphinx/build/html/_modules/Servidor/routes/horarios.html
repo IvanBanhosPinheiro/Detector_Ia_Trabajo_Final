@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servidor.routes.horarios &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcionamiento.html">Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modulos/index.html">Módulos del Detector de IA</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">Servidor.routes.horarios</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para Servidor.routes.horarios</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo de gestión de horarios.</span>
+
+<span class="sd">Este Blueprint maneja las operaciones relacionadas con los horarios de profesores,</span>
+<span class="sd">incluyendo la creación, visualización y eliminación de horarios para la detección</span>
+<span class="sd">automática de actividades en función del tiempo.</span>
+
+<span class="sd">Las operaciones principales incluyen:</span>
+<span class="sd">- Listado de horarios existentes</span>
+<span class="sd">- Creación de nuevos horarios</span>
+<span class="sd">- Eliminación de horarios</span>
+<span class="sd">- Validación de superposiciones y conflictos</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">Usuario</span><span class="p">,</span> <span class="n">Horario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">horarios</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;horarios&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="lista_horarios"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.horarios.lista_horarios">[documentos]</a><span class="nd">@horarios</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/horarios&quot;</span><span class="p">)</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lista_horarios</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista para listar y gestionar horarios.</span>
+<span class="sd">    </span>
+<span class="sd">    Muestra una página con todos los horarios configurados y un formulario</span>
+<span class="sd">    para añadir nuevos horarios. Solo accesible para administradores.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        render_template: Página de gestión de horarios</span>
+<span class="sd">        redirect: Redirección a página principal si no es administrador</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Requiere autenticación</span>
+<span class="sd">        Solo usuarios administradores pueden acceder a esta función</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">,</span> <span class="s1">&#39;danger&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+        
+    <span class="n">usuarios</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">administrador</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">horarios</span> <span class="o">=</span> <span class="n">Horario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;admin/horarios.html&quot;</span><span class="p">,</span> <span class="n">usuarios</span><span class="o">=</span><span class="n">usuarios</span><span class="p">,</span> <span class="n">horarios</span><span class="o">=</span><span class="n">horarios</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="crear_horario"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.horarios.crear_horario">[documentos]</a><span class="nd">@horarios</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/horarios&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crear_horario</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Añade un nuevo horario al sistema.</span>
+<span class="sd">    </span>
+<span class="sd">    Procesa el formulario de creación de horario y valida que no haya</span>
+<span class="sd">    superposiciones con otros horarios existentes para el mismo día.</span>
+<span class="sd">    </span>
+<span class="sd">    Request Form:</span>
+<span class="sd">        usuario (str): ID del usuario asociado al horario</span>
+<span class="sd">        dia (int): Día de la semana (0=Lunes, 6=Domingo)</span>
+<span class="sd">        hora_inicio (str): Hora de inicio en formato HH:MM</span>
+<span class="sd">        hora_fin (str): Hora de fin en formato HH:MM</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        JSON: Mensaje de éxito o error</span>
+<span class="sd">        </span>
+<span class="sd">    Status Codes:</span>
+<span class="sd">        201: Horario creado correctamente</span>
+<span class="sd">        400: Error de validación (horario superpuesto o horas inválidas)</span>
+<span class="sd">        403: Usuario no autorizado</span>
+<span class="sd">        500: Error del servidor</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Solo usuarios administradores pueden crear horarios</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">}),</span> <span class="mi">403</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Obtener datos del formulario</span>
+        <span class="n">usuario_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;usuario&#39;</span><span class="p">)</span>
+        <span class="n">dia</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dia&#39;</span><span class="p">))</span>
+        <span class="n">hora_inicio</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hora_inicio&#39;</span><span class="p">),</span> <span class="s1">&#39;%H:%M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">hora_fin</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hora_fin&#39;</span><span class="p">),</span> <span class="s1">&#39;%H:%M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Validar rango de horas</span>
+        <span class="k">if</span> <span class="n">hora_inicio</span> <span class="o">&gt;=</span> <span class="n">hora_fin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;La hora de inicio debe ser anterior a la hora de fin&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+
+        <span class="c1"># Verificar superposición de horarios</span>
+        <span class="n">horarios_superpuestos</span> <span class="o">=</span> <span class="n">Horario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">Horario</span><span class="o">.</span><span class="n">dia</span> <span class="o">==</span> <span class="n">dia</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">Horario</span><span class="o">.</span><span class="n">hora_inicio</span> <span class="o">&lt;=</span> <span class="n">hora_inicio</span><span class="p">,</span>
+                    <span class="n">Horario</span><span class="o">.</span><span class="n">hora_fin</span> <span class="o">&gt;</span> <span class="n">hora_inicio</span>
+                <span class="p">),</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">Horario</span><span class="o">.</span><span class="n">hora_inicio</span> <span class="o">&lt;</span> <span class="n">hora_fin</span><span class="p">,</span>
+                    <span class="n">Horario</span><span class="o">.</span><span class="n">hora_fin</span> <span class="o">&gt;=</span> <span class="n">hora_fin</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">horarios_superpuestos</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Ya existe un horario en ese rango de tiempo&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+
+        <span class="c1"># Crear nuevo horario</span>
+        <span class="n">nuevo_horario</span> <span class="o">=</span> <span class="n">Horario</span><span class="p">(</span>
+            <span class="n">id_usuario</span><span class="o">=</span><span class="n">usuario_id</span><span class="p">,</span>
+            <span class="n">dia</span><span class="o">=</span><span class="n">dia</span><span class="p">,</span>
+            <span class="n">hora_inicio</span><span class="o">=</span><span class="n">hora_inicio</span><span class="p">,</span>
+            <span class="n">hora_fin</span><span class="o">=</span><span class="n">hora_fin</span>
+        <span class="p">)</span>
+
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nuevo_horario</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Horario creado correctamente&#39;</span><span class="p">}),</span> <span class="mi">201</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}),</span> <span class="mi">500</span></div>
+
+<div class="viewcode-block" id="eliminar_horario"><a class="viewcode-back" href="../../../modulos/servidor.html#Servidor.routes.horarios.eliminar_horario">[documentos]</a><span class="nd">@horarios</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/horario/&lt;int:id&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">eliminar_horario</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Elimina un horario existente.</span>
+<span class="sd">    </span>
+<span class="sd">    Busca el horario por su ID y lo elimina de la base de datos.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        id (int): ID del horario a eliminar</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Respuesta vacía con código 204 si se eliminó correctamente</span>
+<span class="sd">        JSON: Mensaje de error en caso contrario</span>
+<span class="sd">        </span>
+<span class="sd">    Status Codes:</span>
+<span class="sd">        204: Horario eliminado correctamente</span>
+<span class="sd">        403: Usuario no autorizado</span>
+<span class="sd">        404: Horario no encontrado</span>
+<span class="sd">        500: Error del servidor</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Solo usuarios administradores pueden eliminar horarios</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_user</span><span class="o">.</span><span class="n">administrador</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;No tienes permisos de administrador&#39;</span><span class="p">}),</span> <span class="mi">403</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">horario</span> <span class="o">=</span> <span class="n">Horario</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">horario</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">204</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}),</span> <span class="mi">500</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

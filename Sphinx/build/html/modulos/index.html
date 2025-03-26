@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulos del Detector de IA &mdash; documentación de Detector de Inteligencia Artificial - 26/03/2025</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3542b4e"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/translations.js?v=efdbd0b9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="Cliente del Detector de IA" href="cliente.html" />
+    <link rel="prev" title="Conclusiones y Mejoras Futuras" href="../conclusiones.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Detector de Inteligencia Artificial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contenidos:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduccion.html">Documentación Técnica Completa - Sistema de Detección de IA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../objetivos.html">Objetivos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tecnologias.html">Tecnologías Empleadas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../estructura.html">Estructura de Directorios</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instalacion.html">Instalación y Configuración</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../funcionamiento.html">Arquitectura y Funcionamiento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaz.html">Interfaz Web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../casos.html">Casos de Uso Principales</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pruebas.html">Pruebas y Validación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conclusiones.html">Conclusiones y Mejoras Futuras</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Módulos del Detector de IA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#arquitectura-del-sistema">Arquitectura del Sistema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#descripcion-de-modulos">Descripción de Módulos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cliente.html">Cliente del Detector de IA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="servidor.html">Servidor del Detector de IA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interaccion-entre-modulos">Interacción entre Módulos</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Desarrollo:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../licencia.html">Licencia y Créditos</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Detector de Inteligencia Artificial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Módulos del Detector de IA</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modulos/index.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modulos-del-detector-de-ia">
+<h1>Módulos del Detector de IA<a class="headerlink" href="#modulos-del-detector-de-ia" title="Enlace permanente a este encabezado"></a></h1>
+<p>Esta sección describe los principales componentes del sistema de detección de IA, explicando su arquitectura, funcionalidades y relaciones entre módulos.</p>
+<section id="arquitectura-del-sistema">
+<h2>Arquitectura del Sistema<a class="headerlink" href="#arquitectura-del-sistema" title="Enlace permanente a este encabezado"></a></h2>
+<p>El Detector de IA se compone de dos módulos principales que trabajan en conjunto:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────┐                  ┌─────────────────┐
+│     CLIENTE     │                  │     SERVIDOR    │
+│                 │   HTTP/HTTPS     │                 │
+│  • Monitoreo    │◄─────────────────┤  • API REST     │
+│  • Captura      │                  │  • BD SQLite    │
+│  • OCR          │─────────────────►│  • Gestión      │
+│  • Detección    │                  │  • Dashboard    │
+└─────────────────┘                  └─────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="descripcion-de-modulos">
+<h2>Descripción de Módulos<a class="headerlink" href="#descripcion-de-modulos" title="Enlace permanente a este encabezado"></a></h2>
+<ul class="simple">
+<li><p><strong>Cliente</strong>: Agente instalado en estaciones de trabajo que monitorea actividad, captura pantallas y detecta posible uso de IA.</p></li>
+<li><p><strong>Servidor</strong>: Sistema centralizado que recibe alertas, almacena datos, proporciona interfaz de administración y controla políticas de detección.</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Componentes del Sistema:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cliente.html">Cliente del Detector de IA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cliente.html#funcionalidades">Funcionalidades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cliente.html#flujo-de-funcionamiento">Flujo de Funcionamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cliente.html#documentacion-del-codigo">Documentación del Código</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="servidor.html">Servidor del Detector de IA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="servidor.html#componentes-principales">Componentes Principales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="servidor.html#arquitectura-del-sistema">Arquitectura del Sistema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="servidor.html#modulo-principal">Módulo Principal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="servidor.html#modulos-del-servidor">Módulos del Servidor</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="interaccion-entre-modulos">
+<h2>Interacción entre Módulos<a class="headerlink" href="#interaccion-entre-modulos" title="Enlace permanente a este encabezado"></a></h2>
+<p>El cliente y el servidor se comunican mediante una API REST que permite el intercambio de información en tiempo real, la configuración remota de los agentes y el envío de alertas cuando se detecta posible uso de herramientas de IA.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="../conclusiones.html" class="btn btn-neutral float-left" title="Conclusiones y Mejoras Futuras" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="cliente.html" class="btn btn-neutral float-right" title="Cliente del Detector de IA" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Iván Baños Piñeiro.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
