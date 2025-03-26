@@ -236,11 +236,23 @@ En conjunto, el proyecto proporciona una **prueba de concepto funcional** que pu
 
 ---
 
-## 9. Licencia y Contacto
+## Licencia
 
-Este proyecto se distribuye bajo una licencia de uso libre (por ejemplo, [MIT License](https://opensource.org/licenses/MIT) o similar). Puedes clonar, modificar y reutilizar el código con fines educativos o de investigación.
+Este proyecto se distribuye bajo la licencia [Creative Commons Atribución-NoComercial 4.0 Internacional](LICENSE).
+Si deseas más detalles, revisa el texto completo en el archivo [LICENSE](./LICENSE) o en 
+[la web oficial de Creative Commons](https://creativecommons.org/licenses/by-nc/4.0/legalcode.es).
 
-**Contacto**:  
-Si tienes dudas o sugerencias, abre un _issue_ en el repositorio o contacta al autor/colaboradores a través del canal especificado en el proyecto.
+**Resumen**:
+- Eres libre de usar, modificar y compartir el proyecto, siempre que:
+  1. Se reconozca la autoría original (BY).
+  2. No se utilice con fines comerciales (NC).
+ 
+---
 
-¡Gracias por tu interés en este proyecto!
+## 10. Contribuciones y Créditos
+
+- Desarrollo realizado como proyecto final de ciclo (DAM/DAW/Multiplataforma).  
+- Uso de frameworks y librerías de terceros (Flask, Tesseract, PyAutoGUI, Docker, etc.).  
+- Agradecimientos a docentes y colaboradores que apoyaron las pruebas y validación.
+
+Si deseas contribuir con mejoras, PRs o correcciones, por favor crea un **Pull Request** en este repositorio o abre un _issue_ describiendo la propuesta.
