@@ -52,7 +52,7 @@ Además, el repositorio incluye:
 - **Conexión en Red**  
   - El Cliente debe poder conectarse a la IP/puerto donde se ejecute el Servidor.
   - Si usas Docker, comprueba que los puertos estén mapeados correctamente.
-
+## 4. Instalación y Configuración del Servidor
 ### 4.1 Ejecución con Docker (usando el `deploy.bat`)
 
 En la carpeta del Servidor encontrarás un archivo **`deploy.bat`** que automatiza los siguientes pasos:
