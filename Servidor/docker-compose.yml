@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  serverdetectoria:
+    build:
+      context: .
+    image: serverdetectoria
+    container_name: serverdetectoria
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - mi-bd:/app/instance
+
+volumes:
+  mi-bd:
