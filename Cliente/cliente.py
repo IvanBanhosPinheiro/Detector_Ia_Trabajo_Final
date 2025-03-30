@@ -1,4 +1,4 @@
-import os, configparser, time, pyautogui, requests, pytesseract, pickle, sys
+import os, configparser, time, pyautogui, requests, pytesseract, sys
 from datetime import datetime
 import pygetwindow as gw
 from io import BytesIO
@@ -43,6 +43,10 @@ cliente_id = os.environ.get('COMPUTERNAME', 'unknown_client')
 # Variable para almacenar la ventana activa anterior
 ventana_activa_anterior = None
 
+# Inicializar la lista de palabras clave
+# Esta lista se llenará con las palabras clave descargadas del servidor
+keywords = []
+
 # Función para descargar el archivo de palabras clave del servidor
 def descargar_keywords():
     
@@ -56,14 +60,13 @@ def descargar_keywords():
     Raises:
         Exception: Si hay errores de conexión o en la respuesta del servidor
     """
+    global keywords
     
     try:
         print(f"[{datetime.now()}] Intentando descargar las palabras clave desde: {url_keywords}")
         response = requests.get(url_keywords)
         if response.status_code == 200:
             keywords = response.text.splitlines()  # Convertir el texto en lista de palabras clave
-            with open(keywords_path, 'wb') as file:
-                pickle.dump(keywords, file)
             print(f"[{datetime.now()}] Archivo de palabras clave descargado exitosamente.")
         else:
             print(f"[{datetime.now()}] Error al descargar el archivo de palabras clave: {response.status_code}")
@@ -136,23 +139,6 @@ def enviar_alerta_servidor(screenshot_bytes_io, txt_data, timestamp):
     except Exception as e:
         print(f"[{datetime.now()}] Error al enviar la alerta: {str(e)}")
 
-def cargar_keywords():
-    """
-    Esta función carga las palabras clave desde el archivo binario 'keywords.pkl' y las devuelve como una lista.
-    Si ocurre algún error al abrir o leer el archivo, se captura la excepción y se devuelve una lista vacía.
-    
-    El archivo 'keywords.pkl' debe contener las palabras clave en un formato binario (guardadas previamente con pickle).
-    """
-    try:
-        if not os.path.exists('keywords.pkl'):
-            print(f"[{datetime.now()}] Archivo de palabras clave no encontrado.")
-            return []
-        
-        with open(keywords_path, 'rb') as file:
-            return pickle.load(file)
-    except Exception as e:
-        print(f"[{datetime.now()}] Error al cargar las palabras clave: {str(e)}")
-        return []
 
 
 # Función para realizar OCR en la captura de pantalla y detectar uso de IA
@@ -171,12 +157,11 @@ def detectar_uso_ia_pantalla():
         Utiliza la ventana activa actual almacenada en ventana_activa_anterior
     """
     
+    global keywords
+    
     screenshot_bytes_io, screenshot, timestamp = tomar_captura_pantalla()
     # Extraer texto usando OCR
     text = pytesseract.image_to_string(screenshot)
-    
-     # Cargar palabras clave desde el archivo binario
-    keywords = cargar_keywords()
     
     print(keywords)
     
